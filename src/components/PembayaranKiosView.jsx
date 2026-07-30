@@ -133,9 +133,10 @@ export default function PembayaranKiosView({
   };
 
   const getPenyaluranPaymentStats = (pItem) => {
+    if (!pItem) return { totalTagihan: 0, terbayar: 0, sisa: 0, statusDisplay: 'Lunas' };
     // Payments made directly for this penyaluran
-    const itemPayments = payments.filter(pm => pm.penyaluranId === pItem.id);
-    const paidAmountSum = itemPayments.reduce((s, pm) => s + Number(pm.amount || 0), 0);
+    const itemPayments = (payments || []).filter(pm => pm && pm.penyaluranId === pItem.id);
+    const paidAmountSum = itemPayments.reduce((s, pm) => s + Number(pm?.amount || 0), 0);
     const initialDp = Number(pItem.dpAmount || 0);
 
     const totalTagihan = Number(pItem.totalAmount || 0);
@@ -152,27 +153,30 @@ export default function PembayaranKiosView({
   };
 
   const getKiosDepositSum = (kiosId) => {
-    return deposits.filter(d => d.kiosId === kiosId).reduce((s, d) => s + Number(d.amount || 0), 0);
+    if (!kiosId) return 0;
+    return (deposits || []).filter(d => d && d.kiosId === kiosId).reduce((s, d) => s + Number(d?.amount || 0), 0);
   };
 
   // Total Recap Stats across filtered list
-  const totalTagihanSemua = filteredPenyaluran.reduce((s, p) => s + Number(p.totalAmount || 0), 0);
+  const totalTagihanSemua = filteredPenyaluran.reduce((s, p) => s + Number(p?.totalAmount || 0), 0);
   const totalTerbayarSemua = filteredPenyaluran.reduce((s, p) => s + getPenyaluranPaymentStats(p).terbayar, 0);
   const totalPiutangTempoSemua = filteredPenyaluran.reduce((s, p) => s + getPenyaluranPaymentStats(p).sisa, 0);
 
   // Total Deposits
-  const filteredDeposits = deposits.filter(d => {
-    const kios = kiosks.find(k => k.id === d.kiosId);
+  const filteredDeposits = (deposits || []).filter(d => {
+    if (!d) return false;
+    const kios = (kiosks || []).find(k => k && k.id === d.kiosId);
     const matchBranch = selectedBranch === 'ALL' || (kios && kios.branch === selectedBranch);
     const matchKios = selectedKiosId === 'ALL' || d.kiosId === selectedKiosId;
     return matchBranch && matchKios;
   });
-  const totalDepositSemua = filteredDeposits.reduce((s, d) => s + Number(d.amount || 0), 0);
+  const totalDepositSemua = filteredDeposits.reduce((s, d) => s + Number(d?.amount || 0), 0);
 
   // Total Net Kekurangan calculated per-kios based on each kiosk's toggle state
   const totalNetKekuranganSemua = filteredKiosks.reduce((total, kios) => {
-    const kiosSalur = penyaluranList.filter(p => p.kiosId === kios.id);
-    const tagihanTotal = kiosSalur.reduce((s, p) => s + Number(p.totalAmount || 0), 0);
+    if (!kios) return total;
+    const kiosSalur = (penyaluranList || []).filter(p => p && p.kiosId === kios.id);
+    const tagihanTotal = kiosSalur.reduce((s, p) => s + Number(p?.totalAmount || 0), 0);
     const terbayarTotal = kiosSalur.reduce((s, p) => s + getPenyaluranPaymentStats(p).terbayar, 0);
     const kek = Math.max(0, tagihanTotal - terbayarTotal);
     const dep = getKiosDepositSum(kios.id);

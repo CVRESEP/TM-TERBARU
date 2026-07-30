@@ -17,16 +17,17 @@ export default function ModalKiosHistory({
   const formatRp = (val) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val || 0);
 
   // Filter transactions for this specific kiosk
-  const kiosSalur = penyaluranList.filter(p => p.kiosId === kios.id);
-  const kiosPayments = payments.filter(pm => pm.kiosId === kios.id);
-  const kiosDeposits = deposits.filter(d => d.kiosId === kios.id);
+  const kiosSalur = (penyaluranList || []).filter(p => p && p.kiosId === kios.id);
+  const kiosPayments = (payments || []).filter(pm => pm && pm.kiosId === kios.id);
+  const kiosDeposits = (deposits || []).filter(d => d && d.kiosId === kios.id);
 
   // Financial calculations
-  const totalTagihan = kiosSalur.reduce((s, p) => s + Number(p.totalAmount || 0), 0);
+  const totalTagihan = kiosSalur.reduce((s, p) => s + Number(p?.totalAmount || 0), 0);
   
   const getPenyaluranPaymentStats = (pItem) => {
-    const itemPayments = kiosPayments.filter(pm => pm.penyaluranId === pItem.id);
-    const paidSum = itemPayments.reduce((s, pm) => s + Number(pm.amount || 0), 0);
+    if (!pItem) return { total: 0, terbayar: 0, sisa: 0 };
+    const itemPayments = kiosPayments.filter(pm => pm && pm.penyaluranId === pItem.id);
+    const paidSum = itemPayments.reduce((s, pm) => s + Number(pm?.amount || 0), 0);
     const initialDp = Number(pItem.dpAmount || 0);
     const total = Number(pItem.totalAmount || 0);
     let terbayar = paidSum + initialDp;
@@ -38,7 +39,7 @@ export default function ModalKiosHistory({
 
   const totalTerbayar = kiosSalur.reduce((s, p) => s + getPenyaluranPaymentStats(p).terbayar, 0);
   const kekuranganPembayaran = Math.max(0, totalTagihan - totalTerbayar);
-  const depositTotal = kiosDeposits.reduce((s, d) => s + Number(d.amount || 0), 0);
+  const depositTotal = kiosDeposits.reduce((s, d) => s + Number(d?.amount || 0), 0);
 
   // Combine payments & deposits for audit trail
   const combinedHistory = [
