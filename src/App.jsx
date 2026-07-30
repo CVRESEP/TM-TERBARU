@@ -103,36 +103,75 @@ export default function App() {
     }
   }, []);
 
-  // Load app data whenever user logs in
+  // Load app data whenever user logs in (Primary: Turso Cloud, Secondary: localStorage cache)
   useEffect(() => {
     if (!currentUser) return;
 
-    const savedData = localStorage.getItem(LOCAL_STORAGE_KEY);
-    if (savedData) {
-      try {
-        const parsed = JSON.parse(savedData);
-        setSettings(parsed.settings || DEFAULT_SETTINGS);
-        setUsersList(parsed.usersList && parsed.usersList.length > 0 ? parsed.usersList : DEFAULT_USERS);
-        setFertilizers(parsed.fertilizers || DEFAULT_FERTILIZERS);
-        setSuppliers(parsed.suppliers || DEFAULT_SUPPLIERS);
-        setDrivers(parsed.drivers || DEFAULT_DRIVERS);
-        setKiosks(parsed.kiosks || DEFAULT_KIOSKS);
-        setPenebusanList(parsed.penebusanList || DEFAULT_PENEBUSAN);
-        setDoList(parsed.doList || DEFAULT_DO_EXPENSES);
-        setPenyaluranList(parsed.penyaluranList || DEFAULT_PENYALURAN_KIOS);
-        setPayments(parsed.payments || []);
-        setDeposits(parsed.deposits || []);
-        setKasAngkutanList(parsed.kasAngkutanList || []);
-        setKasUmumList(parsed.kasUmumList || []);
-        setActivityLogs(parsed.activityLogs || []);
-        if (parsed.activeTab) setActiveTab(parsed.activeTab);
-        if (parsed.selectedBranch && currentUser.role !== 'admin') setSelectedBranch(parsed.selectedBranch);
-      } catch {
+    const loadLocalData = () => {
+      const savedData = localStorage.getItem(LOCAL_STORAGE_KEY);
+      if (savedData) {
+        try {
+          const parsed = JSON.parse(savedData);
+          setSettings(parsed.settings || DEFAULT_SETTINGS);
+          setUsersList(parsed.usersList && parsed.usersList.length > 0 ? parsed.usersList : DEFAULT_USERS);
+          setFertilizers(parsed.fertilizers || DEFAULT_FERTILIZERS);
+          setSuppliers(parsed.suppliers || DEFAULT_SUPPLIERS);
+          setDrivers(parsed.drivers || DEFAULT_DRIVERS);
+          setKiosks(parsed.kiosks || DEFAULT_KIOSKS);
+          setPenebusanList(parsed.penebusanList || DEFAULT_PENEBUSAN);
+          setDoList(parsed.doList || DEFAULT_DO_EXPENSES);
+          setPenyaluranList(parsed.penyaluranList || DEFAULT_PENYALURAN_KIOS);
+          setPayments(parsed.payments || []);
+          setDeposits(parsed.deposits || []);
+          setKasAngkutanList(parsed.kasAngkutanList || []);
+          setKasUmumList(parsed.kasUmumList || []);
+          setActivityLogs(parsed.activityLogs || []);
+          if (parsed.activeTab) setActiveTab(parsed.activeTab);
+          if (parsed.selectedBranch && currentUser.role !== 'admin') setSelectedBranch(parsed.selectedBranch);
+        } catch {
+          loadDefaults();
+        }
+      } else {
         loadDefaults();
       }
-    } else {
-      loadDefaults();
-    }
+    };
+
+    fetchDataFromTurso()
+      .then((res) => {
+        if (res && res.success && res.data) {
+          const d = res.data;
+          const hasTursoData =
+            (d.penebusanList && d.penebusanList.length > 0) ||
+            (d.penyaluranList && d.penyaluranList.length > 0) ||
+            (d.kiosks && d.kiosks.length > 0) ||
+            (d.kasAngkutanList && d.kasAngkutanList.length > 0);
+
+          if (hasTursoData) {
+            if (d.settings && Object.keys(d.settings).length > 0) setSettings(d.settings);
+            if (d.usersList && d.usersList.length > 0) setUsersList(d.usersList);
+            if (d.fertilizers && d.fertilizers.length > 0) setFertilizers(d.fertilizers);
+            if (d.suppliers && d.suppliers.length > 0) setSuppliers(d.suppliers);
+            if (d.drivers && d.drivers.length > 0) setDrivers(d.drivers);
+            if (d.kiosks && d.kiosks.length > 0) setKiosks(d.kiosks);
+            if (d.penebusanList && d.penebusanList.length > 0) setPenebusanList(d.penebusanList);
+            if (d.doList && d.doList.length > 0) setDoList(d.doList);
+            if (d.penyaluranList && d.penyaluranList.length > 0) setPenyaluranList(d.penyaluranList);
+            if (d.payments && d.payments.length > 0) setPayments(d.payments);
+            if (d.deposits && d.deposits.length > 0) setDeposits(d.deposits);
+            if (d.kasAngkutanList && d.kasAngkutanList.length > 0) setKasAngkutanList(d.kasAngkutanList);
+            if (d.kasUmumList && d.kasUmumList.length > 0) setKasUmumList(d.kasUmumList);
+            if (d.activityLogs && d.activityLogs.length > 0) setActivityLogs(d.activityLogs);
+
+            console.log('✅ Data berhasil dimuat langsung dari Turso Cloud Database!');
+            return;
+          }
+        }
+        loadLocalData();
+      })
+      .catch((err) => {
+        console.warn('⚠️ Gagal mengambil dari Turso Cloud Database, menggunakan cache lokal:', err.message);
+        loadLocalData();
+      });
 
     // Lock branch for admin role
     if (currentUser.role === 'admin' && currentUser.branch !== 'ALL') {

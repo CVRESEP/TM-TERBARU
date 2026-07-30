@@ -8,26 +8,6 @@ const DEFAULT_TURSO_URL = 'libsql://tm-baru-cvresep.aws-ap-northeast-1.turso.io'
 const DEFAULT_TURSO_TOKEN = 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3ODU0MzY5NzcsImlkIjoiMDE5ZmI0NGYtN2QwMS03MzhiLTk4MWMtMmZkNjYwMjg4NTU4Iiwia2lkIjoiZ1BNTHB5ZDZHREZraVd2T2dhbTNWMC1ISTVjM21UbW15VUVxMkFqb2tZcyIsInJpZCI6Ijg5MjkyM2I1LWM5ODQtNGQxMi05MDBmLThhODUzZjY3MjlmZiJ9.PAr56n8intzw0UkAtsWX38G_iRkb_zRxQ3NtGnbBMjsIaK0xcLQJyVG9nw7nRyPcw5NapcTERjWbK_oTucJBCQ';
 
 export async function syncDataToTurso(fullData, config = {}) {
-  // Option 1: Synchronize via Cloudflare Pages Function endpoint /api/sync
-  if (typeof window !== 'undefined' && window.location) {
-    try {
-      const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 1500);
-      const res = await fetch('/api/sync', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data: fullData }),
-        signal: controller.signal
-      });
-      clearTimeout(timer);
-      if (res.ok) {
-        const json = await res.json();
-        if (json.success) return { success: true, mode: 'api', message: json.message };
-      }
-    } catch {
-      // API endpoint not available locally or directly
-    }
-  }
 
   function formatTursoUrl(url) {
     if (!url) return '';
@@ -128,21 +108,6 @@ export async function syncDataToTurso(fullData, config = {}) {
 }
 
 export async function fetchDataFromTurso(config = {}) {
-  // Option 1: Fetch via Cloudflare Pages Function API
-  if (typeof window !== 'undefined' && window.location) {
-    try {
-      const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 1500);
-      const res = await fetch('/api/sync', { signal: controller.signal });
-      clearTimeout(timer);
-      if (res.ok) {
-        const json = await res.json();
-        if (json.success && json.data) return { success: true, mode: 'api', data: json.data };
-      }
-    } catch {
-      // API endpoint not available locally or directly
-    }
-  }
 
   function formatTursoUrl(url) {
     if (!url) return '';
