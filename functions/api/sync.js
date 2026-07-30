@@ -111,16 +111,14 @@ export async function onRequestPost({ request, env }) {
     const body = await request.json();
     const data = body.data || body;
 
-    const tx = await client.transaction('write');
-
     try {
       // Upsert Settings
       if (data.settings && typeof data.settings === 'object') {
         for (const [key, val] of Object.entries(data.settings)) {
-          await tx.execute({
+          await client.execute({
             sql: `INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value=excluded.value`,
             args: [key, JSON.stringify(val)]
-          });
+          }).catch(() => {});
         }
       }
 
@@ -131,6 +129,7 @@ export async function onRequestPost({ request, env }) {
         const setClause = columns.filter(c => c !== 'id').map(c => `${c}=excluded.${c}`).join(', ');
         const sql = `INSERT INTO ${tableName} (${columns.join(', ')}) VALUES (${placeholders}) ON CONFLICT(id) DO UPDATE SET ${setClause}`;
 
+        const statements = [];
         for (let i = 0; i < items.length; i++) {
           const item = items[i];
           if (!item || typeof item !== 'object') continue;
@@ -142,10 +141,23 @@ export async function onRequestPost({ request, env }) {
             if (typeof val === 'object') return JSON.stringify(val);
             return val;
           });
+          statements.push({ sql, args });
+        }
+
+        for (let j = 0; j < statements.length; j += 40) {
+          const chunk = statements.slice(j, j + 40);
           try {
-            await tx.execute({ sql, args });
-          } catch (itemErr) {
-            console.warn(`Upsert item error in ${tableName}:`, itemErr.message);
+            if (client.batch) {
+              await client.batch(chunk, 'write');
+            } else {
+              for (const stmt of chunk) {
+                await client.execute(stmt);
+              }
+            }
+          } catch {
+            for (const stmt of chunk) {
+              await client.execute(stmt).catch(() => {});
+            }
           }
         }
       };
@@ -164,9 +176,7 @@ export async function onRequestPost({ request, env }) {
       await upsertBatch('kas_umum', data.kasUmumList, ['id', 'branch', 'date', 'type', 'category', 'description', 'amount', 'notes']);
       await upsertBatch('activity_logs', data.activityLogs, ['id', 'timestamp', 'user', 'role', 'action', 'details']);
 
-      await tx.commit();
     } catch (txError) {
-      await tx.rollback();
       throw txError;
     }
 

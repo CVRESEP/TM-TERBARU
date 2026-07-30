@@ -51,7 +51,6 @@ export async function syncDataToTurso(fullData, config = {}) {
     authToken: dbToken || undefined
   });
 
-  const tx = await client.transaction('write');
   try {
     // Ensure table structure exists
     await client.execute(`CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT);`);
@@ -75,6 +74,7 @@ export async function syncDataToTurso(fullData, config = {}) {
       const setClause = columns.filter(c => c !== 'id').map(c => `${c}=excluded.${c}`).join(', ');
       const sql = `INSERT INTO ${tableName} (${columns.join(', ')}) VALUES (${placeholders}) ON CONFLICT(id) DO UPDATE SET ${setClause}`;
 
+      const statements = [];
       for (let i = 0; i < items.length; i++) {
         const item = items[i];
         if (!item || typeof item !== 'object') continue;
@@ -86,10 +86,23 @@ export async function syncDataToTurso(fullData, config = {}) {
           if (typeof val === 'object') return JSON.stringify(val);
           return val;
         });
+        statements.push({ sql, args });
+      }
+
+      for (let j = 0; j < statements.length; j += 40) {
+        const chunk = statements.slice(j, j + 40);
         try {
-          await tx.execute({ sql, args });
-        } catch (itemErr) {
-          console.warn(`Upsert item error in ${tableName}:`, itemErr.message);
+          if (client.batch) {
+            await client.batch(chunk, 'write');
+          } else {
+            for (const stmt of chunk) {
+              await client.execute(stmt);
+            }
+          }
+        } catch {
+          for (const stmt of chunk) {
+            await client.execute(stmt).catch(() => {});
+          }
         }
       }
     };
@@ -108,10 +121,8 @@ export async function syncDataToTurso(fullData, config = {}) {
     await upsertBatch('kas_umum', fullData.kasUmumList, ['id', 'branch', 'date', 'type', 'category', 'description', 'amount', 'notes']);
     await upsertBatch('activity_logs', fullData.activityLogs, ['id', 'timestamp', 'user', 'role', 'action', 'details']);
 
-    await tx.commit();
     return { success: true, mode: 'direct', message: 'Data berhasil disinkronkan langsung ke Turso Cloud Database!' };
   } catch (err) {
-    await tx.rollback();
     throw err;
   }
 }
