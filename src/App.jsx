@@ -18,6 +18,33 @@ import PrintPreviewModal from './components/PrintPreviewModal';
 import ModalNotification from './components/ModalNotification';
 import { syncDataToTurso, fetchDataFromTurso } from './services/tursoService';
 
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error, errorInfo) {
+    console.error("ErrorBoundary caught an error:", error, errorInfo);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ padding: '30px', backgroundColor: '#fef2f2', border: '1px solid #fecaca', borderRadius: '8px', color: '#991b1b', margin: '20px' }}>
+          <h3 style={{ margin: '0 0 10px 0', fontSize: '16px', fontWeight: 800 }}>⚠️ Terjadi Kesalahan Tampilan pada Modul Ini</h3>
+          <p style={{ fontFamily: 'monospace', fontSize: '13px', backgroundColor: '#ffffff', padding: '12px', borderRadius: '4px', border: '1px solid #fee2e2', color: '#dc2626' }}>
+            {this.state.error && this.state.error.toString()}
+          </p>
+          <button className="btn-primary" onClick={() => this.setState({ hasError: false, error: null })}>Muat Ulang Modul</button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 import {
   DEFAULT_SETTINGS,
   DEFAULT_USERS,
@@ -675,19 +702,21 @@ export default function App() {
           />
         )}
         {activeTab === 'pembayaran_kios' && (
-          <PembayaranKiosView 
-            selectedBranch={selectedBranch}
-            penyaluranList={penyaluranList}
-            kiosks={kiosks}
-            payments={payments}
-            deposits={deposits}
-            onAddPayment={handleAddPayment}
-            onAddDeposit={handleAddDeposit}
-            onDeletePayment={handleDeletePayment}
-            onDeleteDeposit={handleDeleteDeposit}
-            settings={settings}
-            onNavigate={(tab) => setActiveTab(tab)}
-          />
+          <ErrorBoundary>
+            <PembayaranKiosView 
+              selectedBranch={selectedBranch}
+              penyaluranList={penyaluranList}
+              kiosks={kiosks}
+              payments={payments}
+              deposits={deposits}
+              onAddPayment={handleAddPayment}
+              onAddDeposit={handleAddDeposit}
+              onDeletePayment={handleDeletePayment}
+              onDeleteDeposit={handleDeleteDeposit}
+              settings={settings}
+              onNavigate={(tab) => setActiveTab(tab)}
+            />
+          </ErrorBoundary>
         )}
         {activeTab === 'kas_angkutan' && (
           <KasAngkutanView 
