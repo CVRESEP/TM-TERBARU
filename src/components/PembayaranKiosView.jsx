@@ -728,9 +728,48 @@ export default function PembayaranKiosView({
       {activeTabSection === 'riwayat' && (
         <div className="table-container">
           <DateFilterBar filterState={filterStateRiwayat} setFilterState={setFilterStateRiwayat} />
+          
+          {/* BAR PENGHAPUSAN TERPILIH */}
+          {selectedLogIds.length > 0 && (
+            <div style={{ backgroundColor: '#fef2f2', border: '1px solid #fca5a5', padding: '10px 14px', borderRadius: '8px', marginBottom: '12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 4px rgba(220, 38, 38, 0.1)' }}>
+              <span style={{ fontSize: '13px', color: '#991b1b', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                📌 <strong>{selectedLogIds.length}</strong> data riwayat dipilih
+              </span>
+              <button 
+                className="btn-danger" 
+                style={{ fontSize: '12px', padding: '5px 12px', fontWeight: 800, cursor: 'pointer' }}
+                onClick={() => {
+                  if (onDeleteMultiple) {
+                    onDeleteMultiple('payment_deposit', selectedLogIds);
+                    setSelectedLogIds([]);
+                  }
+                }}
+              >
+                🗑️ Hapus {selectedLogIds.length} Data Terpilih
+              </button>
+            </div>
+          )}
+
           <table className="data-table">
             <thead>
               <tr>
+                <th style={{ width: '40px', textAlign: 'center' }}>
+                  <input 
+                    type="checkbox" 
+                    checked={paginatedRiwayat.filter(l => !l.isDirectTrx).length > 0 && paginatedRiwayat.filter(l => !l.isDirectTrx).every(l => selectedLogIds.includes(l.id))}
+                    onChange={() => {
+                      const selectable = paginatedRiwayat.filter(l => !l.isDirectTrx);
+                      const allSelected = selectable.every(l => selectedLogIds.includes(l.id));
+                      if (allSelected) {
+                        setSelectedLogIds(prev => prev.filter(id => !selectable.some(l => l.id === id)));
+                      } else {
+                        const newIds = new Set([...selectedLogIds, ...selectable.map(l => l.id)]);
+                        setSelectedLogIds(Array.from(newIds));
+                      }
+                    }}
+                    title="Pilih Semua di Halaman Ini"
+                  />
+                </th>
                 <th {...thRiwayat('id')} className="sortable-th">ID Log <SortIcon colKey="id" sortKey={sortKeyRiwayat} sortDir={sortDirRiwayat} /></th>
                 <th {...thRiwayat('logCategory')} className="sortable-th">Tipe <SortIcon colKey="logCategory" sortKey={sortKeyRiwayat} sortDir={sortDirRiwayat} /></th>
                 <th {...thRiwayat('date')} className="sortable-th">Tanggal <SortIcon colKey="date" sortKey={sortKeyRiwayat} sortDir={sortDirRiwayat} /></th>
@@ -743,7 +782,20 @@ export default function PembayaranKiosView({
             </thead>
             <tbody>
               {paginatedRiwayat.map(log => (
-                <tr key={log.id}>
+                <tr key={log.id} style={{ backgroundColor: selectedLogIds.includes(log.id) ? '#fef2f2' : undefined }}>
+                  <td style={{ textAlign: 'center' }}>
+                    {!log.isDirectTrx ? (
+                      <input 
+                        type="checkbox" 
+                        checked={selectedLogIds.includes(log.id)}
+                        onChange={() => {
+                          setSelectedLogIds(prev =>
+                            prev.includes(log.id) ? prev.filter(i => i !== log.id) : [...prev, log.id]
+                          );
+                        }}
+                      />
+                    ) : null}
+                  </td>
                   <td style={{ fontFamily: 'monospace', fontWeight: 700 }}>{log.id}</td>
                   <td>
                     <span className={`badge ${log.logCategory?.includes('Pelunasan') ? 'badge-success' : 'badge-info'}`}>

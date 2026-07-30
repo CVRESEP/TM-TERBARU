@@ -641,6 +641,45 @@ export default function App() {
     });
   };
 
+  // Bulk Delete Handler
+  const handleDeleteMultiple = (type, ids = []) => {
+    if (!ids || ids.length === 0) return;
+    const idSet = new Set(ids);
+
+    setConfirmConfig({
+      title: `Konfirmasi Hapus ${ids.length} Data Terpilih`,
+      variant: 'danger',
+      message: `Apakah Anda yakin ingin menghapus ${ids.length} data terpilih? Data yang dihapus akan terhapus secara permanen dari Turso & Sistem.`,
+      confirmText: `Ya, Hapus ${ids.length} Data Terpilih`,
+      onConfirm: () => {
+        let p = penebusanList;
+        let d = doList;
+        let sl = penyaluranList;
+        let pay = payments;
+        let dep = deposits;
+
+        if (type === 'penebusan') {
+          p = p.filter(item => !idSet.has(item.id));
+        } else if (type === 'do') {
+          d = d.filter(item => !idSet.has(item.id));
+        } else if (type === 'penyaluran') {
+          sl = sl.filter(item => !idSet.has(item.id));
+        } else if (type === 'payment_deposit') {
+          pay = pay.filter(item => !idSet.has(item.id));
+          dep = dep.filter(item => !idSet.has(item.id));
+        }
+
+        setPenebusanList(p);
+        setDoList(d);
+        setPenyaluranList(sl);
+        setPayments(pay);
+        setDeposits(dep);
+        saveData(settings, fertilizers, suppliers, kiosks, p, d, sl, pay, dep, drivers);
+        setConfirmConfig(null);
+      }
+    });
+  };
+
   // Kas Angkutan Handlers
   const handleAddKasAngkutan = (item, isEdit = false) => {
     const updated = isEdit 
@@ -738,7 +777,7 @@ export default function App() {
             doList={doList} onAddNew={handleOpenNewTransaction}
             onEdit={(type, item) => handleOpenEditItem(type, item)}
             onOpenNextStage={handleOpenNextStage}
-            onDelete={handleDeleteItem} onOpenPrint={handleOpenPrint} settings={settings}
+            onDelete={handleDeleteItem} onDeleteMultiple={handleDeleteMultiple} onOpenPrint={handleOpenPrint} settings={settings}
             onNavigate={(tab) => setActiveTab(tab)}
           />
         )}
@@ -749,7 +788,7 @@ export default function App() {
             onAddNew={handleOpenNewTransaction}
             onEdit={(type, item) => handleOpenEditItem(type, item)}
             onOpenNextStage={handleOpenNextStage}
-            onDelete={handleDeleteItem} onOpenPrint={handleOpenPrint} settings={settings}
+            onDelete={handleDeleteItem} onDeleteMultiple={handleDeleteMultiple} onOpenPrint={handleOpenPrint} settings={settings}
             onNavigate={(tab) => setActiveTab(tab)}
           />
         )}
@@ -758,7 +797,7 @@ export default function App() {
             selectedBranch={selectedBranch} penyaluranList={penyaluranList}
             kiosks={kiosks} payments={payments} deposits={deposits} onAddNew={handleOpenNewTransaction}
             onEdit={(type, item) => handleOpenEditItem(type, item)}
-            onDelete={handleDeleteItem} onOpenPrint={handleOpenPrint} settings={settings}
+            onDelete={handleDeleteItem} onDeleteMultiple={handleDeleteMultiple} onOpenPrint={handleOpenPrint} settings={settings}
             onNavigate={(tab) => setActiveTab(tab)}
           />
         )}
@@ -774,6 +813,7 @@ export default function App() {
               onAddDeposit={handleAddDeposit}
               onDeletePayment={handleDeletePayment}
               onDeleteDeposit={handleDeleteDeposit}
+              onDeleteMultiple={handleDeleteMultiple}
               settings={settings}
               onNavigate={(tab) => setActiveTab(tab)}
             />
