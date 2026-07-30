@@ -7,16 +7,16 @@ import { usePagination } from '../utils/usePagination';
 import TablePagination from './TablePagination';
 
 export default function PembayaranKiosView({
-  selectedBranch,
-  penyaluranList,
-  kiosks,
+  selectedBranch = 'ALL',
+  penyaluranList = [],
+  kiosks = [],
   payments = [],
   deposits = [],
   onAddPayment,
   onAddDeposit,
   onDeletePayment,
   onDeleteDeposit,
-  settings,
+  settings = {},
   onNavigate
 }) {
   const [activeTabSection, setActiveTabSection] = useState('rekap_kios'); // 'rekap_kios' | 'tagihan_do' | 'riwayat'
@@ -81,7 +81,8 @@ export default function PembayaranKiosView({
   const formatRp = (val) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val || 0);
 
   // Filter items by branch
-  const filteredPenyaluran = penyaluranList.filter(item => {
+  const filteredPenyaluran = (penyaluranList || []).filter(item => {
+    if (!item) return false;
     const matchBranch = selectedBranch === 'ALL' || item.branch === selectedBranch;
     const matchKios = selectedKiosId === 'ALL' || item.kiosId === selectedKiosId;
     const matchSearch = (item.doNo || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -91,16 +92,16 @@ export default function PembayaranKiosView({
     return matchBranch && matchKios && matchSearch && matchDate;
   });
 
-  const filteredKiosks = kiosks.filter(k => selectedBranch === 'ALL' || k.branch === selectedBranch);
+  const filteredKiosks = (kiosks || []).filter(k => k && (selectedBranch === 'ALL' || k.branch === selectedBranch));
 
   // Sort untuk tab tagihan DO
   const { sorted: sortedTagihan, sortKey: sortKeyTagihan, sortDir: sortDirTagihan, thProps: thTagihan } = useSortableTable(filteredPenyaluran, 'date', 'desc');
 
   // Log riwayat gabungan (untuk tab 3)
   const riwayatLogs = useMemo(() => [
-    ...payments.map(p => ({ ...p, logCategory: 'Pelunasan' })),
-    ...penyaluranList
-      .filter(s => (s.paymentStatus === 'Lunas' || Number(s.dpAmount || 0) > 0))
+    ...(payments || []).filter(Boolean).map(p => ({ ...p, logCategory: 'Pelunasan' })),
+    ...(penyaluranList || [])
+      .filter(s => s && (s.paymentStatus === 'Lunas' || Number(s.dpAmount || 0) > 0))
       .map(s => ({
         id: `BAYAR-TRX-${s.id}`,
         logCategory: 'Pelunasan (Transaksi Direct)',
@@ -113,8 +114,8 @@ export default function PembayaranKiosView({
         notes: `Pembayaran langsung saat penyaluran Surat Jalan: ${s.sjNo || s.id}`,
         isDirectTrx: true
       })),
-    ...deposits.map(d => ({ ...d, logCategory: 'Deposit' }))
-  ].filter(log => matchesDateFilter(log.date, filterStateRiwayat)), [payments, penyaluranList, deposits, filterStateRiwayat]);
+    ...(deposits || []).filter(Boolean).map(d => ({ ...d, logCategory: 'Deposit' }))
+  ].filter(log => log && matchesDateFilter(log.date, filterStateRiwayat)), [payments, penyaluranList, deposits, filterStateRiwayat]);
 
   const { sorted: sortedRiwayat, sortKey: sortKeyRiwayat, sortDir: sortDirRiwayat, thProps: thRiwayat } = useSortableTable(riwayatLogs, 'date', 'desc');
 
@@ -807,14 +808,14 @@ export default function PembayaranKiosView({
                   <label className="form-label">Pilih Tagihan / Nomor DO (Tempo):</label>
                   <select className="form-select" value={payPenyaluranId} onChange={(e) => {
                     setPayPenyaluranId(e.target.value);
-                    const p = penyaluranList.find(x => x.id === e.target.value);
+                    const p = (penyaluranList || []).find(x => x && x.id === e.target.value);
                     if (p) {
                       const stats = getPenyaluranPaymentStats(p);
                       setPayAmount(stats.sisa > 0 ? stats.sisa : stats.totalTagihan);
                     }
                   }}>
                     <option value="">-- Bebas / Pelunasan Umum --</option>
-                    {penyaluranList.filter(p => p.kiosId === payKiosId).map(p => {
+                    {(penyaluranList || []).filter(p => p && p.kiosId === payKiosId).map(p => {
                       const stats = getPenyaluranPaymentStats(p);
                       return (
                         <option key={p.id} value={p.id}>
