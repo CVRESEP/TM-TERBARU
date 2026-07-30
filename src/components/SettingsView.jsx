@@ -437,19 +437,25 @@ export default function SettingsView({
                   const file = e.target.files[0];
                   if (!file) return;
                   const reader = new FileReader();
-                  reader.onload = (event) => {
+                  reader.onload = async (event) => {
                     try {
                       const parsed = JSON.parse(event.target.result);
+                      setImportStatus('⏳ Membaca file JSON & mengunggah ke Turso Database Cloud...');
                       if (onImportData) {
                         const success = onImportData(parsed);
                         if (success) {
-                          setImportStatus('Mutasi & Impor data berhasil! Seluruh data transaksi telah diperbarui.');
+                          try {
+                            const res = await syncDataToTurso(parsed, { tursoUrl: tursoDbUrl, tursoToken: tursoDbToken });
+                            setImportStatus(`✅ Mutasi & Impor data berhasil! ${res.message || 'Seluruh data telah tersimpan di browser & Turso Cloud Database.'}`);
+                          } catch (tursoErr) {
+                            setImportStatus(`⚠️ Data tersimpan lokal, namun Sync Turso: ${tursoErr.message}`);
+                          }
                         } else {
-                          setImportStatus('Gagal mengimpor data. Format file JSON tidak valid.');
+                          setImportStatus('❌ Gagal mengimpor data. Format file JSON tidak valid.');
                         }
                       }
                     } catch (err) {
-                      setImportStatus('Gagal membaca file JSON. Pastikan format file benar.');
+                      setImportStatus('❌ Gagal membaca file JSON. Pastikan format file benar.');
                     }
                   };
                   reader.readAsText(file);
