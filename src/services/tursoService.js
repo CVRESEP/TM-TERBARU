@@ -9,23 +9,38 @@ const DEFAULT_TURSO_TOKEN = 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLC
 
 export async function syncDataToTurso(fullData, config = {}) {
   // Option 1: Synchronize via Cloudflare Pages Function endpoint /api/sync
-  try {
-    const res = await fetch('/api/sync', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ data: fullData })
-    });
-    if (res.ok) {
-      const json = await res.json();
-      if (json.success) return { success: true, mode: 'api', message: json.message };
+  if (typeof window !== 'undefined' && window.location) {
+    try {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 1500);
+      const res = await fetch('/api/sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data: fullData }),
+        signal: controller.signal
+      });
+      clearTimeout(timer);
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success) return { success: true, mode: 'api', message: json.message };
+      }
+    } catch {
+      // API endpoint not available locally or directly
     }
-  } catch {
-    // API endpoint not available locally or directly
   }
 
-  // Option 2: Direct connection to Turso using client URL & token if provided
-  const dbUrl = config.tursoUrl || localStorage.getItem('TURSO_DATABASE_URL') || DEFAULT_TURSO_URL;
-  const dbToken = config.tursoToken || localStorage.getItem('TURSO_AUTH_TOKEN') || DEFAULT_TURSO_TOKEN;
+  function formatTursoUrl(url) {
+    if (!url) return '';
+    let formatted = String(url).trim();
+    if (formatted.startsWith('libsql://')) {
+      formatted = formatted.replace('libsql://', 'https://');
+    }
+    return formatted;
+  }
+
+  const getLocal = (key) => (typeof localStorage !== 'undefined' ? localStorage.getItem(key) : null);
+  const dbUrl = formatTursoUrl(config.tursoUrl || getLocal('TURSO_DATABASE_URL') || DEFAULT_TURSO_URL);
+  const dbToken = config.tursoToken || getLocal('TURSO_AUTH_TOKEN') || DEFAULT_TURSO_TOKEN;
 
   if (!dbUrl) {
     throw new Error('TURSO_DATABASE_URL belum dikonfigurasi. Masukkan URL database Turso di menu Pengaturan.');
@@ -60,10 +75,22 @@ export async function syncDataToTurso(fullData, config = {}) {
       const setClause = columns.filter(c => c !== 'id').map(c => `${c}=excluded.${c}`).join(', ');
       const sql = `INSERT INTO ${tableName} (${columns.join(', ')}) VALUES (${placeholders}) ON CONFLICT(id) DO UPDATE SET ${setClause}`;
 
-      for (const item of items) {
-        if (!item.id) continue;
-        const args = columns.map(col => item[col] !== undefined ? item[col] : null);
-        await tx.execute({ sql, args });
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        if (!item || typeof item !== 'object') continue;
+        const itemId = String(item.id || item.doNo || item.penyaluranNo || item.nomorPenyaluran || item.kiosId || item.code || item.username || `${tableName.toUpperCase()}-${Date.now()}-${i}`);
+        const normalizedItem = { ...item, id: itemId };
+        const args = columns.map(col => {
+          const val = normalizedItem[col];
+          if (val === undefined || val === null) return (col === 'id' ? itemId : null);
+          if (typeof val === 'object') return JSON.stringify(val);
+          return val;
+        });
+        try {
+          await tx.execute({ sql, args });
+        } catch (itemErr) {
+          console.warn(`Upsert item error in ${tableName}:`, itemErr.message);
+        }
       }
     };
 
@@ -91,19 +118,33 @@ export async function syncDataToTurso(fullData, config = {}) {
 
 export async function fetchDataFromTurso(config = {}) {
   // Option 1: Fetch via Cloudflare Pages Function API
-  try {
-    const res = await fetch('/api/sync');
-    if (res.ok) {
-      const json = await res.json();
-      if (json.success && json.data) return { success: true, mode: 'api', data: json.data };
+  if (typeof window !== 'undefined' && window.location) {
+    try {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 1500);
+      const res = await fetch('/api/sync', { signal: controller.signal });
+      clearTimeout(timer);
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && json.data) return { success: true, mode: 'api', data: json.data };
+      }
+    } catch {
+      // API endpoint not available locally or directly
     }
-  } catch {
-    // API endpoint not available locally or directly
   }
 
-  // Option 2: Direct query using Turso client
-  const dbUrl = config.tursoUrl || localStorage.getItem('TURSO_DATABASE_URL') || DEFAULT_TURSO_URL;
-  const dbToken = config.tursoToken || localStorage.getItem('TURSO_AUTH_TOKEN') || DEFAULT_TURSO_TOKEN;
+  function formatTursoUrl(url) {
+    if (!url) return '';
+    let formatted = String(url).trim();
+    if (formatted.startsWith('libsql://')) {
+      formatted = formatted.replace('libsql://', 'https://');
+    }
+    return formatted;
+  }
+
+  const getLocal = (key) => (typeof localStorage !== 'undefined' ? localStorage.getItem(key) : null);
+  const dbUrl = formatTursoUrl(config.tursoUrl || getLocal('TURSO_DATABASE_URL') || DEFAULT_TURSO_URL);
+  const dbToken = config.tursoToken || getLocal('TURSO_AUTH_TOKEN') || DEFAULT_TURSO_TOKEN;
 
   if (!dbUrl) {
     throw new Error('TURSO_DATABASE_URL belum dikonfigurasi. Masukkan URL database Turso di menu Pengaturan.');

@@ -131,10 +131,22 @@ export async function onRequestPost({ request, env }) {
         const setClause = columns.filter(c => c !== 'id').map(c => `${c}=excluded.${c}`).join(', ');
         const sql = `INSERT INTO ${tableName} (${columns.join(', ')}) VALUES (${placeholders}) ON CONFLICT(id) DO UPDATE SET ${setClause}`;
 
-        for (const item of items) {
-          if (!item.id) continue;
-          const args = columns.map(col => item[col] !== undefined ? item[col] : null);
-          await tx.execute({ sql, args });
+        for (let i = 0; i < items.length; i++) {
+          const item = items[i];
+          if (!item || typeof item !== 'object') continue;
+          const itemId = String(item.id || item.doNo || item.penyaluranNo || item.nomorPenyaluran || item.kiosId || item.code || item.username || `${tableName.toUpperCase()}-${Date.now()}-${i}`);
+          const normalizedItem = { ...item, id: itemId };
+          const args = columns.map(col => {
+            const val = normalizedItem[col];
+            if (val === undefined || val === null) return (col === 'id' ? itemId : null);
+            if (typeof val === 'object') return JSON.stringify(val);
+            return val;
+          });
+          try {
+            await tx.execute({ sql, args });
+          } catch (itemErr) {
+            console.warn(`Upsert item error in ${tableName}:`, itemErr.message);
+          }
         }
       };
 
