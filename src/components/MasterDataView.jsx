@@ -25,6 +25,10 @@ export default function MasterDataView({
   const [searchDriver, setSearchDriver] = useState('');
   const [historyKios, setHistoryKios] = useState(null);
 
+  const [selectedKiosIds, setSelectedKiosIds] = useState([]);
+  const [selectedDriverIds, setSelectedDriverIds] = useState([]);
+  const [selectedSupplierIds, setSelectedSupplierIds] = useState([]);
+
   const filteredKiosks = kiosks.filter(k => {
     const matchBranch = selectedBranch === 'ALL' || k.branch === selectedBranch;
     const matchSearch = k.name.toLowerCase().includes(searchKios.toLowerCase()) || 
@@ -82,6 +86,26 @@ export default function MasterDataView({
       {/* KIOS TABLE */}
       {activeSection === 'kios' && (
         <div className="table-container">
+          {selectedKiosIds.length > 0 && (
+            <div style={{ backgroundColor: '#fef2f2', border: '1px solid #fca5a5', padding: '10px 14px', borderRadius: '8px', marginBottom: '12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: '13px', color: '#991b1b', fontWeight: 700 }}>
+                📌 <strong>{selectedKiosIds.length}</strong> data kios dipilih
+              </span>
+              <button 
+                className="btn-danger" 
+                style={{ fontSize: '12px', padding: '5px 12px', fontWeight: 800 }}
+                onClick={() => {
+                  if (window.confirm(`Yakin ingin menghapus ${selectedKiosIds.length} kios terpilih?`)) {
+                    selectedKiosIds.forEach(id => onDeleteKios(id));
+                    setSelectedKiosIds([]);
+                  }
+                }}
+              >
+                🗑️ Hapus {selectedKiosIds.length} Kios Terpilih
+              </button>
+            </div>
+          )}
+
           <div className="table-toolbar">
             <input 
               type="text" 
@@ -95,6 +119,20 @@ export default function MasterDataView({
           <table className="data-table">
             <thead>
               <tr>
+                <th style={{ width: '40px', textAlign: 'center' }}>
+                  <input 
+                    type="checkbox" 
+                    checked={filteredKiosks.length > 0 && filteredKiosks.every(k => selectedKiosIds.includes(k.id))}
+                    onChange={() => {
+                      if (filteredKiosks.every(k => selectedKiosIds.includes(k.id))) {
+                        setSelectedKiosIds([]);
+                      } else {
+                        setSelectedKiosIds(filteredKiosks.map(k => k.id));
+                      }
+                    }}
+                    title="Pilih Semua Kios"
+                  />
+                </th>
                 <th>Kode Kios</th>
                 <th>Nama Kios Pengecer</th>
                 <th>Pemilik</th>
@@ -106,7 +144,16 @@ export default function MasterDataView({
             </thead>
             <tbody>
               {filteredKiosks.map(k => (
-                <tr key={k.id}>
+                <tr key={k.id} style={{ backgroundColor: selectedKiosIds.includes(k.id) ? '#fef2f2' : undefined }}>
+                  <td style={{ textAlign: 'center' }}>
+                    <input 
+                      type="checkbox" 
+                      checked={selectedKiosIds.includes(k.id)}
+                      onChange={() => {
+                        setSelectedKiosIds(prev => prev.includes(k.id) ? prev.filter(i => i !== k.id) : [...prev, k.id]);
+                      }}
+                    />
+                  </td>
                   <td style={{ fontFamily: 'monospace', fontWeight: 700 }}>{k.code || k.id}</td>
                   <td>
                     <span
@@ -142,7 +189,7 @@ export default function MasterDataView({
               ))}
               {filteredKiosks.length === 0 && (
                 <tr>
-                  <td colSpan={7} style={{ textAlign: 'center', padding: '20px', color: '#6b7280' }}>
+                  <td colSpan={8} style={{ textAlign: 'center', padding: '20px', color: '#6b7280' }}>
                     Belum ada kios. Klik "+ Tambah Kios" untuk menambah.
                   </td>
                 </tr>
@@ -165,6 +212,26 @@ export default function MasterDataView({
       {/* DRIVER TABLE */}
       {activeSection === 'driver' && (
         <div className="table-container">
+          {selectedDriverIds.length > 0 && (
+            <div style={{ backgroundColor: '#fef2f2', border: '1px solid #fca5a5', padding: '10px 14px', borderRadius: '8px', marginBottom: '12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: '13px', color: '#991b1b', fontWeight: 700 }}>
+                📌 <strong>{selectedDriverIds.length}</strong> data supir dipilih
+              </span>
+              <button 
+                className="btn-danger" 
+                style={{ fontSize: '12px', padding: '5px 12px', fontWeight: 800 }}
+                onClick={() => {
+                  if (window.confirm(`Yakin ingin menghapus ${selectedDriverIds.length} supir terpilih?`)) {
+                    selectedDriverIds.forEach(id => onDeleteDriver(id));
+                    setSelectedDriverIds([]);
+                  }
+                }}
+              >
+                🗑️ Hapus {selectedDriverIds.length} Supir Terpilih
+              </button>
+            </div>
+          )}
+
           <div className="table-toolbar">
             <input 
               type="text" 
@@ -178,6 +245,20 @@ export default function MasterDataView({
           <table className="data-table">
             <thead>
               <tr>
+                <th style={{ width: '40px', textAlign: 'center' }}>
+                  <input 
+                    type="checkbox" 
+                    checked={filteredDrivers.length > 0 && filteredDrivers.every(d => selectedDriverIds.includes(d.id))}
+                    onChange={() => {
+                      if (filteredDrivers.every(d => selectedDriverIds.includes(d.id))) {
+                        setSelectedDriverIds([]);
+                      } else {
+                        setSelectedDriverIds(filteredDrivers.map(d => d.id));
+                      }
+                    }}
+                    title="Pilih Semua Supir"
+                  />
+                </th>
                 <th>ID Supir</th>
                 <th>Nama Supir</th>
                 <th>Plat Nomor Truk</th>
@@ -188,7 +269,16 @@ export default function MasterDataView({
             </thead>
             <tbody>
               {filteredDrivers.map(d => (
-                <tr key={d.id}>
+                <tr key={d.id} style={{ backgroundColor: selectedDriverIds.includes(d.id) ? '#fef2f2' : undefined }}>
+                  <td style={{ textAlign: 'center' }}>
+                    <input 
+                      type="checkbox" 
+                      checked={selectedDriverIds.includes(d.id)}
+                      onChange={() => {
+                        setSelectedDriverIds(prev => prev.includes(d.id) ? prev.filter(i => i !== d.id) : [...prev, d.id]);
+                      }}
+                    />
+                  </td>
                   <td style={{ fontFamily: 'monospace', fontWeight: 700 }}>{d.id}</td>
                   <td style={{ fontWeight: 700 }}>{d.name}</td>
                   <td><span className="badge badge-info">{d.vehiclePlate}</span></td>
@@ -208,7 +298,7 @@ export default function MasterDataView({
               ))}
               {filteredDrivers.length === 0 && (
                 <tr>
-                  <td colSpan={6} style={{ textAlign: 'center', padding: '20px', color: '#6b7280' }}>
+                  <td colSpan={7} style={{ textAlign: 'center', padding: '20px', color: '#6b7280' }}>
                     Belum ada data supir. Klik "+ Tambah Supir" untuk menambah.
                   </td>
                 </tr>
@@ -221,6 +311,26 @@ export default function MasterDataView({
       {/* SUPPLIER TABLE */}
       {activeSection === 'supplier' && (
         <div className="table-container">
+          {selectedSupplierIds.length > 0 && (
+            <div style={{ backgroundColor: '#fef2f2', border: '1px solid #fca5a5', padding: '10px 14px', borderRadius: '8px', marginBottom: '12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: '13px', color: '#991b1b', fontWeight: 700 }}>
+                📌 <strong>{selectedSupplierIds.length}</strong> data supplier dipilih
+              </span>
+              <button 
+                className="btn-danger" 
+                style={{ fontSize: '12px', padding: '5px 12px', fontWeight: 800 }}
+                onClick={() => {
+                  if (window.confirm(`Yakin ingin menghapus ${selectedSupplierIds.length} supplier terpilih?`)) {
+                    selectedSupplierIds.forEach(id => onDeleteSupplier(id));
+                    setSelectedSupplierIds([]);
+                  }
+                }}
+              >
+                🗑️ Hapus {selectedSupplierIds.length} Supplier Terpilih
+              </button>
+            </div>
+          )}
+
           <div className="table-toolbar">
             <input 
               type="text" 
@@ -234,6 +344,20 @@ export default function MasterDataView({
           <table className="data-table">
             <thead>
               <tr>
+                <th style={{ width: '40px', textAlign: 'center' }}>
+                  <input 
+                    type="checkbox" 
+                    checked={filteredSuppliers.length > 0 && filteredSuppliers.every(s => selectedSupplierIds.includes(s.id))}
+                    onChange={() => {
+                      if (filteredSuppliers.every(s => selectedSupplierIds.includes(s.id))) {
+                        setSelectedSupplierIds([]);
+                      } else {
+                        setSelectedSupplierIds(filteredSuppliers.map(s => s.id));
+                      }
+                    }}
+                    title="Pilih Semua Supplier"
+                  />
+                </th>
                 <th>ID Supplier</th>
                 <th>Nama Produsen / Supplier</th>
                 <th>Kontak / Telepon</th>
@@ -243,7 +367,16 @@ export default function MasterDataView({
             </thead>
             <tbody>
               {filteredSuppliers.map(s => (
-                <tr key={s.id}>
+                <tr key={s.id} style={{ backgroundColor: selectedSupplierIds.includes(s.id) ? '#fef2f2' : undefined }}>
+                  <td style={{ textAlign: 'center' }}>
+                    <input 
+                      type="checkbox" 
+                      checked={selectedSupplierIds.includes(s.id)}
+                      onChange={() => {
+                        setSelectedSupplierIds(prev => prev.includes(s.id) ? prev.filter(i => i !== s.id) : [...prev, s.id]);
+                      }}
+                    />
+                  </td>
                   <td style={{ fontFamily: 'monospace', fontWeight: 700 }}>{s.id}</td>
                   <td style={{ fontWeight: 700 }}>{s.name}</td>
                   <td>{s.contact}</td>
@@ -258,7 +391,7 @@ export default function MasterDataView({
               ))}
               {filteredSuppliers.length === 0 && (
                 <tr>
-                  <td colSpan={5} style={{ textAlign: 'center', padding: '20px', color: '#6b7280' }}>
+                  <td colSpan={6} style={{ textAlign: 'center', padding: '20px', color: '#6b7280' }}>
                     Belum ada supplier. Klik "+ Tambah Supplier" untuk menambah.
                   </td>
                 </tr>

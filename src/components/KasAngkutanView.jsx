@@ -28,6 +28,7 @@ export default function KasAngkutanView({
   onSaveSettings
 }) {
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedIds, setSelectedIds] = useState([]);
   const [filterState, setFilterState] = useState({
     mode: 'all', dailyDate: '', startDate: '', endDate: '', month: '',
     year: new Date().getFullYear().toString()
@@ -273,6 +274,27 @@ export default function KasAngkutanView({
       <div className="table-container">
         <DateFilterBar filterState={filterState} setFilterState={setFilterState} />
         
+        {/* BAR PENGHAPUSAN TERPILIH */}
+        {selectedIds.length > 0 && (
+          <div style={{ backgroundColor: '#fef2f2', border: '1px solid #fca5a5', padding: '10px 14px', borderRadius: '8px', marginBottom: '12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <span style={{ fontSize: '13px', color: '#991b1b', fontWeight: 700 }}>
+              📌 <strong>{selectedIds.length}</strong> data kas angkutan dipilih
+            </span>
+            <button 
+              className="btn-danger" 
+              style={{ fontSize: '12px', padding: '5px 12px', fontWeight: 800 }}
+              onClick={() => {
+                if (window.confirm(`Yakin ingin menghapus ${selectedIds.length} data kas angkutan terpilih?`)) {
+                  selectedIds.forEach(id => onDeleteKasAngkutan(id));
+                  setSelectedIds([]);
+                }
+              }}
+            >
+              🗑️ Hapus {selectedIds.length} Data Terpilih
+            </button>
+          </div>
+        )}
+
         <div className="table-toolbar">
           <input 
             type="text" 
@@ -287,6 +309,22 @@ export default function KasAngkutanView({
         <table className="data-table">
           <thead>
             <tr>
+              <th style={{ width: '40px', textAlign: 'center' }}>
+                <input 
+                  type="checkbox" 
+                  checked={paginatedData.length > 0 && paginatedData.every(item => selectedIds.includes(item.id))}
+                  onChange={() => {
+                    const allSelected = paginatedData.every(item => selectedIds.includes(item.id));
+                    if (allSelected) {
+                      setSelectedIds(prev => prev.filter(id => !paginatedData.some(item => item.id === id)));
+                    } else {
+                      const newIds = new Set([...selectedIds, ...paginatedData.map(item => item.id)]);
+                      setSelectedIds(Array.from(newIds));
+                    }
+                  }}
+                  title="Pilih Semua di Halaman Ini"
+                />
+              </th>
               <th {...thProps('kabupaten')} className="sortable-th text-center">Kabupaten <SortIcon colKey="kabupaten" sortKey={sortKey} sortDir={sortDir} /></th>
               <th {...thProps('date')} className="sortable-th text-center">Tanggal <SortIcon colKey="date" sortKey={sortKey} sortDir={sortDir} /></th>
               <th {...thProps('doNo')} className="sortable-th" style={{ backgroundColor: '#dcfce7' }}>No. DO <SortIcon colKey="doNo" sortKey={sortKey} sortDir={sortDir} /></th>
@@ -300,7 +338,16 @@ export default function KasAngkutanView({
           </thead>
           <tbody>
             {paginatedData.map(item => (
-              <tr key={item.id}>
+              <tr key={item.id} style={{ backgroundColor: selectedIds.includes(item.id) ? '#fef2f2' : undefined }}>
+                <td style={{ textAlign: 'center' }}>
+                  <input 
+                    type="checkbox" 
+                    checked={selectedIds.includes(item.id)}
+                    onChange={() => {
+                      setSelectedIds(prev => prev.includes(item.id) ? prev.filter(i => i !== item.id) : [...prev, item.id]);
+                    }}
+                  />
+                </td>
                 <td className="text-center">
                   <span className={`badge ${(item.kabupaten || item.branch || '').toUpperCase() === 'MAGETAN' ? 'badge-branch-magetan' : 'badge-branch-sragen'}`}>
                     {item.kabupaten || item.branch}

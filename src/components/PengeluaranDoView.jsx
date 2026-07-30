@@ -6,9 +6,10 @@ import { usePagination } from '../utils/usePagination';
 import TablePagination from './TablePagination';
 
 export default function PengeluaranDoView({ 
-  selectedBranch, doList, penebusanList, penyaluranList = [], onAddNew, onEdit, onOpenNextStage, onDelete, onOpenPrint, settings, onNavigate
+  selectedBranch, doList, penebusanList, penyaluranList = [], onAddNew, onEdit, onOpenNextStage, onDelete, onDeleteMultiple, onOpenPrint, settings, onNavigate
 }) {
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedIds, setSelectedIds] = useState([]);
   const [filterState, setFilterState] = useState({
     mode: 'all', dailyDate: '', startDate: '', endDate: '', month: '',
     year: new Date().getFullYear().toString()
@@ -52,6 +53,28 @@ export default function PengeluaranDoView({
 
       <div className="table-container">
         <DateFilterBar filterState={filterState} setFilterState={setFilterState} />
+        
+        {/* BAR PENGHAPUSAN TERPILIH */}
+        {selectedIds.length > 0 && (
+          <div style={{ backgroundColor: '#fef2f2', border: '1px solid #fca5a5', padding: '10px 14px', borderRadius: '8px', marginBottom: '12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <span style={{ fontSize: '13px', color: '#991b1b', fontWeight: 700 }}>
+              📌 <strong>{selectedIds.length}</strong> data DO dipilih
+            </span>
+            <button 
+              className="btn-danger" 
+              style={{ fontSize: '12px', padding: '5px 12px', fontWeight: 800 }}
+              onClick={() => {
+                if (onDeleteMultiple) {
+                  onDeleteMultiple('do', selectedIds);
+                  setSelectedIds([]);
+                }
+              }}
+            >
+              🗑️ Hapus {selectedIds.length} Data Terpilih
+            </button>
+          </div>
+        )}
+
         <div className="table-toolbar">
           <input type="text" placeholder="Cari No. DO / Supir / Pupuk..." className="search-input"
             value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
@@ -60,6 +83,22 @@ export default function PengeluaranDoView({
         <table className="data-table">
           <thead>
             <tr>
+              <th style={{ width: '40px', textAlign: 'center' }}>
+                <input 
+                  type="checkbox" 
+                  checked={paginatedData.length > 0 && paginatedData.every(item => selectedIds.includes(item.id))}
+                  onChange={() => {
+                    const allSelected = paginatedData.every(item => selectedIds.includes(item.id));
+                    if (allSelected) {
+                      setSelectedIds(prev => prev.filter(id => !paginatedData.some(item => item.id === id)));
+                    } else {
+                      const newIds = new Set([...selectedIds, ...paginatedData.map(item => item.id)]);
+                      setSelectedIds(Array.from(newIds));
+                    }
+                  }}
+                  title="Pilih Semua di Halaman Ini"
+                />
+              </th>
               <th {...thProps('branch')} className="sortable-th text-center" style={{ width: '90px' }}>Cabang <SortIcon colKey="branch" sortKey={sortKey} sortDir={sortDir} /></th>
               <th {...thProps('doNo')} className="sortable-th" style={{ backgroundColor: '#dcfce7' }}>Nomor DO <SortIcon colKey="doNo" sortKey={sortKey} sortDir={sortDir} /></th>
               <th {...thProps('date')} className="sortable-th text-center" style={{ width: '100px' }}>Tanggal <SortIcon colKey="date" sortKey={sortKey} sortDir={sortDir} /></th>
@@ -78,7 +117,16 @@ export default function PengeluaranDoView({
               const sisaStokDO = Math.max(0, Number(item.qtyTon || item.qty || 0) - salurDariDO);
 
               return (
-                <tr key={item.id}>
+                <tr key={item.id} style={{ backgroundColor: selectedIds.includes(item.id) ? '#fef2f2' : undefined }}>
+                  <td style={{ textAlign: 'center' }}>
+                    <input 
+                      type="checkbox" 
+                      checked={selectedIds.includes(item.id)}
+                      onChange={() => {
+                        setSelectedIds(prev => prev.includes(item.id) ? prev.filter(i => i !== item.id) : [...prev, item.id]);
+                      }}
+                    />
+                  </td>
                   <td className="text-center"><span className={`badge ${item.branch === (settings.branch1Name || 'Magetan') ? 'badge-branch-magetan' : 'badge-branch-sragen'}`}>{item.branch}</span></td>
                   <td style={{ fontWeight: 800, color: '#15803d', fontFamily: 'monospace' }}>{item.doNo || item.penebusanId || item.id}</td>
                   <td className="text-center">{formatDateDisplay(item.date)}</td>

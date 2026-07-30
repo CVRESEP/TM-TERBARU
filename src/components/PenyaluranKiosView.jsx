@@ -7,10 +7,11 @@ import { usePagination } from '../utils/usePagination';
 import TablePagination from './TablePagination';
 
 export default function PenyaluranKiosView({ 
-  selectedBranch, penyaluranList, kiosks, payments = [], deposits = [], onAddNew, onEdit, onDelete, onOpenPrint, settings, onNavigate
+  selectedBranch, penyaluranList, kiosks, payments = [], deposits = [], onAddNew, onEdit, onDelete, onDeleteMultiple, onOpenPrint, settings, onNavigate
 }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
+  const [selectedIds, setSelectedIds] = useState([]);
   const [historyKios, setHistoryKios] = useState(null);
   const [filterState, setFilterState] = useState({
     mode: 'all', dailyDate: '', startDate: '', endDate: '', month: '',
@@ -68,6 +69,28 @@ export default function PenyaluranKiosView({
 
       <div className="table-container">
         <DateFilterBar filterState={filterState} setFilterState={setFilterState} />
+        
+        {/* BAR PENGHAPUSAN TERPILIH */}
+        {selectedIds.length > 0 && (
+          <div style={{ backgroundColor: '#fef2f2', border: '1px solid #fca5a5', padding: '10px 14px', borderRadius: '8px', marginBottom: '12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <span style={{ fontSize: '13px', color: '#991b1b', fontWeight: 700 }}>
+              📌 <strong>{selectedIds.length}</strong> data penyaluran dipilih
+            </span>
+            <button 
+              className="btn-danger" 
+              style={{ fontSize: '12px', padding: '5px 12px', fontWeight: 800 }}
+              onClick={() => {
+                if (onDeleteMultiple) {
+                  onDeleteMultiple('penyaluran', selectedIds);
+                  setSelectedIds([]);
+                }
+              }}
+            >
+              🗑️ Hapus {selectedIds.length} Data Terpilih
+            </button>
+          </div>
+        )}
+
         <div className="table-toolbar">
           <div style={{ display: 'flex', gap: '8px' }}>
             <input type="text" placeholder="Cari No. DO / No. Penyaluran / Kios / Pupuk..." className="search-input"
@@ -84,6 +107,22 @@ export default function PenyaluranKiosView({
         <table className="data-table">
           <thead>
             <tr>
+              <th style={{ width: '40px', textAlign: 'center' }}>
+                <input 
+                  type="checkbox" 
+                  checked={paginatedData.length > 0 && paginatedData.every(item => selectedIds.includes(item.id))}
+                  onChange={() => {
+                    const allSelected = paginatedData.every(item => selectedIds.includes(item.id));
+                    if (allSelected) {
+                      setSelectedIds(prev => prev.filter(id => !paginatedData.some(item => item.id === id)));
+                    } else {
+                      const newIds = new Set([...selectedIds, ...paginatedData.map(item => item.id)]);
+                      setSelectedIds(Array.from(newIds));
+                    }
+                  }}
+                  title="Pilih Semua di Halaman Ini"
+                />
+              </th>
               <th {...thProps('branch')} className="sortable-th text-center" style={{ width: '90px' }}>Cabang <SortIcon colKey="branch" sortKey={sortKey} sortDir={sortDir} /></th>
               <th {...thProps('doNo')} className="sortable-th" style={{ backgroundColor: '#dcfce7' }}>Nomor DO <SortIcon colKey="doNo" sortKey={sortKey} sortDir={sortDir} /></th>
               <th {...thProps('penyaluranNo')} className="sortable-th" style={{ backgroundColor: '#eff6ff' }}>No. Penyaluran <SortIcon colKey="penyaluranNo" sortKey={sortKey} sortDir={sortDir} /></th>
@@ -118,7 +157,16 @@ export default function PenyaluranKiosView({
               const pNo = item.penyaluranNo || item.nomorPenyaluran || (item.doNo ? `${item.doNo}-01` : '-');
 
               return (
-                <tr key={item.id}>
+                <tr key={item.id} style={{ backgroundColor: selectedIds.includes(item.id) ? '#fef2f2' : undefined }}>
+                  <td style={{ textAlign: 'center' }}>
+                    <input 
+                      type="checkbox" 
+                      checked={selectedIds.includes(item.id)}
+                      onChange={() => {
+                        setSelectedIds(prev => prev.includes(item.id) ? prev.filter(i => i !== item.id) : [...prev, item.id]);
+                      }}
+                    />
+                  </td>
                   <td className="text-center"><span className={`badge ${item.branch === (settings.branch1Name || 'Magetan') ? 'badge-branch-magetan' : 'badge-branch-sragen'}`}>{item.branch}</span></td>
                   <td style={{ fontWeight: 800, color: '#15803d', fontFamily: 'monospace' }}>{item.doNo || item.doRefId || item.id}</td>
                   <td style={{ fontWeight: 800, color: '#1d4ed8', fontFamily: 'monospace' }}>{pNo}</td>
