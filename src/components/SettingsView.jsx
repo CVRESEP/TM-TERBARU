@@ -48,9 +48,12 @@ export default function SettingsView({
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [importStatus, setImportStatus] = useState('');
 
+  const DEFAULT_TURSO_URL = 'libsql://tm-baru-cvresep.aws-ap-northeast-1.turso.io';
+  const DEFAULT_TURSO_TOKEN = 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3ODU0MzY5NzcsImlkIjoiMDE5ZmI0NGYtN2QwMS03MzhiLTk4MWMtMmZkNjYwMjg4NTU4Iiwia2lkIjoiZ1BNTHB5ZDZHREZraVd2T2dhbTNWMC1ISTVjM21UbW15VUVxMkFqb2tZcyIsInJpZCI6Ijg5MjkyM2I1LWM5ODQtNGQxMi05MDBmLThhODUzZjY3MjlmZiJ9.PAr56n8intzw0UkAtsWX38G_iRkb_zRxQ3NtGnbBMjsIaK0xcLQJyVG9nw7nRyPcw5NapcTERjWbK_oTucJBCQ';
+
   // Turso Database states
-  const [tursoDbUrl, setTursoDbUrl] = useState(() => localStorage.getItem('TURSO_DATABASE_URL') || '');
-  const [tursoDbToken, setTursoDbToken] = useState(() => localStorage.getItem('TURSO_AUTH_TOKEN') || '');
+  const [tursoDbUrl, setTursoDbUrl] = useState(() => localStorage.getItem('TURSO_DATABASE_URL') || DEFAULT_TURSO_URL);
+  const [tursoDbToken, setTursoDbToken] = useState(() => localStorage.getItem('TURSO_AUTH_TOKEN') || DEFAULT_TURSO_TOKEN);
   const [tursoSyncStatus, setTursoSyncStatus] = useState('');
 
   // User management states
