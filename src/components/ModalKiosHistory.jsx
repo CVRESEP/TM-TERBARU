@@ -16,17 +16,41 @@ export default function ModalKiosHistory({
 
   const formatRp = (val) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val || 0);
 
+  // Helper pencocokan kios fleksibel (support ID, Name, & Code dari data legacy)
+  const matchKios = (item) => {
+    if (!item) return false;
+    const kId = String(kios.id || '').toLowerCase().trim();
+    const kName = String(kios.name || '').toLowerCase().trim();
+    const kCode = String(kios.code || '').toLowerCase().trim();
+
+    const itemKId = String(item.kiosId || '').toLowerCase().trim();
+    const itemKName = String(item.kiosName || '').toLowerCase().trim();
+
+    return (
+      (itemKId && itemKId === kId) ||
+      (itemKName && itemKName === kName) ||
+      (itemKId && itemKId === kName) ||
+      (itemKId && itemKId === kCode) ||
+      (itemKName && itemKName === kId)
+    );
+  };
+
   // Filter transactions for this specific kiosk
-  const kiosSalur = (penyaluranList || []).filter(p => p && p.kiosId === kios.id);
-  const kiosPayments = (payments || []).filter(pm => pm && pm.kiosId === kios.id);
-  const kiosDeposits = (deposits || []).filter(d => d && d.kiosId === kios.id);
+  const kiosSalur = (penyaluranList || []).filter(p => matchKios(p));
+  const kiosPayments = (payments || []).filter(pm => matchKios(pm));
+  const kiosDeposits = (deposits || []).filter(d => matchKios(d));
 
   // Financial calculations
   const totalTagihan = kiosSalur.reduce((s, p) => s + Number(p?.totalAmount || 0), 0);
   
   const getPenyaluranPaymentStats = (pItem) => {
     if (!pItem) return { total: 0, terbayar: 0, sisa: 0 };
-    const itemPayments = kiosPayments.filter(pm => pm && pm.penyaluranId === pItem.id);
+    const itemPayments = (payments || []).filter(pm => {
+      if (!pm) return false;
+      const matchDirect = pm.penyaluranId && (pm.penyaluranId === pItem.id || pm.penyaluranId === pItem.penyaluranNo || pm.penyaluranId === pItem.nomorPenyaluran);
+      const matchDoKios = pm.doNo && pItem.doNo && pm.doNo === pItem.doNo && matchKios(pm);
+      return matchDirect || matchDoKios;
+    });
     const paidSum = itemPayments.reduce((s, pm) => s + Number(pm?.amount || 0), 0);
     const initialDp = Number(pItem.dpAmount || 0);
     const total = Number(pItem.totalAmount || 0);
@@ -43,9 +67,9 @@ export default function ModalKiosHistory({
 
   // Combine payments & deposits for audit trail
   const combinedHistory = [
-    ...kiosPayments.map(p => ({ ...p, logType: 'Pelunasan' })),
-    ...kiosDeposits.map(d => ({ ...d, logType: 'Deposit' }))
-  ].sort((a, b) => new Date(b.date) - new Date(a.date));
+    ...kiosPayments.map(p => ({ ...p, logType: 'Pelunasan', method: p.method || p.paymentMethod })),
+    ...kiosDeposits.map(d => ({ ...d, logType: 'Deposit', method: d.method || d.paymentMethod }))
+  ].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
 
   return (
     <div className="modal-overlay">
