@@ -712,8 +712,8 @@ export default function PembayaranKiosView({
                 <tr key={log.id}>
                   <td style={{ fontFamily: 'monospace', fontWeight: 700 }}>{log.id}</td>
                   <td>
-                    <span className={`badge ${log.logCategory.includes('Pelunasan') ? 'badge-success' : 'badge-info'}`}>
-                      {log.logCategory}
+                    <span className={`badge ${log.logCategory?.includes('Pelunasan') ? 'badge-success' : 'badge-info'}`}>
+                      {log.logCategory || 'Log'}
                     </span>
                   </td>
                   <td>{formatDateDisplay(log.date)}</td>
@@ -733,7 +733,7 @@ export default function PembayaranKiosView({
                     </span>
                   </td>
                   <td style={{ fontWeight: 800, color: '#15803d', fontFamily: 'monospace' }}>{log.doNo || '-'}</td>
-                  <td style={{ fontWeight: 800, color: log.logCategory.includes('Pelunasan') ? '#15803d' : '#1d4ed8' }}>
+                  <td style={{ fontWeight: 800, color: log.logCategory?.includes('Pelunasan') ? '#15803d' : '#1d4ed8' }}>
                     {formatRp(log.amount)}
                   </td>
                   <td style={{ fontSize: '12px' }}>

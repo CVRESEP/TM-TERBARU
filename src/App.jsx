@@ -575,6 +575,28 @@ export default function App() {
         const updatedPay = payments.filter(p => p.id !== id);
         setPayments(updatedPay);
         saveData(settings, fertilizers, suppliers, kiosks, penebusanList, doList, penyaluranList, updatedPay, deposits, drivers);
+      setConfirmConfig(null);
+      }
+    });
+  };
+
+  // Deposit Handlers
+  const handleAddDeposit = (newDep) => {
+    const updatedDep = [newDep, ...deposits];
+    setDeposits(updatedDep);
+    saveData(settings, fertilizers, suppliers, kiosks, penebusanList, doList, penyaluranList, payments, updatedDep, drivers);
+  };
+
+  const handleDeleteDeposit = (id) => {
+    setConfirmConfig({
+      title: 'Konfirmasi Hapus Deposit',
+      variant: 'danger',
+      message: 'Apakah Anda yakin ingin menghapus catatan deposit ini?',
+      confirmText: 'Ya, Hapus Deposit',
+      onConfirm: () => {
+        const updatedDep = deposits.filter(d => d.id !== id);
+        setDeposits(updatedDep);
+        saveData(settings, fertilizers, suppliers, kiosks, penebusanList, doList, penyaluranList, payments, updatedDep, drivers);
         setConfirmConfig(null);
       }
     });
