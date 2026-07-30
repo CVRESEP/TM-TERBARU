@@ -1,0 +1,126 @@
+import React, { useState } from 'react';
+import { formatDateDisplay } from '../utils/currency';
+import DateFilterBar, { matchesDateFilter } from './DateFilterBar';
+import { useSortableTable, SortIcon } from '../utils/useSortableTable';
+import { usePagination } from '../utils/usePagination';
+import TablePagination from './TablePagination';
+export default function PenebusanView({ 
+  selectedBranch, penebusanList, doList, onAddNew, onEdit, onOpenNextStage, onDelete, onOpenPrint, settings, onNavigate
+}) {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterState, setFilterState] = useState({
+    mode: 'all', dailyDate: '', startDate: '', endDate: '', month: '',
+    year: new Date().getFullYear().toString()
+  });
+
+  const filtered = penebusanList.filter(item => {
+    const matchBranch = selectedBranch === 'ALL' || item.branch === selectedBranch;
+    const matchSearch = (item.doNo || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        (item.supplierName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        (item.fertilizerName || '').toLowerCase().includes(searchTerm.toLowerCase());
+    const matchDate = matchesDateFilter(item.date, filterState);
+    return matchBranch && matchSearch && matchDate;
+  });
+
+  const formatRp = (v) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(v);
+  const { sorted, sortKey, sortDir, thProps } = useSortableTable(filtered, 'date', 'desc');
+  const { currentPage, setCurrentPage, totalPages, paginatedData, itemsPerPage, setItemsPerPage } = usePagination(sorted, 10);
+
+  return (
+    <div>
+      <div className="page-header-box">
+        <div>
+          <h2 className="page-title">{settings.stage1Name || '1. Penebusan Supplier'}</h2>
+          <p className="page-desc">Pencatatan penebusan kuota pupuk. <strong>Nomor DO</strong> diinput di tahap ini sebagai kunci seluruh alur transaksi.</p>
+        </div>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+          {onNavigate && (
+            <>
+              <button className="btn-secondary" onClick={() => onNavigate('dashboard')}>
+                ← Dashboard
+              </button>
+              <button className="btn-primary" style={{ backgroundColor: '#b45309' }} onClick={() => onNavigate('pengeluaran_do')}>
+                Lanjut ke Pengeluaran DO →
+              </button>
+            </>
+          )}
+          <button className="btn-primary" onClick={() => onAddNew('penebusan')}>+ Input Penebusan Baru</button>
+        </div>
+      </div>
+
+      <div className="table-container">
+        <DateFilterBar filterState={filterState} setFilterState={setFilterState} />
+        <div className="table-toolbar">
+          <input type="text" placeholder="Cari No. DO / Supplier / Pupuk..." className="search-input"
+            value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+          <span style={{ fontSize: '13px', color: '#6b7280' }}>Total: <strong>{filtered.length} Penebusan</strong></span>
+        </div>
+        <table className="data-table">
+          <thead>
+            <tr>
+              <th {...thProps('branch')} className="sortable-th text-center" style={{ width: '90px' }}>Cabang <SortIcon colKey="branch" sortKey={sortKey} sortDir={sortDir} /></th>
+              <th {...thProps('doNo')} className="sortable-th" style={{ backgroundColor: '#dcfce7' }}>Nomor DO <SortIcon colKey="doNo" sortKey={sortKey} sortDir={sortDir} /></th>
+              <th {...thProps('date')} className="sortable-th text-center" style={{ width: '100px' }}>Tanggal <SortIcon colKey="date" sortKey={sortKey} sortDir={sortDir} /></th>
+              <th {...thProps('supplierName')} className="sortable-th" >Supplier <SortIcon colKey="supplierName" sortKey={sortKey} sortDir={sortDir} /></th>
+              <th {...thProps('fertilizerName')} className="sortable-th" >Jenis Pupuk <SortIcon colKey="fertilizerName" sortKey={sortKey} sortDir={sortDir} /></th>
+              <th {...thProps('qtyTon')} className="sortable-th text-right" >Qty Penebusan (Ton) <SortIcon colKey="qtyTon" sortKey={sortKey} sortDir={sortDir} /></th>
+              <th className="text-right" >Sudah Di-DO (Ton)</th>
+              <th className="text-right" >Sisa Kuota (Ton)</th>
+              <th {...thProps('totalAmount')} className="sortable-th text-right" >Total Biaya <SortIcon colKey="totalAmount" sortKey={sortKey} sortDir={sortDir} /></th>
+              <th className="text-center" >Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            {paginatedData.map((item) => {
+              const doneTon = doList.filter(d => d.penebusanId === item.id || d.doNo === item.doNo).reduce((s, d) => s + Number(d.qtyTon || d.qty || 0), 0);
+              const sisaTon = Math.max(0, Number(item.qtyTon || item.qty || 0) - doneTon);
+              return (
+                <tr key={item.id}>
+                  <td className="text-center"><span className={`badge ${item.branch === (settings.branch1Name || 'Magetan') ? 'badge-branch-magetan' : 'badge-branch-sragen'}`}>{item.branch}</span></td>
+                  <td style={{ fontWeight: 800, color: '#15803d', fontFamily: 'monospace' }}>{item.doNo || item.id}</td>
+                  <td className="text-center">{formatDateDisplay(item.date)}</td>
+                  <td>{item.supplierName}</td>
+                  <td style={{ fontWeight: 600 }}>{item.fertilizerName}</td>
+                  <td className="text-right" style={{ fontWeight: 700 }}>{Number(item.qtyTon || item.qty || 0).toFixed(1)} Ton</td>
+                  <td className="text-right">{doneTon.toFixed(1)} Ton</td>
+                  <td className="text-right" style={{ fontWeight: 700, color: sisaTon > 0 ? '#15803d' : '#9ca3af' }}>{sisaTon.toFixed(1)} Ton</td>
+                  <td className="text-right" style={{ fontWeight: 700 }}>{formatRp(item.totalAmount || item.totalCost || 0)}</td>
+                  <td className="text-center">
+                    <div style={{ display: 'flex', gap: '4px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                      {sisaTon > 0 && (
+                        <button
+                          className="btn-primary"
+                          style={{ fontSize: '11px', padding: '3px 7px', backgroundColor: '#b45309' }}
+                          onClick={() => onOpenNextStage('do', item)}
+                          title="Lanjut Pengeluaran DO untuk Nomor DO ini"
+                        >
+                          + Lanjut DO
+                        </button>
+                      )}
+                      <button className="btn-secondary" style={{ fontSize: '11px', padding: '3px 7px' }} onClick={() => onEdit('penebusan', item)}>Edit</button>
+                      <button className="btn-secondary" style={{ fontSize: '11px', padding: '3px 7px' }} onClick={() => onOpenPrint(item, 'penebusan')}>Cetak</button>
+                      <button className="btn-danger" style={{ fontSize: '11px', padding: '3px 7px' }} onClick={() => onDelete('penebusan', item.id)}>Hapus</button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+            {filtered.length === 0 && (
+              <tr><td colSpan={10} style={{ textAlign: 'center', padding: '20px', color: '#6b7280' }}>
+                Belum ada data penebusan. Klik "+ Input Penebusan Baru" — masukkan Nomor DO di form.
+              </td></tr>
+            )}
+          </tbody>
+        </table>
+        <TablePagination 
+          currentPage={currentPage} 
+          totalPages={totalPages} 
+          setCurrentPage={setCurrentPage} 
+          totalItems={filtered.length} 
+          itemsPerPage={itemsPerPage}
+          setItemsPerPage={setItemsPerPage}
+        />
+      </div>
+    </div>
+  );
+}
