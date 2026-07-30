@@ -4,6 +4,9 @@ import { createClient } from '@libsql/client/web';
  * Service untuk sinkronisasi data dengan Turso Edge Database
  */
 
+const DEFAULT_TURSO_URL = 'libsql://tm-baru-cvresep.aws-ap-northeast-1.turso.io';
+const DEFAULT_TURSO_TOKEN = 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3ODU0MzY5NzcsImlkIjoiMDE5ZmI0NGYtN2QwMS03MzhiLTk4MWMtMmZkNjYwMjg4NTU4Iiwia2lkIjoiZ1BNTHB5ZDZHREZraVd2T2dhbTNWMC1ISTVjM21UbW15VUVxMkFqb2tZcyIsInJpZCI6Ijg5MjkyM2I1LWM5ODQtNGQxMi05MDBmLThhODUzZjY3MjlmZiJ9.PAr56n8intzw0UkAtsWX38G_iRkb_zRxQ3NtGnbBMjsIaK0xcLQJyVG9nw7nRyPcw5NapcTERjWbK_oTucJBCQ';
+
 export async function syncDataToTurso(fullData, config = {}) {
   // Option 1: Synchronize via Cloudflare Pages Function endpoint /api/sync
   try {
@@ -21,8 +24,8 @@ export async function syncDataToTurso(fullData, config = {}) {
   }
 
   // Option 2: Direct connection to Turso using client URL & token if provided
-  const dbUrl = config.tursoUrl || localStorage.getItem('TURSO_DATABASE_URL');
-  const dbToken = config.tursoToken || localStorage.getItem('TURSO_AUTH_TOKEN');
+  const dbUrl = config.tursoUrl || localStorage.getItem('TURSO_DATABASE_URL') || DEFAULT_TURSO_URL;
+  const dbToken = config.tursoToken || localStorage.getItem('TURSO_AUTH_TOKEN') || DEFAULT_TURSO_TOKEN;
 
   if (!dbUrl) {
     throw new Error('TURSO_DATABASE_URL belum dikonfigurasi. Masukkan URL database Turso di menu Pengaturan.');
@@ -99,8 +102,8 @@ export async function fetchDataFromTurso(config = {}) {
   }
 
   // Option 2: Direct query using Turso client
-  const dbUrl = config.tursoUrl || localStorage.getItem('TURSO_DATABASE_URL');
-  const dbToken = config.tursoToken || localStorage.getItem('TURSO_AUTH_TOKEN');
+  const dbUrl = config.tursoUrl || localStorage.getItem('TURSO_DATABASE_URL') || DEFAULT_TURSO_URL;
+  const dbToken = config.tursoToken || localStorage.getItem('TURSO_AUTH_TOKEN') || DEFAULT_TURSO_TOKEN;
 
   if (!dbUrl) {
     throw new Error('TURSO_DATABASE_URL belum dikonfigurasi. Masukkan URL database Turso di menu Pengaturan.');

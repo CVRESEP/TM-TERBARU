@@ -152,9 +152,7 @@ export default function App() {
     };
     try {
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(payload));
-      if (localStorage.getItem('TURSO_DATABASE_URL')) {
-        syncDataToTurso(payload).catch(() => {});
-      }
+      syncDataToTurso(payload).catch((err) => console.log('Turso background sync:', err.message));
     } catch (e) {
       console.error('Gagal menyimpan ke database lokal:', e);
     }
