@@ -218,8 +218,8 @@ export default function PembayaranKiosView({
   // Submit Pelunasan
   const handleSubmitPayment = (e) => {
     e.preventDefault();
-    const selectedKios = kiosks.find(k => k.id === payKiosId);
-    const selectedPenyaluran = penyaluranList.find(p => p.id === payPenyaluranId);
+    const selectedKios = (kiosks || []).find(k => k && k.id === payKiosId);
+    const selectedPenyaluran = (penyaluranList || []).find(p => p && p.id === payPenyaluranId);
 
     const totalEnteredAmount = Number(payAmount || 0);
 
@@ -289,7 +289,7 @@ export default function PembayaranKiosView({
   // Submit Deposit
   const handleSubmitDeposit = (e) => {
     e.preventDefault();
-    const selectedKios = kiosks.find(k => k.id === depKiosId);
+    const selectedKios = (kiosks || []).find(k => k && k.id === depKiosId);
 
     const depositRecord = {
       id: `DEP-${Date.now()}`,
@@ -485,8 +485,9 @@ export default function PembayaranKiosView({
             </thead>
             <tbody>
               {paginatedKios.map(kios => {
-                const kiosSalur = penyaluranList.filter(p => p.kiosId === kios.id);
-                const tagihanTotal = kiosSalur.reduce((s, p) => s + Number(p.totalAmount || 0), 0);
+                if (!kios) return null;
+                const kiosSalur = (penyaluranList || []).filter(p => p && p.kiosId === kios.id);
+                const tagihanTotal = kiosSalur.reduce((s, p) => s + Number(p?.totalAmount || 0), 0);
                 const terbayarTotal = kiosSalur.reduce((s, p) => s + getPenyaluranPaymentStats(p).terbayar, 0);
                 const kekuranganPembayaran = Math.max(0, tagihanTotal - terbayarTotal);
 
