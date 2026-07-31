@@ -26,30 +26,40 @@ export default function LaporanView({
   // ═════════════════════════════════════════════════════════════════
   const dailyDate = selectedDailyDate;
 
+  // Helper pencocokan produk
+  const isFertilizerMatch = (item, fert) => {
+    if (!item || !fert) return false;
+    const fId = String(fert.id || '').toLowerCase().trim();
+    const fName = String(fert.name || '').toLowerCase().trim();
+    const itemFId = String(item.fertilizerId || '').toLowerCase().trim();
+    const itemFName = String(item.fertilizerName || '').toLowerCase().trim();
+    return (itemFId && itemFId === fId) || (itemFName && itemFName === fName);
+  };
+
   // TABEL 1: Per-product stock & movement calculation
   const tabel1Data = fertilizers.filter(matchBranch).map(fert => {
-    const buyPrice = Number(fert.buyPrice || fert.defaultPriceTon || 0);
-    const sellPrice = Number(fert.sellPrice || fert.defaultPriceTon || 0);
+    const buyPrice = Number(fert.buyPrice || fert.priceBuy || fert.defaultPriceTon || 0);
+    const sellPrice = Number(fert.sellPrice || fert.priceSell || fert.defaultPriceTon || 0);
 
     // Sisa Lalu (Stok Kemarin): Akumulasi Penebusan < dailyDate dikurangi Penyaluran < dailyDate
     const penebusanLaluTon = penebusanList
-      .filter(p => matchBranch(p) && p.fertilizerId === fert.id && p.date < dailyDate)
+      .filter(p => matchBranch(p) && isFertilizerMatch(p, fert) && p.date < dailyDate)
       .reduce((s, i) => s + getTon(i), 0);
 
     const penyaluranLaluTon = penyaluranList
-      .filter(s => matchBranch(s) && s.fertilizerId === fert.id && s.date < dailyDate)
+      .filter(s => matchBranch(s) && isFertilizerMatch(s, fert) && s.date < dailyDate)
       .reduce((s, i) => s + getTon(i), 0);
 
     const sisaLaluTon = Math.max(0, penebusanLaluTon - penyaluranLaluTon);
 
     // Penyaluran hari ini (sesuai tanggal terpilih)
     const penyaluranHariIniTon = penyaluranList
-      .filter(s => matchBranch(s) && s.fertilizerId === fert.id && s.date === dailyDate)
+      .filter(s => matchBranch(s) && isFertilizerMatch(s, fert) && s.date === dailyDate)
       .reduce((s, i) => s + getTon(i), 0);
 
     // Penebusan hari ini (sesuai tanggal terpilih)
     const penebusanHariIniTon = penebusanList
-      .filter(p => matchBranch(p) && p.fertilizerId === fert.id && p.date === dailyDate)
+      .filter(p => matchBranch(p) && isFertilizerMatch(p, fert) && p.date === dailyDate)
       .reduce((s, i) => s + getTon(i), 0);
 
     // Stok Akhir = sisa lalu + penebusan - penyaluran
@@ -100,10 +110,12 @@ export default function LaporanView({
 
   // Helper: Dapatkan nominal pembayaran langsung dari transaksi penyaluran (Lunas / DP saat transaksi)
   const getInitialTrxPayment = (penyaluranItem) => {
+    const total = Number(penyaluranItem.totalAmount || 0);
+    const dp = Number(penyaluranItem.dpAmount || 0);
     if (penyaluranItem.paymentStatus === 'Lunas') {
-      return Math.max(Number(penyaluranItem.totalAmount || 0), Number(penyaluranItem.dpAmount || 0));
+      return total > 0 ? total : dp;
     }
-    return Number(penyaluranItem.dpAmount || 0);
+    return dp;
   };
 
   // TABEL 2: Summary Keuangan & Piutang Harian
@@ -113,10 +125,23 @@ export default function LaporanView({
     .reduce((sum, item) => sum + Number(item.totalAmount || 0), 0);
 
   const totalPembayaranLalu = 
-    penyaluranList.filter(s => matchBranch(s) && s.date < dailyDate).reduce((sum, item) => sum + getInitialTrxPayment(item), 0) +
-    payments.filter(p => matchBranch(p) && p.date < dailyDate).reduce((sum, item) => sum + Number(item.amount || 0), 0);
+    penyaluranList
+      .filter(s => matchBranch(s) && s.date < dailyDate)
+      .reduce((sum, item) => {
+        const itemPayments = (payments || []).filter(pm => 
+          pm && pm.date < dailyDate && 
+          (pm.penyaluranId === item.id || pm.penyaluranId === item.penyaluranNo || (pm.doNo && pm.doNo === item.doNo && pm.kiosId === item.kiosId))
+        );
+        const pmSum = itemPayments.reduce((s, pm) => s + Number(pm.amount || 0), 0);
+        const initTrx = getInitialTrxPayment(item);
+        const paid = Math.max(initTrx, pmSum + Number(item.dpAmount || 0));
+        return sum + (item.paymentStatus === 'Lunas' ? Number(item.totalAmount || 0) : paid);
+      }, 0) +
+    payments
+      .filter(p => matchBranch(p) && p.date < dailyDate && !p.penyaluranId && !p.doNo)
+      .reduce((sum, item) => sum + Number(item.amount || 0), 0);
 
-  const sisaTagihanLalu = totalTagihanLalu - totalPembayaranLalu;
+  const sisaTagihanLalu = Math.max(0, totalTagihanLalu - totalPembayaranLalu);
 
   // 2. Penjualan (penyaluran kios hari ini * harga jual)
   const penjualanHariIni = t1Totals.jualKeKios;
@@ -190,21 +215,54 @@ export default function LaporanView({
         <div>
           {/* FILTER TANGGAL HARIAN */}
           <div className="card btn-print-hide" style={{ marginBottom: '16px' }}>
-            <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: '16px', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' }}>
               <div>
-                <label className="form-label" style={{ marginBottom: '4px', fontWeight: 700 }}>
+                <label className="form-label" style={{ marginBottom: '6px', fontWeight: 700 }}>
                   Pilih Tanggal Laporan Harian:
                 </label>
-                <input 
-                  type="date" 
-                  className="form-input" 
-                  style={{ width: 'auto', fontWeight: 700 }} 
-                  value={selectedDailyDate} 
-                  onChange={(e) => setSelectedDailyDate(e.target.value)} 
-                />
-              </div>
-              <div style={{ marginTop: '20px', color: '#4b5563', fontSize: '13px' }}>
-                Cabang: <strong>{selectedBranch === 'ALL' ? 'Semua Cabang' : selectedBranch}</strong>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <input 
+                    type="date" 
+                    className="form-input" 
+                    style={{ width: 'auto', fontWeight: 700 }} 
+                    value={selectedDailyDate} 
+                    onChange={(e) => setSelectedDailyDate(e.target.value)} 
+                  />
+                  <span style={{ fontSize: '13px', color: '#4b5563', marginLeft: '10px' }}>
+                    Cabang: <strong>{selectedBranch === 'ALL' ? 'Semua Cabang' : selectedBranch}</strong>
+                  </span>
+                </div>
+                
+                {/* TOMBOL LOMPAT TANGGAL SEBELUMNYA & SELANJUTNYA */}
+                <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+                  <button
+                    type="button"
+                    className="btn-secondary"
+                    style={{ fontSize: '12px', padding: '6px 12px', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                    onClick={() => {
+                      const d = new Date(selectedDailyDate);
+                      d.setDate(d.getDate() - 1);
+                      setSelectedDailyDate(d.toISOString().split('T')[0]);
+                    }}
+                    title="Lompat ke 1 hari sebelumnya"
+                  >
+                    ◄ Tanggal Sebelumnya
+                  </button>
+
+                  <button
+                    type="button"
+                    className="btn-secondary"
+                    style={{ fontSize: '12px', padding: '6px 12px', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                    onClick={() => {
+                      const d = new Date(selectedDailyDate);
+                      d.setDate(d.getDate() + 1);
+                      setSelectedDailyDate(d.toISOString().split('T')[0]);
+                    }}
+                    title="Lompat ke 1 hari selanjutnya"
+                  >
+                    Tanggal Selanjutnya ►
+                  </button>
+                </div>
               </div>
             </div>
           </div>

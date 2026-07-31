@@ -18,6 +18,7 @@ export default function DaftarProdukView({
   // Form states
   const [name, setName] = useState('');
   const [branch, setBranch] = useState('ALL');
+  const [supplier, setSupplier] = useState('PT PETROKIMIA GRESIK');
   const [buyPrice, setBuyPrice] = useState(2100000);
   const [sellPrice, setSellPrice] = useState(2250000);
   const [effectiveDate, setEffectiveDate] = useState(new Date().toISOString().split('T')[0]);
@@ -26,6 +27,7 @@ export default function DaftarProdukView({
   const filtered = fertilizers.filter(item => {
     const matchBranch = selectedBranch === 'ALL' || !item.branch || item.branch === 'ALL' || item.branch === selectedBranch;
     const matchSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        (item.supplier && item.supplier.toLowerCase().includes(searchTerm.toLowerCase())) ||
                         item.id.toLowerCase().includes(searchTerm.toLowerCase());
     return matchBranch && matchSearch;
   });
@@ -36,6 +38,7 @@ export default function DaftarProdukView({
     setEditingItem(null);
     setName('');
     setBranch(selectedBranch !== 'ALL' ? selectedBranch : 'ALL');
+    setSupplier('PT PETROKIMIA GRESIK');
     setBuyPrice(2100000);
     setSellPrice(2250000);
     setEffectiveDate(new Date().toISOString().split('T')[0]);
@@ -45,10 +48,11 @@ export default function DaftarProdukView({
 
   const handleOpenEdit = (item) => {
     setEditingItem(item);
-    setName(item.name);
+    setName(item.name || item.fertilizerName || item.pupukName || '');
     setBranch(item.branch || 'ALL');
-    setBuyPrice(item.buyPrice || item.defaultPriceTon || 2100000);
-    setSellPrice(item.sellPrice || item.defaultPriceTon || 2250000);
+    setSupplier(item.supplier || item.supplierName || 'PT PETROKIMIA GRESIK');
+    setBuyPrice(item.buyPrice || item.priceBuy || item.defaultPriceTon || item.pricePerTon || 2100000);
+    setSellPrice(item.sellPrice || item.priceSell || item.defaultPriceTon || item.pricePerTon || 2250000);
     setEffectiveDate(new Date().toISOString().split('T')[0]);
     setPriceChangeNotes('');
     setIsModalOpen(true);
@@ -60,12 +64,11 @@ export default function DaftarProdukView({
     const sPrice = Number(sellPrice);
 
     if (editingItem) {
-      const prevBuy = editingItem.buyPrice || editingItem.defaultPriceTon || 0;
-      const prevSell = editingItem.sellPrice || editingItem.defaultPriceTon || 0;
+      const prevBuy = editingItem.buyPrice || editingItem.priceBuy || editingItem.defaultPriceTon || 0;
+      const prevSell = editingItem.sellPrice || editingItem.priceSell || editingItem.defaultPriceTon || 0;
 
       let updatedHistory = [...(editingItem.priceHistory || [])];
 
-      // If price changed, push to history timeline using effectiveDate
       if (bPrice !== prevBuy || sPrice !== prevSell) {
         const historyEntry = {
           date: effectiveDate || new Date().toISOString().split('T')[0],
@@ -80,10 +83,13 @@ export default function DaftarProdukView({
 
       onEditFertilizer({
         ...editingItem,
-        name,
+        name: name || editingItem.fertilizerName || editingItem.id,
         branch,
+        supplier,
         buyPrice: bPrice,
+        priceBuy: bPrice,
         sellPrice: sPrice,
+        priceSell: sPrice,
         defaultPriceTon: sPrice,
         priceHistory: updatedHistory
       });
@@ -99,11 +105,14 @@ export default function DaftarProdukView({
 
       const newProduct = {
         id: `PROD-${Date.now().toString().slice(-4)}`,
-        name,
+        name: name || 'PRODUK BARU',
         branch,
+        supplier,
         unit: 'Ton',
         buyPrice: bPrice,
+        priceBuy: bPrice,
         sellPrice: sPrice,
+        priceSell: sPrice,
         defaultPriceTon: sPrice,
         priceHistory: initialHistory
       };
@@ -121,12 +130,26 @@ export default function DaftarProdukView({
 
   const isBranchLocked = selectedBranch !== 'ALL';
 
+  const [selectedIds, setSelectedIds] = useState([]);
+
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      setSelectedIds(filtered.map(i => i.id));
+    } else {
+      setSelectedIds([]);
+    }
+  };
+
+  const handleSelectOne = (id) => {
+    setSelectedIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
+  };
+
   return (
     <div>
       <div className="page-header-box">
         <div>
           <h2 className="page-title">Master Daftar Produk & Harga Pupuk</h2>
-          <p className="page-desc">Kelola patokan <strong>Harga Beli (Penebusan)</strong> dari supplier dan <strong>Harga Jual (Penyaluran)</strong> per cabang. Klik nama produk untuk melihat riwayat perubahan harga.</p>
+          <p className="page-desc">Kelola patokan <strong>Harga Beli (Penebusan)</strong> dari supplier dan <strong>Harga Jual (Penyaluran)</strong> per cabang.</p>
         </div>
         <button className="btn-primary" onClick={handleOpenAdd}>
           + Tambah Produk Baru
@@ -134,11 +157,12 @@ export default function DaftarProdukView({
       </div>
 
       <div className="table-container">
-        <div className="table-toolbar">
+        <div className="table-toolbar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <input 
             type="text" 
-            placeholder="Cari nama produk / kode..." 
+            placeholder="Cari nama produk / supplier..." 
             className="search-input" 
+            style={{ width: '280px' }}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -150,67 +174,94 @@ export default function DaftarProdukView({
         <table className="data-table">
           <thead>
             <tr>
-              <th>Cabang</th>
-              <th>ID Produk</th>
-              <th>Nama Produk Pupuk</th>
-              <th>Satuan</th>
-              <th style={{ backgroundColor: '#eff6ff', color: '#1d4ed8' }}>Harga Beli / Ton (Penebusan)</th>
-              <th style={{ backgroundColor: '#f0fdf4', color: '#15803d' }}>Harga Jual / Ton (Penyaluran)</th>
-              <th>Margin / Ton</th>
-              <th>Riwayat Harga</th>
-              <th>Aksi</th>
+              <th style={{ width: '40px', textAlign: 'center' }}>
+                <input 
+                  type="checkbox" 
+                  checked={filtered.length > 0 && selectedIds.length === filtered.length}
+                  onChange={handleSelectAll}
+                />
+              </th>
+              <th style={{ width: '60px' }}>NO</th>
+              <th>NAMA PRODUK ↑↓</th>
+              <th>KABUPATEN ↑↓</th>
+              <th>SUPPLIER ↑↓</th>
+              <th style={{ textAlign: 'right' }}>HARGA BELI ↑↓</th>
+              <th style={{ textAlign: 'right' }}>HARGA JUAL ↑↓</th>
+              <th style={{ textAlign: 'center', width: '120px' }}>AKSI</th>
             </tr>
           </thead>
           <tbody>
-            {filtered.map((item) => {
-              const bPrice = item.buyPrice || item.defaultPriceTon || 0;
-              const sPrice = item.sellPrice || item.defaultPriceTon || 0;
-              const margin = sPrice - bPrice;
-              const historyCount = (item.priceHistory || []).length;
-              const itemBranch = item.branch || 'ALL';
+            {filtered.map((item, idx) => {
+              const bPrice = Number(item.buyPrice || item.priceBuy || item.defaultPriceTon || item.pricePerTon || 0);
+              const sPrice = Number(item.sellPrice || item.priceSell || item.defaultPriceTon || item.pricePerTon || 0);
+              const prodName = item.name || item.fertilizerName || item.pupukName || item.id;
+              const supplierName = item.supplier || item.supplierName || 'PT PETROKIMIA GRESIK';
+              const itemBranch = (item.branch || 'MAGETAN').toUpperCase();
+              const isChecked = selectedIds.includes(item.id);
 
               return (
-                <tr key={item.id}>
-                  <td>
-                    <span className={`badge ${itemBranch === 'Magetan' ? 'badge-branch-magetan' : itemBranch === 'Sragen' ? 'badge-branch-sragen' : 'badge-info'}`}>
-                      {itemBranch === 'ALL' ? 'Semua Cabang' : itemBranch}
-                    </span>
+                <tr 
+                  key={item.id}
+                  style={{ backgroundColor: isChecked ? '#f0f9ff' : 'transparent', cursor: 'pointer' }}
+                  onClick={() => setHistoryProduct(item)}
+                  className="table-row-hover"
+                >
+                  <td style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
+                    <input 
+                      type="checkbox" 
+                      checked={isChecked}
+                      onChange={() => handleSelectOne(item.id)}
+                    />
                   </td>
-                  <td style={{ fontWeight: 700, fontFamily: 'monospace' }}>{item.id}</td>
-                  <td>
-                    <span
-                      onClick={() => setHistoryProduct(item)}
-                      style={{
-                        fontWeight: 800,
-                        color: '#15803d',
-                        cursor: 'pointer',
-                        textDecoration: 'underline',
-                        textUnderlineOffset: '3px'
+                  <td style={{ fontWeight: 700, color: '#374151' }}>{idx + 1}</td>
+                  <td style={{ fontWeight: 800, color: '#15803d' }}>
+                    <span 
+                      style={{ 
+                        textDecoration: 'underline', 
+                        textUnderlineOffset: '3px',
+                        cursor: 'pointer' 
                       }}
                       title="Klik untuk melihat riwayat perubahan harga produk ini"
                     >
-                      {item.name}
+                      {prodName}
                     </span>
                   </td>
-                  <td><span className="badge badge-info">Ton</span></td>
-                  <td style={{ fontWeight: 700, color: '#1d4ed8' }}>{formatRp(bPrice)}</td>
-                  <td style={{ fontWeight: 800, color: '#15803d' }}>{formatRp(sPrice)}</td>
-                  <td style={{ fontWeight: 700, color: margin >= 0 ? '#16a34a' : '#dc2626' }}>
-                    {formatRp(margin)}
+                  <td style={{ fontWeight: 700, color: '#374151' }}>
+                    {itemBranch === 'ALL' ? 'SEMUA CABANG' : itemBranch}
                   </td>
-                  <td>
-                    <button
-                      className="btn-secondary"
-                      style={{ fontSize: '11px', padding: '3px 7px', color: '#1d4ed8', borderColor: '#bfdbfe' }}
-                      onClick={() => setHistoryProduct(item)}
-                    >
-                      Riwayat ({historyCount})
-                    </button>
+                  <td style={{ fontWeight: 600, color: '#4b5563' }}>
+                    {supplierName}
                   </td>
-                  <td>
-                    <div style={{ display: 'flex', gap: '4px' }}>
-                      <button className="btn-secondary" style={{ fontSize: '11px', padding: '3px 7px' }} onClick={() => handleOpenEdit(item)}>Edit</button>
-                      <button className="btn-danger" style={{ fontSize: '11px', padding: '3px 7px' }} onClick={() => onDeleteFertilizer(item.id)}>Hapus</button>
+                  <td style={{ fontWeight: 700, color: '#111827', textAlign: 'right' }}>
+                    Rp {bPrice.toLocaleString('id-ID')}
+                  </td>
+                  <td style={{ fontWeight: 800, color: '#111827', textAlign: 'right' }}>
+                    Rp {sPrice.toLocaleString('id-ID')}
+                  </td>
+                  <td style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
+                    <div style={{ display: 'flex', gap: '4px', justifyContent: 'center' }}>
+                      <button 
+                        className="btn-secondary" 
+                        style={{ fontSize: '11px', padding: '3px 8px', color: '#0369a1', borderColor: '#bae6fd' }} 
+                        onClick={() => setHistoryProduct(item)}
+                        title="Lihat Riwayat Harga"
+                      >
+                        Riwayat
+                      </button>
+                      <button 
+                        className="btn-secondary" 
+                        style={{ fontSize: '11px', padding: '3px 8px' }} 
+                        onClick={() => handleOpenEdit(item)}
+                      >
+                        Edit
+                      </button>
+                      <button 
+                        className="btn-danger" 
+                        style={{ fontSize: '11px', padding: '3px 8px' }} 
+                        onClick={() => onDeleteFertilizer(item.id)}
+                      >
+                        Hapus
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -218,7 +269,7 @@ export default function DaftarProdukView({
             })}
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={9} style={{ textAlign: 'center', padding: '20px', color: '#6b7280' }}>
+                <td colSpan={8} style={{ textAlign: 'center', padding: '20px', color: '#6b7280' }}>
                   Tidak ada produk pupuk yang sesuai.
                 </td>
               </tr>
@@ -269,9 +320,15 @@ export default function DaftarProdukView({
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label">Satuan Produk:</label>
-                  <input type="text" className="form-input" value="Ton" disabled />
-                  <small style={{ color: '#6b7280' }}>Satuan standar aplikasi adalah TON.</small>
+                  <label className="form-label">Supplier Produksi:</label>
+                  <input 
+                    type="text" 
+                    className="form-input" 
+                    placeholder="misal: PT PETROKIMIA GRESIK / PT PUPUK SRIWIDJAJA" 
+                    value={supplier} 
+                    onChange={(e) => setSupplier(e.target.value)} 
+                    required 
+                  />
                 </div>
 
                 <div className="form-row">

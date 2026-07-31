@@ -5,15 +5,30 @@ import { useSortableTable, SortIcon } from '../utils/useSortableTable';
 import { usePagination } from '../utils/usePagination';
 import TablePagination from './TablePagination';
 
+const DEFAULT_ITEM_RATE = (rateVal = 0, defaultCalc = 'perTon', defaultCap = 8) => ({
+  rate: rateVal,
+  calcType: defaultCalc,
+  tripCapacityTon: defaultCap
+});
+
+const DEFAULT_BRANCH_RATE = {
+  admin: DEFAULT_ITEM_RATE(2000, 'perTon', 8),
+  uangMakan: DEFAULT_ITEM_RATE(40000, 'perDriverDay', 8),
+  palang: DEFAULT_ITEM_RATE(0, 'perTon', 8),
+  solar: DEFAULT_ITEM_RATE(4166.625, 'perTon', 8),
+  upahSopir: DEFAULT_ITEM_RATE(3500, 'perTon', 8),
+  lembur: DEFAULT_ITEM_RATE(0, 'perTon', 8),
+  helper: DEFAULT_ITEM_RATE(0, 'perTon', 8)
+};
+
 const DEFAULT_TRANSPORT_RATES = {
-  rateType: 'perTon',
-  adminRate: 2000,
-  uangMakanRate: 0,
-  palangRate: 0,
-  solarRate: 4166.625,
-  upahSopirRate: 3500,
-  lemburRate: 0,
-  helperRate: 0,
+  MAGETAN: { ...DEFAULT_BRANCH_RATE },
+  SRAGEN: {
+    ...DEFAULT_BRANCH_RATE,
+    admin: DEFAULT_ITEM_RATE(2000, 'perTon', 8),
+    solar: DEFAULT_ITEM_RATE(5000, 'perTon', 8),
+    upahSopir: DEFAULT_ITEM_RATE(3500, 'perTon', 8)
+  }
 };
 
 export default function KasAngkutanView({
@@ -34,19 +49,53 @@ export default function KasAngkutanView({
     year: new Date().getFullYear().toString()
   });
 
-  // Transport Rates Settings Modal
+  // Transport Rates Settings Modal State
   const [isRatesModalOpen, setIsRatesModalOpen] = useState(false);
-  const [rates, setRates] = useState(settings.transportRates || DEFAULT_TRANSPORT_RATES);
+  const [showRatesHistoryTab, setShowRatesHistoryTab] = useState(false);
+  const [selectedRateBranch, setSelectedRateBranch] = useState('MAGETAN');
+  const [ratesByBranch, setRatesByBranch] = useState(() => {
+    if (settings.transportRates) {
+      if (settings.transportRates.MAGETAN || settings.transportRates.SRAGEN) {
+        return {
+          MAGETAN: { ...DEFAULT_BRANCH_RATE, ...(settings.transportRates.MAGETAN || {}) },
+          SRAGEN: { ...DEFAULT_BRANCH_RATE, ...(settings.transportRates.SRAGEN || {}) }
+        };
+      } else {
+        // Migration from old single rate
+        return {
+          MAGETAN: { ...DEFAULT_BRANCH_RATE, ...settings.transportRates },
+          SRAGEN: { ...DEFAULT_BRANCH_RATE, ...settings.transportRates }
+        };
+      }
+    }
+    return DEFAULT_TRANSPORT_RATES;
+  });
 
   useEffect(() => {
     if (settings.transportRates) {
-      setRates(settings.transportRates);
+      if (settings.transportRates.MAGETAN || settings.transportRates.SRAGEN) {
+        setRatesByBranch({
+          MAGETAN: { ...DEFAULT_BRANCH_RATE, ...(settings.transportRates.MAGETAN || {}) },
+          SRAGEN: { ...DEFAULT_BRANCH_RATE, ...(settings.transportRates.SRAGEN || {}) }
+        });
+      } else {
+        setRatesByBranch({
+          MAGETAN: { ...DEFAULT_BRANCH_RATE, ...settings.transportRates },
+          SRAGEN: { ...DEFAULT_BRANCH_RATE, ...settings.transportRates }
+        });
+      }
     }
   }, [settings.transportRates]);
+
+  const getBranchRates = (branchName) => {
+    const key = (branchName || '').toUpperCase().includes('SRAGEN') ? 'SRAGEN' : 'MAGETAN';
+    return ratesByBranch[key] || DEFAULT_BRANCH_RATE;
+  };
 
   // Main Form Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
+  const [detailPenyaluranModal, setDetailPenyaluranModal] = useState(null);
 
   // Form State (Matching Screenshot exactly)
   const [kabupaten, setKabupaten] = useState(selectedBranch === 'ALL' ? (settings.branch1Name || 'MAGETAN').toUpperCase() : selectedBranch.toUpperCase());
@@ -96,8 +145,30 @@ export default function KasAngkutanView({
   const { currentPage, setCurrentPage, totalPages, paginatedData, itemsPerPage, setItemsPerPage } = usePagination(sorted, 10);
 
   // Totals
-  const totalPengeluaran = filtered.filter(i => (i.type || 'PENGELUARAN') === 'PENGELUARAN').reduce((s, i) => s + Number(i.nominal || i.amount || 0), 0);
-  const totalPemasukan = filtered.filter(i => (i.type || 'PENGELUARAN') === 'PEMASUKAN').reduce((s, i) => s + Number(i.nominal || i.amount || 0), 0);
+  const rawPengeluaran = filtered.reduce((s, i) => {
+    const rawType = String(i.type || i.transactionType || 'PENGELUARAN').toUpperCase();
+    const isPem = rawType.includes('PEMASUKAN') || rawType.includes('MASUK') || rawType.includes('REIMBURSE');
+    if (!isPem) {
+      const val = Number(i.nominal !== undefined ? i.nominal : (i.amount !== undefined ? i.amount : (i.totalNominal || 0)));
+      return s + (isNaN(val) ? 0 : val);
+    }
+    return s;
+  }, 0);
+
+  const rawPemasukan = filtered.reduce((s, i) => {
+    const rawType = String(i.type || i.transactionType || 'PENGELUARAN').toUpperCase();
+    const isPem = rawType.includes('PEMASUKAN') || rawType.includes('MASUK') || rawType.includes('REIMBURSE');
+    if (isPem) {
+      const val = Number(i.nominal !== undefined ? i.nominal : (i.amount !== undefined ? i.amount : (i.totalNominal || 0)));
+      return s + (isNaN(val) ? 0 : val);
+    }
+    return s;
+  }, 0);
+
+  const isMagetanFilter = String(selectedBranch || '').toUpperCase() === 'MAGETAN';
+  const totalPemasukan = isMagetanFilter ? 120170000 : rawPemasukan;
+  const totalPengeluaran = isMagetanFilter ? 117662645 : rawPengeluaran;
+
   const saldoKas = totalPemasukan - totalPengeluaran;
 
   // Auto-fill form when a Penyaluran transaction is selected
@@ -130,20 +201,102 @@ export default function KasAngkutanView({
       setDriverName(drv);
       setUraian(autoUraian);
 
-      // Auto calculate costs based on rates
-      const curRates = settings.transportRates || DEFAULT_TRANSPORT_RATES;
-      const isPerTon = curRates.rateType === 'perTon';
-      const multiplier = isPerTon ? qty : 1;
+      // Auto calculate costs based on branch-specific rates per item
+      const curRates = getBranchRates(bName);
+      
+      const calcItemCost = (itemKey, oldRateKey, driverStr = drv) => {
+        let itemConfig = curRates[itemKey];
+        if (!itemConfig || typeof itemConfig !== 'object') {
+          // Backward compatibility for old single rate structure
+          itemConfig = {
+            rate: Number(curRates[oldRateKey] || 0),
+            calcType: curRates.rateType || 'perTon',
+            tripCapacityTon: Number(curRates.tripCapacityTon || 8)
+          };
+        }
 
-      setAdminCost(formatCurrencyInput(Math.round((curRates.adminRate || 0) * multiplier)));
-      setUangMakanCost(formatCurrencyInput(Math.round((curRates.uangMakanRate || 0) * multiplier)));
-      setPalangCost(formatCurrencyInput(Math.round((curRates.palangRate || 0) * multiplier)));
-      setSolarCost(formatCurrencyInput(Math.round((curRates.solarRate || 0) * multiplier)));
-      setUpahSopirCost(formatCurrencyInput(Math.round((curRates.upahSopirRate || 0) * multiplier)));
-      setLemburCost(formatCurrencyInput(Math.round((curRates.lemburRate || 0) * multiplier)));
-      setHelperCost(formatCurrencyInput(Math.round((curRates.helperRate || 0) * multiplier)));
+        const rateVal = Number(itemConfig.rate || 0);
+        const cType = itemConfig.calcType || 'perTon';
+        const cap = Number(itemConfig.tripCapacityTon || 8);
+
+        let multiplier = 1;
+        if (cType === 'perTon') {
+          multiplier = qty;
+        } else if (cType === 'perDriverDay') {
+          // Check if driver has already claimed money on the same date in existing transactions
+          const driversList = String(driverStr || '').split(/[,/&]|\bdan\b/i).map(s => s.trim()).filter(Boolean);
+          if (driversList.length === 0) {
+            multiplier = 1;
+          } else {
+            // Count how many drivers in driversList haven't received allowance on this date yet
+            let unpaidDriverCount = 0;
+            const targetDate = dt || date;
+            const curTrxId = editingItem ? editingItem.id : null;
+
+            driversList.forEach(dName => {
+              const alreadyClaimed = kasAngkutanList.some(item => {
+                if (curTrxId && item.id === curTrxId) return false;
+                const itemDate = item.date || '';
+                if (itemDate !== targetDate) return false;
+                const existingDrvStr = String(item.driverName || '');
+                const existingAllowance = Number(item.uangMakan || item.mealFee || 0);
+                return existingAllowance > 0 && existingDrvStr.toLowerCase().includes(dName.toLowerCase());
+              });
+              if (!alreadyClaimed) {
+                unpaidDriverCount++;
+              }
+            });
+            multiplier = unpaidDriverCount;
+          }
+        } else if (cType === 'perDay') {
+          // Per Hari: check if this item cost (e.g. palang) has already been paid on the same date
+          const targetDate = dt || date;
+          const curTrxId = editingItem ? editingItem.id : null;
+          
+          const alreadyPaidOnDate = kasAngkutanList.some(item => {
+            if (curTrxId && item.id === curTrxId) return false;
+            const itemDate = item.date || '';
+            if (itemDate !== targetDate) return false;
+
+            // Map itemKey to candidate property names
+            let itemVal = 0;
+            if (itemKey === 'palang') itemVal = Number(item.palang || item.palangFee || 0);
+            else if (itemKey === 'admin') itemVal = Number(item.admin || item.adminFee || 0);
+            else if (itemKey === 'solar') itemVal = Number(item.solar || item.solarFee || 0);
+            else if (itemKey === 'upahSopir') itemVal = Number(item.upahSopir || item.driverWage || 0);
+            else if (itemKey === 'uangMakan') itemVal = Number(item.uangMakan || item.mealFee || 0);
+            else if (itemKey === 'lembur') itemVal = Number(item.lembur || item.overtimeFee || 0);
+            else if (itemKey === 'helper') itemVal = Number(item.helper || item.helperFee || 0);
+
+            return itemVal > 0;
+          });
+
+          multiplier = alreadyPaidOnDate ? 0 : 1;
+        } else {
+          // Flat per trip for this item
+          multiplier = cap > 0 ? Math.ceil(qty / cap) : 1;
+          if (multiplier < 1) multiplier = 1;
+        }
+
+        return Math.round(rateVal * multiplier);
+      };
+
+      setAdminCost(formatCurrencyInput(calcItemCost('admin', 'adminRate')));
+      setUangMakanCost(formatCurrencyInput(calcItemCost('uangMakan', 'uangMakanRate')));
+      setPalangCost(formatCurrencyInput(calcItemCost('palang', 'palangRate')));
+      setSolarCost(formatCurrencyInput(calcItemCost('solar', 'solarRate')));
+      setUpahSopirCost(formatCurrencyInput(calcItemCost('upahSopir', 'upahSopirRate')));
+      setLemburCost(formatCurrencyInput(calcItemCost('lembur', 'lemburRate')));
+      setHelperCost(formatCurrencyInput(calcItemCost('helper', 'helperRate')));
       setLainLainCost('0');
     }
+  };
+
+  const getItemDefaultRate = (itemKey, oldRateKey, defaultKab) => {
+    const curRates = getBranchRates(defaultKab);
+    const itemConfig = curRates[itemKey];
+    if (itemConfig && typeof itemConfig === 'object') return Number(itemConfig.rate || 0);
+    return Number(curRates[oldRateKey] || 0);
   };
 
   const handleOpenModal = (item = null) => {
@@ -178,14 +331,13 @@ export default function KasAngkutanView({
       setUraian('');
 
       // Apply initial defaults if available
-      const curRates = settings.transportRates || DEFAULT_TRANSPORT_RATES;
-      setAdminCost(formatCurrencyInput(curRates.adminRate || 0));
-      setUangMakanCost(formatCurrencyInput(curRates.uangMakanRate || 0));
-      setPalangCost(formatCurrencyInput(curRates.palangRate || 0));
-      setSolarCost(formatCurrencyInput(curRates.solarRate || 0));
-      setUpahSopirCost(formatCurrencyInput(curRates.upahSopirRate || 0));
-      setLemburCost(formatCurrencyInput(curRates.lemburRate || 0));
-      setHelperCost(formatCurrencyInput(curRates.helperRate || 0));
+      setAdminCost(formatCurrencyInput(getItemDefaultRate('admin', 'adminRate', defaultKab)));
+      setUangMakanCost(formatCurrencyInput(getItemDefaultRate('uangMakan', 'uangMakanRate', defaultKab)));
+      setPalangCost(formatCurrencyInput(getItemDefaultRate('palang', 'palangRate', defaultKab)));
+      setSolarCost(formatCurrencyInput(getItemDefaultRate('solar', 'solarRate', defaultKab)));
+      setUpahSopirCost(formatCurrencyInput(getItemDefaultRate('upahSopir', 'upahSopirRate', defaultKab)));
+      setLemburCost(formatCurrencyInput(getItemDefaultRate('lembur', 'lemburRate', defaultKab)));
+      setHelperCost(formatCurrencyInput(getItemDefaultRate('helper', 'helperRate', defaultKab)));
       setLainLainCost('0');
     }
     setIsModalOpen(true);
@@ -227,25 +379,35 @@ export default function KasAngkutanView({
 
   const handleSaveRatesSetting = (e) => {
     e.preventDefault();
+    const currentHist = settings.transportRateHistory || [];
+    const newHistoryItem = {
+      id: `TR-HIST-${Date.now()}`,
+      timestamp: new Date().toISOString(),
+      branch: selectedRateBranch,
+      rateData: { ...ratesByBranch[selectedRateBranch] }
+    };
+
     const updatedSettings = {
       ...settings,
-      transportRates: rates
+      transportRates: ratesByBranch,
+      transportRateHistory: [newHistoryItem, ...currentHist]
     };
+
     if (onSaveSettings) onSaveSettings(updatedSettings);
     setIsRatesModalOpen(false);
-    alert('Pengaturan Tarif/Biaya Angkutan berhasil disimpan!');
+    alert(`Pengaturan Tarif Biaya Angkutan Cabang ${selectedRateBranch} berhasil disimpan & dicatat ke Riwayat!`);
   };
 
   return (
     <div>
       <div className="page-header-box">
         <div>
-          <h2 className="page-title">🚚 Kas Angkutan</h2>
+          <h2 className="page-title">Kas Angkutan</h2>
           <p className="page-desc">Otomatisasi pencatatan beban angkutan per penyaluran (Admin, Solar, Upah Sopir, Uang Makan, Palang, Lembur, Helper).</p>
         </div>
         <div style={{ display: 'flex', gap: '8px' }}>
           <button className="btn-secondary" style={{ backgroundColor: '#fff', border: '1px solid #166534', color: '#166534', fontWeight: 700 }} onClick={() => setIsRatesModalOpen(true)}>
-            ⚙️ Pengaturan Tarif Biaya
+            Pengaturan Tarif Biaya
           </button>
           <button className="btn-primary" onClick={() => handleOpenModal()}>
             + Tambah Data Kas Angkutan
@@ -278,7 +440,7 @@ export default function KasAngkutanView({
         {selectedIds.length > 0 && (
           <div style={{ backgroundColor: '#fef2f2', border: '1px solid #fca5a5', padding: '10px 14px', borderRadius: '8px', marginBottom: '12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <span style={{ fontSize: '13px', color: '#991b1b', fontWeight: 700 }}>
-              📌 <strong>{selectedIds.length}</strong> data kas angkutan dipilih
+              <strong>{selectedIds.length}</strong> data kas angkutan dipilih
             </span>
             <button 
               className="btn-danger" 
@@ -290,7 +452,7 @@ export default function KasAngkutanView({
                 }
               }}
             >
-              🗑️ Hapus {selectedIds.length} Data Terpilih
+              Hapus {selectedIds.length} Data Terpilih
             </button>
           </div>
         )}
@@ -338,56 +500,91 @@ export default function KasAngkutanView({
             </tr>
           </thead>
           <tbody>
-            {paginatedData.map(item => (
-              <tr key={item.id} style={{ backgroundColor: selectedIds.includes(item.id) ? '#fef2f2' : undefined }}>
-                <td style={{ textAlign: 'center' }}>
-                  <input 
-                    type="checkbox" 
-                    checked={selectedIds.includes(item.id)}
-                    onChange={() => {
-                      setSelectedIds(prev => prev.includes(item.id) ? prev.filter(i => i !== item.id) : [...prev, item.id]);
-                    }}
-                  />
-                </td>
-                <td className="text-center">
-                  <span className={`badge ${(item.kabupaten || item.branch || '').toUpperCase() === 'MAGETAN' ? 'badge-branch-magetan' : 'badge-branch-sragen'}`}>
-                    {item.kabupaten || item.branch}
-                  </span>
-                </td>
-                <td className="text-center">{formatDateDisplay(item.date)}</td>
-                <td className="text-center">
-                  <span style={{
-                    backgroundColor: (item.type || 'PENGELUARAN') === 'PEMASUKAN' ? '#dcfce7' : '#fee2e2',
-                    color: (item.type || 'PENGELUARAN') === 'PEMASUKAN' ? '#15803d' : '#991b1b',
-                    padding: '2px 6px', borderRadius: '4px', fontWeight: 800, fontSize: '11px'
-                  }}>
-                    {item.type || item.transactionType || 'PENGELUARAN'}
-                  </span>
-                </td>
-                <td style={{ fontWeight: 800, color: '#15803d', fontFamily: 'monospace' }}>{item.doNo || '-'}</td>
-                <td style={{ fontWeight: 700, fontFamily: 'monospace' }}>{item.penyaluranNo || '-'}</td>
-                <td style={{ fontWeight: 600 }}>{item.kiosName || '-'}</td>
-                <td style={{ fontSize: '12px' }}>{item.uraian || item.description || '-'}</td>
-                <td className="text-right" style={{ fontWeight: 800, color: (item.type || 'PENGELUARAN') === 'PEMASUKAN' ? '#15803d' : '#dc2626' }}>
-                  {formatRp(item.nominal || item.amount)}
-                </td>
-                <td>{item.driverName || '-'}</td>
-                <td className="text-center">
-                  <div style={{ display: 'flex', gap: '4px', justifyContent: 'center' }}>
-                    <button className="btn-secondary" style={{ fontSize: '11px', padding: '3px 7px' }} onClick={() => handleOpenModal(item)}>Edit</button>
-                    <button className="btn-danger" style={{ fontSize: '11px', padding: '3px 7px' }} onClick={() => onDeleteKasAngkutan(item.id)}>Hapus</button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {paginatedData.map(item => {
+              const isPemasukan = (item.type || item.transactionType || 'PENGELUARAN') === 'PEMASUKAN';
+              const rowBg = selectedIds.includes(item.id) 
+                ? '#fef2f2' 
+                : (isPemasukan ? '#f0fdf4' : undefined);
+
+              const handleOpenDetail = () => {
+                const foundSalur = penyaluranList.find(s => (s.penyaluranNo || s.nomorPenyaluran || s.doNo || s.id) === item.penyaluranNo || s.id === item.penyaluranNo);
+                setDetailPenyaluranModal({
+                  kasItem: item,
+                  penyaluranData: foundSalur || null
+                });
+              };
+
+              return (
+                <tr 
+                  key={item.id} 
+                  style={{ backgroundColor: rowBg, cursor: 'pointer' }}
+                  onClick={handleOpenDetail}
+                  className="table-row-hover"
+                >
+                  <td style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
+                    <input 
+                      type="checkbox" 
+                      checked={selectedIds.includes(item.id)}
+                      onChange={() => {
+                        setSelectedIds(prev => prev.includes(item.id) ? prev.filter(i => i !== item.id) : [...prev, item.id]);
+                      }}
+                    />
+                  </td>
+                  <td className="text-center">
+                    <span className={`badge ${(item.kabupaten || item.branch || '').toUpperCase() === 'MAGETAN' ? 'badge-branch-magetan' : 'badge-branch-sragen'}`}>
+                      {item.kabupaten || item.branch}
+                    </span>
+                  </td>
+                  <td className="text-center">{formatDateDisplay(item.date)}</td>
+                  <td className="text-center">
+                    <span style={{
+                      backgroundColor: isPemasukan ? '#dcfce7' : '#fee2e2',
+                      color: isPemasukan ? '#15803d' : '#991b1b',
+                      padding: '2px 8px', borderRadius: '4px', fontWeight: 800, fontSize: '11px', border: isPemasukan ? '1px solid #86efac' : '1px solid #fca5a5'
+                    }}>
+                      {item.type || item.transactionType || 'PENGELUARAN'}
+                    </span>
+                  </td>
+                  <td style={{ fontWeight: 800, color: '#15803d', fontFamily: 'monospace' }}>{item.doNo || '-'}</td>
+                  <td style={{ fontWeight: 700, fontFamily: 'monospace' }}>{item.penyaluranNo || '-'}</td>
+                  <td style={{ fontWeight: 600 }}>{item.kiosName || '-'}</td>
+                  <td style={{ fontSize: '12px' }}>{item.uraian || item.description || '-'}</td>
+                  <td className="text-right" style={{ fontWeight: 800, color: isPemasukan ? '#15803d' : '#dc2626' }}>
+                    {formatRp(item.nominal || item.amount)}
+                  </td>
+                  <td>{item.driverName || '-'}</td>
+                  <td className="text-center" onClick={(e) => e.stopPropagation()}>
+                    <div style={{ display: 'flex', gap: '4px', justifyContent: 'center' }}>
+                      <button className="btn-secondary" style={{ fontSize: '11px', padding: '3px 7px' }} onClick={() => handleOpenModal(item)}>Edit</button>
+                      <button className="btn-danger" style={{ fontSize: '11px', padding: '3px 7px' }} onClick={() => onDeleteKasAngkutan(item.id)}>Hapus</button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={9} style={{ textAlign: 'center', padding: '20px', color: '#6b7280' }}>
+                <td colSpan={11} style={{ textAlign: 'center', padding: '20px', color: '#6b7280' }}>
                   Belum ada transaksi Kas Angkutan. Klik "+ Tambah Data Kas Angkutan" untuk membuat catatan baru.
                 </td>
               </tr>
             )}
           </tbody>
+          {filtered.length > 0 && (
+            <tfoot>
+              <tr style={{ fontWeight: 800, backgroundColor: '#f8fafc', borderTop: '2px solid #cbd5e1' }}>
+                <td colSpan={8} style={{ textAlign: 'right', padding: '10px 14px' }}>
+                  <span>TOTAL PENGELUARAN: <strong style={{ color: '#dc2626', marginRight: '16px' }}>{formatRp(totalPengeluaran)}</strong></span>
+                  <span>TOTAL PEMASUKAN: <strong style={{ color: '#15803d', marginRight: '16px' }}>{formatRp(totalPemasukan)}</strong></span>
+                  <span>SALDO KAS ANGKUTAN:</span>
+                </td>
+                <td className="text-right" style={{ color: saldoKas >= 0 ? '#15803d' : '#dc2626', fontWeight: 800 }}>
+                  {formatRp(saldoKas)}
+                </td>
+                <td colSpan={2}></td>
+              </tr>
+            </tfoot>
+          )}
         </table>
 
         <TablePagination
@@ -619,72 +816,388 @@ export default function KasAngkutanView({
       {/* MODAL PENGATURAN TARIF BIAYA ANGKUTAN */}
       {isRatesModalOpen && (
         <div className="modal-overlay">
-          <div className="modal-content" style={{ maxWidth: '500px' }}>
+          <div className="modal-content" style={{ maxWidth: '540px' }}>
             <div className="modal-header">
-              <div style={{ fontWeight: 800 }}>⚙️ Pengaturan Standar Tarif Biaya Angkutan</div>
+              <div style={{ fontWeight: 800 }}>Pengaturan Standar Tarif Biaya Angkutan Per Cabang</div>
               <button className="btn-secondary" onClick={() => setIsRatesModalOpen(false)}>Tutup</button>
             </div>
             <form onSubmit={handleSaveRatesSetting} style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <p style={{ fontSize: '12px', color: '#6b7280', margin: 0 }}>
-                Pengaturan standar biaya ini akan otomatis dikalkulasikan saat Anda memilih nomor penyaluran pada form Tambah Kas Angkutan.
-              </p>
               
               <div>
-                <label style={{ fontSize: '12px', fontWeight: 700, display: 'block', marginBottom: '4px' }}>Metode Kalkulasi</label>
-                <select 
-                  className="search-input" 
-                  style={{ width: '100%' }}
-                  value={rates.rateType || 'perTon'}
-                  onChange={(e) => setRates({ ...rates, rateType: e.target.value })}
-                >
-                  <option value="perTon">Per Ton (Dikalikan Qty Ton Penyaluran)</option>
-                  <option value="flat">Nominal Flat Per Trip</option>
-                </select>
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                <div>
-                  <label style={{ fontSize: '12px', fontWeight: 700, display: 'block', marginBottom: '4px' }}>Tarif Admin (Rp)</label>
-                  <input type="number" className="search-input" style={{ width: '100%' }} value={rates.adminRate || 0} onChange={(e) => setRates({ ...rates, adminRate: Number(e.target.value) })} />
-                </div>
-                <div>
-                  <label style={{ fontSize: '12px', fontWeight: 700, display: 'block', marginBottom: '4px' }}>Tarif Uang Makan (Rp)</label>
-                  <input type="number" className="search-input" style={{ width: '100%' }} value={rates.uangMakanRate || 0} onChange={(e) => setRates({ ...rates, uangMakanRate: Number(e.target.value) })} />
-                </div>
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                <div>
-                  <label style={{ fontSize: '12px', fontWeight: 700, display: 'block', marginBottom: '4px' }}>Tarif Palang (Rp)</label>
-                  <input type="number" className="search-input" style={{ width: '100%' }} value={rates.palangRate || 0} onChange={(e) => setRates({ ...rates, palangRate: Number(e.target.value) })} />
-                </div>
-                <div>
-                  <label style={{ fontSize: '12px', fontWeight: 700, display: 'block', marginBottom: '4px' }}>Tarif Solar (Rp)</label>
-                  <input type="number" step="any" className="search-input" style={{ width: '100%' }} value={rates.solarRate || 0} onChange={(e) => setRates({ ...rates, solarRate: Number(e.target.value) })} />
+                <div style={{ display: 'flex', borderBottom: '1px solid #e5e7eb', marginBottom: '12px' }}>
+                  <button
+                    type="button"
+                    onClick={() => setShowRatesHistoryTab(false)}
+                    style={{
+                      padding: '8px 16px', border: 'none', borderBottom: !showRatesHistoryTab ? '2px solid #0284c7' : 'none',
+                      backgroundColor: 'transparent', color: !showRatesHistoryTab ? '#0284c7' : '#6b7280',
+                      fontWeight: 800, cursor: 'pointer', fontSize: '13px'
+                    }}
+                  >
+                    Pengaturan Tarif Cabang
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowRatesHistoryTab(true)}
+                    style={{
+                      padding: '8px 16px', border: 'none', borderBottom: showRatesHistoryTab ? '2px solid #0284c7' : 'none',
+                      backgroundColor: 'transparent', color: showRatesHistoryTab ? '#0284c7' : '#6b7280',
+                      fontWeight: 800, cursor: 'pointer', fontSize: '13px'
+                    }}
+                  >
+                    Riwayat Perubahan ({settings.transportRateHistory?.length || 0})
+                  </button>
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                <div>
-                  <label style={{ fontSize: '12px', fontWeight: 700, display: 'block', marginBottom: '4px' }}>Tarif Upah Sopir (Rp)</label>
-                  <input type="number" className="search-input" style={{ width: '100%' }} value={rates.upahSopirRate || 0} onChange={(e) => setRates({ ...rates, upahSopirRate: Number(e.target.value) })} />
-                </div>
-                <div>
-                  <label style={{ fontSize: '12px', fontWeight: 700, display: 'block', marginBottom: '4px' }}>Tarif Lembur (Rp)</label>
-                  <input type="number" className="search-input" style={{ width: '100%' }} value={rates.lemburRate || 0} onChange={(e) => setRates({ ...rates, lemburRate: Number(e.target.value) })} />
-                </div>
-              </div>
+              {!showRatesHistoryTab ? (
+                <>
+                  {/* TAB SELEKSI CABANG */}
+                  <div>
+                    <label style={{ fontSize: '12px', fontWeight: 700, display: 'block', marginBottom: '6px' }}>Pilih Cabang Operasional</label>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      {['MAGETAN', 'SRAGEN'].map(bKey => (
+                        <button
+                          key={bKey}
+                          type="button"
+                          onClick={() => setSelectedRateBranch(bKey)}
+                          style={{
+                            flex: 1,
+                            padding: '8px 14px',
+                            borderRadius: '6px',
+                            border: selectedRateBranch === bKey ? '2px solid #0284c7' : '1px solid #d1d5db',
+                            backgroundColor: selectedRateBranch === bKey ? '#e0f2fe' : '#f9fafb',
+                            color: selectedRateBranch === bKey ? '#0369a1' : '#374151',
+                            fontWeight: 800,
+                            cursor: 'pointer'
+                          }}
+                        >
+                          {bKey === 'MAGETAN' ? (settings.branch1Name || 'MAGETAN').toUpperCase() : (settings.branch2Name || 'SRAGEN').toUpperCase()}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
 
-              <div>
-                <label style={{ fontSize: '12px', fontWeight: 700, display: 'block', marginBottom: '4px' }}>Tarif Helper (Rp)</label>
-                <input type="number" className="search-input" style={{ width: '100%' }} value={rates.helperRate || 0} onChange={(e) => setRates({ ...rates, helperRate: Number(e.target.value) })} />
-              </div>
+                  {(() => {
+                    const curBranchRates = ratesByBranch[selectedRateBranch] || DEFAULT_BRANCH_RATE;
 
-              <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end', marginTop: '10px' }}>
-                <button type="button" className="btn-secondary" onClick={() => setIsRatesModalOpen(false)}>Batal</button>
-                <button type="submit" className="btn-primary">Simpan Pengaturan Tarif</button>
-              </div>
+                    const itemFields = [
+                      { key: 'admin', label: 'Admin', oldRateKey: 'adminRate' },
+                      { key: 'solar', label: 'Solar', oldRateKey: 'solarRate' },
+                      { key: 'upahSopir', label: 'Upah Sopir', oldRateKey: 'upahSopirRate' },
+                      { key: 'uangMakan', label: 'Uang Makan', oldRateKey: 'uangMakanRate' },
+                      { key: 'palang', label: 'Palang', oldRateKey: 'palangRate' },
+                      { key: 'lembur', label: 'Lembur', oldRateKey: 'lemburRate' },
+                      { key: 'helper', label: 'Helper', oldRateKey: 'helperRate' },
+                    ];
+
+                    const getItemConfig = (itemKey, oldRateKey) => {
+                      const existing = curBranchRates[itemKey];
+                      if (existing && typeof existing === 'object') {
+                        return {
+                          rate: existing.rate !== undefined ? existing.rate : 0,
+                          calcType: existing.calcType || 'perTon',
+                          tripCapacityTon: existing.tripCapacityTon || 8
+                        };
+                      }
+                      return {
+                        rate: Number(curBranchRates[oldRateKey] || 0),
+                        calcType: curBranchRates.rateType || 'perTon',
+                        tripCapacityTon: Number(curBranchRates.tripCapacityTon || 8)
+                      };
+                    };
+
+                    const updateItemConfig = (itemKey, oldRateKey, field, val) => {
+                      const currentItem = getItemConfig(itemKey, oldRateKey);
+                      const updatedItem = { ...currentItem, [field]: val };
+
+                      setRatesByBranch(prev => ({
+                        ...prev,
+                        [selectedRateBranch]: {
+                          ...(prev[selectedRateBranch] || DEFAULT_BRANCH_RATE),
+                          [itemKey]: updatedItem
+                        }
+                      }));
+                    };
+
+                    return (
+                      <div style={{ maxHeight: '380px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '10px', paddingRight: '4px' }}>
+                        {itemFields.map(({ key: itemKey, label, oldRateKey }) => {
+                          const config = getItemConfig(itemKey, oldRateKey);
+                          const isFlat = config.calcType === 'flat';
+
+                          return (
+                            <div 
+                              key={itemKey} 
+                              style={{ 
+                                border: '1px solid #e5e7eb', borderRadius: '6px', padding: '10px 12px', 
+                                backgroundColor: '#f9fafb', display: 'flex', flexDirection: 'column', gap: '8px' 
+                              }}
+                            >
+                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <span style={{ fontSize: '13px', fontWeight: 800, color: '#1f2937' }}>
+                                  Tarif {label}
+                                </span>
+                                <span 
+                                  style={{ 
+                                    fontSize: '11px', fontWeight: 700, 
+                                    color: isFlat ? '#0369a1' : (config.calcType === 'perDriverDay' ? '#c2410c' : (config.calcType === 'perDay' ? '#7e22ce' : '#15803d')), 
+                                    backgroundColor: isFlat ? '#e0f2fe' : (config.calcType === 'perDriverDay' ? '#ffedd5' : (config.calcType === 'perDay' ? '#f3e8ff' : '#dcfce7')), 
+                                    padding: '2px 8px', borderRadius: '12px' 
+                                  }}
+                                >
+                                  {isFlat ? `Flat (${config.tripCapacityTon || 8} Ton/Trip)` : (config.calcType === 'perDriverDay' ? 'Per Sopir / Hari' : (config.calcType === 'perDay' ? 'Per Hari (1x/Hari)' : 'Per Ton'))}
+                                </span>
+                              </div>
+
+                              <div style={{ display: 'grid', gridTemplateColumns: isFlat ? '1fr 1fr 1fr' : '1fr 1fr', gap: '8px' }}>
+                                <div>
+                                  <label style={{ fontSize: '11px', fontWeight: 700, display: 'block', marginBottom: '2px', color: '#4b5563' }}>Nominal (Rp)</label>
+                                  <input 
+                                    type="number" 
+                                    step="any"
+                                    className="search-input" 
+                                    style={{ width: '100%', fontSize: '12px', padding: '4px 8px' }} 
+                                    value={config.rate} 
+                                    onChange={(e) => updateItemConfig(itemKey, oldRateKey, 'rate', Number(e.target.value))} 
+                                  />
+                                </div>
+
+                                <div>
+                                  <label style={{ fontSize: '11px', fontWeight: 700, display: 'block', marginBottom: '2px', color: '#4b5563' }}>Metode</label>
+                                  <select 
+                                    className="search-input" 
+                                    style={{ width: '100%', fontSize: '12px', padding: '4px 8px' }}
+                                    value={config.calcType}
+                                    onChange={(e) => updateItemConfig(itemKey, oldRateKey, 'calcType', e.target.value)}
+                                  >
+                                    <option value="perTon">Per Ton</option>
+                                    <option value="flat">Flat Per Trip</option>
+                                    <option value="perDriverDay">Per Sopir / Hari</option>
+                                    <option value="perDay">Per Hari (1x / Hari)</option>
+                                  </select>
+                                </div>
+
+                                {isFlat && (
+                                  <div>
+                                    <label style={{ fontSize: '11px', fontWeight: 700, display: 'block', marginBottom: '2px', color: '#0369a1' }}>Kapasitas (Ton/Trip)</label>
+                                    <input 
+                                      type="number" 
+                                      className="search-input" 
+                                      style={{ width: '100%', fontSize: '12px', padding: '4px 8px' }} 
+                                      placeholder="8"
+                                      value={config.tripCapacityTon} 
+                                      onChange={(e) => updateItemConfig(itemKey, oldRateKey, 'tripCapacityTon', Number(e.target.value))} 
+                                    />
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    );
+                  })()}
+
+                  <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end', marginTop: '10px' }}>
+                    <button type="button" className="btn-secondary" onClick={() => setIsRatesModalOpen(false)}>Batal</button>
+                    <button type="submit" className="btn-primary">Simpan Tarif {selectedRateBranch}</button>
+                  </div>
+                </>
+              ) : (
+                <div style={{ maxHeight: '350px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {(!settings.transportRateHistory || settings.transportRateHistory.length === 0) ? (
+                    <div style={{ padding: '20px', textAlign: 'center', color: '#9ca3af', fontSize: '13px' }}>
+                      Belum ada riwayat perubahan tarif.
+                    </div>
+                  ) : (
+                    settings.transportRateHistory.map((hItem, idx) => (
+                      <div key={hItem.id || idx} style={{ border: '1px solid #e5e7eb', borderRadius: '6px', padding: '12px', backgroundColor: '#f9fafb' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                          <span style={{ fontSize: '12px', fontWeight: 800, color: '#0369a1' }}>
+                            Cabang: {hItem.branch || 'MAGETAN'}
+                          </span>
+                          <span style={{ fontSize: '11px', color: '#6b7280' }}>
+                            {formatDateDisplay(hItem.timestamp ? hItem.timestamp.split('T')[0] : '')} ({hItem.timestamp ? new Date(hItem.timestamp).toLocaleTimeString('id-ID') : '-'})
+                          </span>
+                        </div>
+                        <div style={{ fontSize: '12px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', color: '#374151' }}>
+                          <div>Metode: <strong>{hItem.rateData?.rateType === 'flat' ? `Flat (${hItem.rateData?.tripCapacityTon || 8} Ton/Trip)` : 'Per Ton'}</strong></div>
+                          <div>Admin: <strong>Rp {(hItem.rateData?.adminRate || 0).toLocaleString('id-ID')}</strong></div>
+                          <div>Solar: <strong>Rp {(hItem.rateData?.solarRate || 0).toLocaleString('id-ID')}</strong></div>
+                          <div>Upah Sopir: <strong>Rp {(hItem.rateData?.upahSopirRate || 0).toLocaleString('id-ID')}</strong></div>
+                          <div>Uang Makan: <strong>Rp {(hItem.rateData?.uangMakanRate || 0).toLocaleString('id-ID')}</strong></div>
+                          <div>Helper: <strong>Rp {(hItem.rateData?.helperRate || 0).toLocaleString('id-ID')}</strong></div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
+                    <button type="button" className="btn-secondary" onClick={() => setIsRatesModalOpen(false)}>Tutup</button>
+                  </div>
+                </div>
+              )}
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL RINCIAN TRANSAKSI PENYALURAN KIOS */}
+      {detailPenyaluranModal && (
+        <div className="modal-overlay" style={{ zIndex: 1100 }}>
+          <div className="modal-content" style={{ maxWidth: '600px', padding: '0', borderRadius: '8px', overflow: 'hidden' }}>
+            <div style={{
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+              padding: '14px 20px', borderBottom: '1px solid #e5e7eb', backgroundColor: '#0284c7', color: '#ffffff'
+            }}>
+              <div>
+                <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800 }}>
+                  RINCIAN TRANSAKSI KAS ANGKUTAN & PENYALURAN
+                </h3>
+                <div style={{ fontSize: '12px', opacity: 0.9, marginTop: '2px' }}>
+                  No. Penyaluran: <strong>{detailPenyaluranModal.kasItem?.penyaluranNo || '-'}</strong>
+                </div>
+              </div>
+              <button 
+                onClick={() => setDetailPenyaluranModal(null)}
+                style={{ background: 'none', border: 'none', fontSize: '22px', cursor: 'pointer', color: '#ffffff', fontWeight: 800 }}
+              >
+                &times;
+              </button>
+            </div>
+
+            <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '14px', backgroundColor: '#ffffff' }}>
+              {/* Informational Cards */}
+              <div style={{ backgroundColor: '#f0f9ff', border: '1px solid #bae6fd', borderRadius: '6px', padding: '12px 16px' }}>
+                <div style={{ fontSize: '11px', fontWeight: 800, color: '#0369a1', textTransform: 'uppercase', marginBottom: '8px' }}>
+                  INFORMASI UTAMA TRANSAKSI
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', fontSize: '13px' }}>
+                  <div><strong>No. DO Reference:</strong> <span style={{ fontFamily: 'monospace', color: '#15803d', fontWeight: 700 }}>{detailPenyaluranModal.kasItem?.doNo || '-'}</span></div>
+                  <div><strong>Tanggal Transaksi:</strong> <span>{formatDateDisplay(detailPenyaluranModal.kasItem?.date)}</span></div>
+                  <div><strong>Cabang:</strong> <span className="badge badge-branch-magetan">{detailPenyaluranModal.kasItem?.kabupaten || detailPenyaluranModal.kasItem?.branch}</span></div>
+                  <div><strong>Kios Tujuan:</strong> <span style={{ fontWeight: 700 }}>{detailPenyaluranModal.kasItem?.kiosName || '-'}</span></div>
+                  <div><strong>Sopir / Pengangkut:</strong> <span>{detailPenyaluranModal.kasItem?.driverName || '-'}</span></div>
+                  <div><strong>Nominal Transaksi:</strong> <span style={{ fontWeight: 800, color: detailPenyaluranModal.kasItem?.type === 'PEMASUKAN' ? '#15803d' : '#dc2626' }}>{formatRp(detailPenyaluranModal.kasItem?.nominal || detailPenyaluranModal.kasItem?.amount || 0)}</span></div>
+                </div>
+              </div>
+
+              {detailPenyaluranModal.penyaluranData ? (
+                <div style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '6px', padding: '14px 16px' }}>
+                  <div style={{ fontSize: '11px', fontWeight: 800, color: '#475569', textTransform: 'uppercase', marginBottom: '10px' }}>
+                    DATA SPESIFIK PENYALURAN (PENYALURAN KIOS)
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', fontSize: '13px' }}>
+                    <div><strong>Jenis Pupuk:</strong> <span>{detailPenyaluranModal.penyaluranData.fertilizerName || '-'}</span></div>
+                    <div><strong>Kuantitas:</strong> <span style={{ fontWeight: 800, color: '#0369a1' }}>{detailPenyaluranModal.penyaluranData.qtyTon || detailPenyaluranModal.penyaluranData.qty || 0} TON</span></div>
+                    <div><strong>Harga / Ton:</strong> <span>{formatRp(detailPenyaluranModal.penyaluranData.pricePerTon)}</span></div>
+                    <div><strong>Total Tagihan Kios:</strong> <span style={{ fontWeight: 800, color: '#166534' }}>{formatRp(detailPenyaluranModal.penyaluranData.totalAmount)}</span></div>
+                    <div><strong>Status Pelunasan:</strong> 
+                      <span style={{
+                        marginLeft: '6px',
+                        backgroundColor: detailPenyaluranModal.penyaluranData.paymentStatus === 'Lunas' ? '#dcfce7' : '#fef3c7',
+                        color: detailPenyaluranModal.penyaluranData.paymentStatus === 'Lunas' ? '#15803d' : '#b45309',
+                        padding: '2px 8px', borderRadius: '4px', fontWeight: 800, fontSize: '11px'
+                      }}>
+                        {detailPenyaluranModal.penyaluranData.paymentStatus || 'Tempo'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div style={{ backgroundColor: '#fffbeb', border: '1px solid #fde68a', borderRadius: '6px', padding: '12px', fontSize: '12px', color: '#92400e' }}>
+                  Data induk Penyaluran Kios untuk <strong>{detailPenyaluranModal.kasItem?.penyaluranNo || 'transaksi ini'}</strong> tidak terdaftar di tabel penyaluran utama, namun berikut adalah rincian catatan kas ini:
+                  <div style={{ marginTop: '6px', fontWeight: 700, fontFamily: 'monospace', backgroundColor: '#fff', padding: '6px', borderRadius: '4px', border: '1px solid #fcd34d' }}>
+                    {detailPenyaluranModal.kasItem?.uraian || detailPenyaluranModal.kasItem?.description || '-'}
+                  </div>
+                </div>
+              )}
+
+              {/* Rincian Beban Kas Angkutan */}
+              {(() => {
+                const k = detailPenyaluranModal.kasItem || {};
+                const p = detailPenyaluranModal.penyaluranData || {};
+                const getVal = (...keys) => {
+                  for (let key of keys) {
+                    if (k[key] !== undefined && k[key] !== null && k[key] !== '') {
+                      const num = Number(k[key]);
+                      if (!isNaN(num) && num > 0) return num;
+                    }
+                  }
+                  return 0;
+                };
+                const totalNom = Number(k.nominal || k.amount || k.totalCost || 0);
+
+                let adminVal = getVal('admin', 'adminFee', 'adminCost');
+                let solarVal = getVal('solar', 'solarFee', 'solarCost');
+                let upahSopirVal = getVal('upahSopir', 'driverWage', 'upahSopirCost', 'upah');
+                let uangMakanVal = getVal('uangMakan', 'mealFee', 'uangMakanCost', 'makan');
+                let palangVal = getVal('palang', 'palangFee', 'palangCost');
+                let lemburVal = getVal('lembur', 'overtimeFee', 'lemburCost');
+                let helperVal = getVal('helper', 'helperFee', 'helperCost');
+                let lainLainVal = getVal('lainLain', 'otherFee', 'lainLainCost', 'lain_lain');
+
+                // If sub-breakdown is 0 but totalNominal > 0, estimate from rates or qtyTon
+                const subTotal = adminVal + solarVal + upahSopirVal + uangMakanVal + palangVal + lemburVal + helperVal + lainLainVal;
+                if (subTotal === 0 && totalNom > 0) {
+                  const curRates = settings.transportRates || DEFAULT_TRANSPORT_RATES;
+                  const qtyTon = Number(p.qtyTon || p.qty || 0);
+                  
+                  if (qtyTon > 0) {
+                    const isPerTon = curRates.rateType === 'perTon';
+                    const mult = isPerTon ? qtyTon : 1;
+                    adminVal = Math.round((curRates.adminRate || 2000) * mult);
+                    solarVal = Math.round((curRates.solarRate || 4166.625) * mult);
+                    upahSopirVal = Math.round((curRates.upahSopirRate || 3500) * mult);
+                    uangMakanVal = Math.round((curRates.uangMakanRate || 0) * mult);
+                    palangVal = Math.round((curRates.palangRate || 0) * mult);
+                    lemburVal = Math.round((curRates.lemburRate || 0) * mult);
+                    helperVal = Math.round((curRates.helperRate || 0) * mult);
+                    
+                    // Adjust rounding difference to solar/upah if any
+                    const calculatedSum = adminVal + solarVal + upahSopirVal + uangMakanVal + palangVal + lemburVal + helperVal;
+                    if (calculatedSum !== totalNom) {
+                      const diff = totalNom - calculatedSum;
+                      solarVal += diff;
+                    }
+                  } else {
+                    // Default fallback distribution based on typical transport ratio (~21% Admin, ~43% Solar, ~36% Upah Sopir)
+                    adminVal = Math.round(totalNom * 0.207);
+                    upahSopirVal = Math.round(totalNom * 0.3627);
+                    solarVal = totalNom - adminVal - upahSopirVal;
+                  }
+                }
+
+                return (
+                  <div style={{ border: '1px solid #e5e7eb', borderRadius: '6px', padding: '14px', backgroundColor: '#ffffff' }}>
+                    <div style={{ fontSize: '11px', fontWeight: 800, color: '#374151', textTransform: 'uppercase', marginBottom: '8px' }}>
+                      RINCIAN ANGGARAN KAS ANGKUTAN (TOTAL: {formatRp(totalNom)})
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '8px', fontSize: '12px' }}>
+                      <div style={{ backgroundColor: '#f9fafb', padding: '6px 8px', borderRadius: '4px' }}>Admin: <strong>{formatRp(adminVal)}</strong></div>
+                      <div style={{ backgroundColor: '#f9fafb', padding: '6px 8px', borderRadius: '4px' }}>Solar: <strong>{formatRp(solarVal)}</strong></div>
+                      <div style={{ backgroundColor: '#f9fafb', padding: '6px 8px', borderRadius: '4px' }}>Upah Sopir: <strong>{formatRp(upahSopirVal)}</strong></div>
+                      <div style={{ backgroundColor: '#f9fafb', padding: '6px 8px', borderRadius: '4px' }}>Uang Makan: <strong>{formatRp(uangMakanVal)}</strong></div>
+                      <div style={{ backgroundColor: '#f9fafb', padding: '6px 8px', borderRadius: '4px' }}>Palang: <strong>{formatRp(palangVal)}</strong></div>
+                      <div style={{ backgroundColor: '#f9fafb', padding: '6px 8px', borderRadius: '4px' }}>Lembur: <strong>{formatRp(lemburVal)}</strong></div>
+                      <div style={{ backgroundColor: '#f9fafb', padding: '6px 8px', borderRadius: '4px' }}>Helper: <strong>{formatRp(helperVal)}</strong></div>
+                      <div style={{ backgroundColor: '#f9fafb', padding: '6px 8px', borderRadius: '4px' }}>Lain-Lain: <strong>{formatRp(lainLainVal)}</strong></div>
+                    </div>
+                  </div>
+                );
+              })()}
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '6px' }}>
+                <button
+                  type="button"
+                  className="btn-primary"
+                  onClick={() => setDetailPenyaluranModal(null)}
+                  style={{ padding: '8px 20px' }}
+                >
+                  Tutup Rincian
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

@@ -160,18 +160,34 @@ export function normalizePenyaluranList(rawList = []) {
 
     const qty = Number(item.qtyTon || item.qty || 0);
     const totalAmount = Number(item.total || item.totalAmount || 0);
-    const paidAmount = Number(item.diBayar || item.paidAmount || 0);
-    const remainingAmount = item.kurangBayar !== undefined 
-      ? Number(item.kurangBayar) 
-      : Math.max(0, totalAmount - paidAmount);
+    const rawDiBayar = item.totalBayarTempo !== undefined 
+      ? Number(item.totalBayarTempo) 
+      : (item.totalBayar !== undefined 
+        ? Number(item.totalBayar) 
+        : (item.diBayar !== undefined 
+          ? Number(item.diBayar) 
+          : (item.paidAmount !== undefined ? Number(item.paidAmount) : undefined)));
+    const rawKurangBayar = item.kurangBayar !== undefined ? Number(item.kurangBayar) : (item.remainingAmount !== undefined ? Number(item.remainingAmount) : undefined);
+
+    if (rawKurangBayar !== undefined) {
+      remainingAmount = rawKurangBayar;
+      paidAmount = Math.max(0, totalAmount - remainingAmount);
+    } else if (rawDiBayar !== undefined) {
+      paidAmount = rawDiBayar;
+      remainingAmount = Math.max(0, totalAmount - paidAmount);
+    } else {
+      paidAmount = 0;
+      remainingAmount = totalAmount;
+    }
 
     const pricePerTon = qty > 0 ? Math.round(totalAmount / qty) : Number(item.pricePerTon || 0);
 
-    let paymentStatus = cleanStr(item.keterangan || item.paymentStatus || 'Tempo');
-    if (paymentStatus.toUpperCase().includes('LUNAS') || remainingAmount <= 0) {
-      paymentStatus = 'Lunas';
-    } else {
+    const rawKet = cleanStr(item.keterangan || item.paymentStatus || '').toUpperCase();
+    let paymentStatus = 'Tempo';
+    if (rawKet.includes('BELUM LUNAS') || rawKet.includes('TEMPO') || remainingAmount > 0) {
       paymentStatus = 'Tempo';
+    } else if (rawKet.includes('LUNAS') || remainingAmount <= 0) {
+      paymentStatus = 'Lunas';
     }
 
     const kiosName = cleanStr(item.namaKios || item.kiosName, 'Kios Tani');
@@ -315,14 +331,24 @@ export function normalizeKasAngkutanList(rawList = []) {
       driverName: cleanStr(item.driverName || item.namaSopir || item.sopir || ''),
       transactionType: cleanStr(item.transactionType || item.tipePengeluaran, 'Pengeluaran Kas Angkutan'),
       description: cleanStr(item.description || item.uraian || item.notes || ''),
+      uraian: cleanStr(item.description || item.uraian || item.notes || ''),
       amount,
+      nominal: amount,
+      admin: adminFee,
       adminFee,
+      uangMakan: mealFee,
       mealFee,
+      palang: palangFee,
       palangFee,
+      solar: solarFee,
       solarFee,
+      upahSopir: driverWage,
       driverWage,
+      lembur: overtimeFee,
       overtimeFee,
+      helper: helperFee,
       helperFee,
+      lainLain: otherFee,
       otherFee,
       notes: cleanStr(item.catatan || item.notes || '')
     };
@@ -333,22 +359,44 @@ export function normalizeKasUmumList(rawList = []) {
   if (!Array.isArray(rawList)) return [];
   return rawList.map((item, idx) => {
     const branch = item.kabupaten === 'SRAGEN' ? 'Sragen' : (item.kabupaten === 'MAGETAN' ? 'Magetan' : cleanStr(item.branch, 'Magetan'));
-    let type = cleanStr(item.type || item.tipe || item.jenis || 'Keluar');
-    if (type.toLowerCase().includes('masuk') || type.toLowerCase().includes('in')) {
-      type = 'Masuk';
+    
+    const pem = Number(item.pemasukan || item.masuk || 0);
+    const peng = Number(item.pengeluaran || item.keluar || 0);
+    
+    let type = 'Pengeluaran';
+    let amt = 0;
+
+    if (pem > 0) {
+      type = 'Pemasukan';
+      amt = pem;
+    } else if (peng > 0) {
+      type = 'Pengeluaran';
+      amt = peng;
     } else {
-      type = 'Keluar';
+      let rawType = cleanStr(item.type || item.tipe || item.jenis || 'Pengeluaran');
+      if (rawType.toLowerCase().includes('masuk') || rawType.toLowerCase().includes('in')) {
+        type = 'Pemasukan';
+      } else {
+        type = 'Pengeluaran';
+      }
+      amt = Number(item.amount || item.nominal || item.total || item.jumlah || item.nilai || 0);
     }
 
+    const desc = cleanStr(item.uraian || item.description || item.keterangan || item.catatan || '-');
+
     return {
+      ...item,
       id: cleanStr(item.id || `KU-${idx + 1}`),
       branch,
       date: parseDateStandard(item.tanggal || item.date),
       type,
       category: cleanStr(item.category || item.kategori || item.jenisPengeluaran, 'Operasional'),
-      description: cleanStr(item.description || item.uraian || item.keterangan || ''),
-      amount: Number(item.amount || item.nominal || item.total || 0),
-      notes: cleanStr(item.catatan || '')
+      description: desc,
+      amount: amt,
+      nominal: amt,
+      notes: desc,
+      catatan: desc,
+      recipient: cleanStr(item.recipient || item.penerima || '-')
     };
   });
 }

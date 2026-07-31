@@ -4,11 +4,14 @@ import DateFilterBar, { matchesDateFilter } from './DateFilterBar';
 import { useSortableTable, SortIcon } from '../utils/useSortableTable';
 import { usePagination } from '../utils/usePagination';
 import TablePagination from './TablePagination';
+import ModalDetailTransaksi from './ModalDetailTransaksi';
+
 export default function PenebusanView({ 
   selectedBranch, penebusanList, doList, onAddNew, onEdit, onOpenNextStage, onDelete, onDeleteMultiple, onOpenPrint, settings, onNavigate
 }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedIds, setSelectedIds] = useState([]);
+  const [detailModalItem, setDetailModalItem] = useState(null);
   const [filterState, setFilterState] = useState({
     mode: 'all', dailyDate: '', startDate: '', endDate: '', month: '',
     year: new Date().getFullYear().toString()
@@ -114,8 +117,13 @@ export default function PenebusanView({
               const doneTon = doList.filter(d => d.penebusanId === item.id || d.doNo === item.doNo).reduce((s, d) => s + Number(d.qtyTon || d.qty || 0), 0);
               const sisaTon = Math.max(0, Number(item.qtyTon || item.qty || 0) - doneTon);
               return (
-                <tr key={item.id} style={{ backgroundColor: selectedIds.includes(item.id) ? '#fef2f2' : undefined }}>
-                  <td style={{ textAlign: 'center' }}>
+                <tr 
+                  key={item.id} 
+                  style={{ backgroundColor: selectedIds.includes(item.id) ? '#fef2f2' : undefined, cursor: 'pointer' }}
+                  onClick={() => setDetailModalItem(item)}
+                  className="table-row-hover"
+                >
+                  <td style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
                     <input 
                       type="checkbox" 
                       checked={selectedIds.includes(item.id)}
@@ -133,7 +141,7 @@ export default function PenebusanView({
                   <td className="text-right">{doneTon.toFixed(1)} Ton</td>
                   <td className="text-right" style={{ fontWeight: 700, color: sisaTon > 0 ? '#15803d' : '#9ca3af' }}>{sisaTon.toFixed(1)} Ton</td>
                   <td className="text-right" style={{ fontWeight: 700 }}>{formatRp(item.totalAmount || item.totalCost || 0)}</td>
-                  <td className="text-center">
+                  <td className="text-center" onClick={(e) => e.stopPropagation()}>
                     <div style={{ display: 'flex', gap: '4px', justifyContent: 'center', flexWrap: 'wrap' }}>
                       {sisaTon > 0 && (
                         <button
@@ -159,6 +167,33 @@ export default function PenebusanView({
               </td></tr>
             )}
           </tbody>
+          {filtered.length > 0 && (
+            <tfoot>
+              <tr style={{ fontWeight: 800, backgroundColor: '#f8fafc', borderTop: '2px solid #cbd5e1' }}>
+                <td colSpan={6} style={{ textAlign: 'right', padding: '10px 14px' }}>TOTAL KESELURUHAN:</td>
+                <td className="text-right" style={{ color: '#0369a1' }}>
+                  {filtered.reduce((s, i) => s + Number(i.qtyTon || i.qty || 0), 0).toFixed(1)} Ton
+                </td>
+                <td className="text-right" style={{ color: '#475569' }}>
+                  {filtered.reduce((sum, item) => {
+                    const doneTon = (doList || []).filter(d => d && (d.penebusanId === item.id || d.doNo === item.doNo)).reduce((s, d) => s + Number(d.qtyTon || d.qty || 0), 0);
+                    return sum + doneTon;
+                  }, 0).toFixed(1)} Ton
+                </td>
+                <td className="text-right" style={{ color: '#15803d' }}>
+                  {filtered.reduce((sum, item) => {
+                    const doneTon = (doList || []).filter(d => d && (d.penebusanId === item.id || d.doNo === item.doNo)).reduce((s, d) => s + Number(d.qtyTon || d.qty || 0), 0);
+                    const sisaTon = Math.max(0, Number(item.qtyTon || item.qty || 0) - doneTon);
+                    return sum + sisaTon;
+                  }, 0).toFixed(1)} Ton
+                </td>
+                <td className="text-right" style={{ color: '#166534' }}>
+                  {formatRp(filtered.reduce((s, i) => s + Number(i.totalAmount || i.totalCost || 0), 0))}
+                </td>
+                <td></td>
+              </tr>
+            </tfoot>
+          )}
         </table>
         <TablePagination 
           currentPage={currentPage} 
@@ -169,6 +204,13 @@ export default function PenebusanView({
           setItemsPerPage={setItemsPerPage}
         />
       </div>
+
+      <ModalDetailTransaksi 
+        isOpen={Boolean(detailModalItem)}
+        onClose={() => setDetailModalItem(null)}
+        data={detailModalItem}
+        type="penebusan"
+      />
     </div>
   );
 }

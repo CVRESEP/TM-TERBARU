@@ -1,0 +1,7602 @@
+[
+  {
+    "id": "0BtHXYpFvkaJFrVF2ZB0",
+    "branch": "Magetan",
+    "date": "2026-01-27",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "IURAN ACARA PI",
+    "amount": 150000,
+    "notes": "IURAN ACARA PI"
+  },
+  {
+    "id": "0Ft0U2L73VrErEoZ21ju",
+    "branch": "Sragen",
+    "date": "2025-11-20",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "PDAM",
+    "amount": 158000,
+    "notes": "PDAM"
+  },
+  {
+    "id": "0GQJrqJHlIkx5LS1UJE9",
+    "branch": "Sragen",
+    "date": "2026-06-20",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "0Iseu337q8ngW03v0k6s",
+    "branch": "Sragen",
+    "date": "2025-10-02",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "0MyhrqZheKtOIqUQSFgn",
+    "branch": "Sragen",
+    "date": "2025-10-24",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BENSIN VARIO ",
+    "amount": 100000,
+    "notes": "BENSIN VARIO "
+  },
+  {
+    "id": "0PbEPi8Ah4oU2hfNXAC7",
+    "branch": "Magetan",
+    "date": "2026-05-23",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BENSIN",
+    "amount": 100000,
+    "notes": "BENSIN"
+  },
+  {
+    "id": "0cgPkMMG9c44q9yskKwa",
+    "branch": "Sragen",
+    "date": "2025-09-17",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BENSIN VARIO",
+    "amount": 20000,
+    "notes": "BENSIN VARIO"
+  },
+  {
+    "id": "0kXgP30eRUuRcIwZDl0c",
+    "branch": "Sragen",
+    "date": "2025-10-13",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "0sZAktJfoNbyW2sEERIw",
+    "branch": "Sragen",
+    "date": "2026-04-15",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "0sujPvwsJSKg45iJvBOl",
+    "branch": "Sragen",
+    "date": "2026-04-13",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "0udTPi5vOIGJu6x6uvaQ",
+    "branch": "Sragen",
+    "date": "2026-06-05",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "IURA PERUM ROYAL AMERTA",
+    "amount": 170000,
+    "notes": "IURA PERUM ROYAL AMERTA"
+  },
+  {
+    "id": "0vfie9zK9AsMhFafSrvQ",
+    "branch": "Magetan",
+    "date": "2025-10-02",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "IURAN DOORPRISE KIOS",
+    "amount": 300000,
+    "notes": "IURAN DOORPRISE KIOS"
+  },
+  {
+    "id": "0yZYgYW6k2sZKOrZe5Un",
+    "branch": "Magetan",
+    "date": "2026-01-13",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "MATREI PENUNJUKAN",
+    "amount": 360000,
+    "notes": "MATREI PENUNJUKAN"
+  },
+  {
+    "id": "12dLtSWAfzUTkyal7ti1",
+    "branch": "Sragen",
+    "date": "2026-06-30",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "KAS UMUM",
+    "amount": 1000000,
+    "notes": "KAS UMUM"
+  },
+  {
+    "id": "17ndX2x5I0HTpOUEIDvk",
+    "branch": "Magetan",
+    "date": "2026-07-22",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "WIFI",
+    "amount": 328200,
+    "notes": "WIFI"
+  },
+  {
+    "id": "1FK7rDg11NbejDx104VE",
+    "branch": "Sragen",
+    "date": "2026-01-19",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "1Gb2IDWb2MhD6tSeovyE",
+    "branch": "Magetan",
+    "date": "2026-04-29",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 2000000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "1Q8woHxq8vj3FWkr9mmZ",
+    "branch": "Sragen",
+    "date": "2026-04-30",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "IURAN PEPISAHAN BU EKA DINAS PERTANIAN",
+    "amount": 255000,
+    "notes": "IURAN PEPISAHAN BU EKA DINAS PERTANIAN"
+  },
+  {
+    "id": "1TY0O3kjECBSK4ZicHqj",
+    "branch": "Sragen",
+    "date": "2026-03-17",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TAMBAHAN PEMBAYARAN WIFI ",
+    "amount": 148000,
+    "notes": "TAMBAHAN PEMBAYARAN WIFI "
+  },
+  {
+    "id": "1VvGVyhJZkQHZ3QnJhz4",
+    "branch": "Sragen",
+    "date": "2026-06-10",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "KAS UMUM",
+    "amount": 1405000,
+    "notes": "KAS UMUM"
+  },
+  {
+    "id": "1ad4VYKn20Xcu2JIzUxe",
+    "branch": "Sragen",
+    "date": "2025-09-15",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TOKEN LISTRIK",
+    "amount": 105000,
+    "notes": "TOKEN LISTRIK"
+  },
+  {
+    "id": "1fLAXvjMRnFJZw3cteEj",
+    "branch": "Sragen",
+    "date": "2026-01-29",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "1mUvUgzpaWHSh2qQzVC1",
+    "branch": "Sragen",
+    "date": "2026-02-28",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "1vyVgOPYknYyjYi6knRv",
+    "branch": "Magetan",
+    "date": "2025-09-10",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "MAMIN",
+    "amount": 50000,
+    "notes": "MAMIN"
+  },
+  {
+    "id": "1wLaqjFCOVxCvEMPwq2w",
+    "branch": "Magetan",
+    "date": "2026-01-15",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 2000000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "22aTsDxMHsnqTJKxoEOv",
+    "branch": "Magetan",
+    "date": "2026-03-14",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 1000000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "27VWYUjC7oYRStMpJ8UI",
+    "branch": "Magetan",
+    "date": "2025-10-08",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 1500000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "2CqMxowjZsvhRCTdzaTr",
+    "branch": "Sragen",
+    "date": "2026-07-28",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TOKEN LISTRIK",
+    "amount": 105000,
+    "notes": "TOKEN LISTRIK"
+  },
+  {
+    "id": "2DEbbdYidQsre6Zp550b",
+    "branch": "Sragen",
+    "date": "2026-03-04",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 400000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "2GwkHABAEG6MISXmU46u",
+    "branch": "Sragen",
+    "date": "2025-10-07",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TOKEN LISTRIK",
+    "amount": 105000,
+    "notes": "TOKEN LISTRIK"
+  },
+  {
+    "id": "2NN1BU5Rsb6ox9vyuXtb",
+    "branch": "Sragen",
+    "date": "2026-06-11",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "2YW671zDkioZpfgsUjlF",
+    "branch": "Sragen",
+    "date": "2026-07-15",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "GAJI IBU YANG BANTU DI SRAGEN BULAN JUNI",
+    "amount": 600000,
+    "notes": "GAJI IBU YANG BANTU DI SRAGEN BULAN JUNI"
+  },
+  {
+    "id": "2dw3U0zbe6KoLuR4KbgN",
+    "branch": "Sragen",
+    "date": "2026-04-27",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "AQUA GALON",
+    "amount": 24000,
+    "notes": "AQUA GALON"
+  },
+  {
+    "id": "2em91cTA1k9XNrC7ZiKm",
+    "branch": "Magetan",
+    "date": "2026-04-27",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 1500000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "2mrdfk4xW2gJ6nEUcXZT",
+    "branch": "Sragen",
+    "date": "2026-02-24",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "STAMPEL TM",
+    "amount": 80000,
+    "notes": "STAMPEL TM"
+  },
+  {
+    "id": "2oOkHoGgqR6Lf0nqzG4G",
+    "branch": "Sragen",
+    "date": "2026-07-28",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "2ryg4vpLNEHrFtUVQIcd",
+    "branch": "Sragen",
+    "date": "2025-10-15",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "2uLkd3fgPe8ogixepeYN",
+    "branch": "Sragen",
+    "date": "2026-06-23",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "REKON LAPORAN BULAN JUNI-MEI DAN KIRIM HARD COPY NOTA RETUR PSP",
+    "amount": 400000,
+    "notes": "REKON LAPORAN BULAN JUNI-MEI DAN KIRIM HARD COPY NOTA RETUR PSP"
+  },
+  {
+    "id": "33NGqATiLoci9Z2is0h7",
+    "branch": "Magetan",
+    "date": "2026-04-21",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 1000000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "33Pxe2a7JSPUbVQyA5qD",
+    "branch": "Sragen",
+    "date": "2026-07-17",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "3cuTbWFL69IloUHDHCth",
+    "branch": "Sragen",
+    "date": "2026-07-04",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TOKEN LISTRIK",
+    "amount": 105000,
+    "notes": "TOKEN LISTRIK"
+  },
+  {
+    "id": "3jfgR0e3myegduFB8qzs",
+    "branch": "Sragen",
+    "date": "2026-06-23",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "3k824ZRX2w9FR1WuEyf5",
+    "branch": "Sragen",
+    "date": "2026-05-21",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "3oy3HB13pe0TVByAARpp",
+    "branch": "Magetan",
+    "date": "2025-11-28",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 1000000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "3uM9tXG8l8jdTJL41Slk",
+    "branch": "Sragen",
+    "date": "2025-10-31",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TOKEN LISTRIK",
+    "amount": 105000,
+    "notes": "TOKEN LISTRIK"
+  },
+  {
+    "id": "3zJaudQPHbxO33lXh05L",
+    "branch": "Magetan",
+    "date": "2025-12-04",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 1000000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "43ZG0bGzplkhtr7fHfyg",
+    "branch": "Magetan",
+    "date": "2026-04-07",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "JAJAN VERLAP",
+    "amount": 115000,
+    "notes": "JAJAN VERLAP"
+  },
+  {
+    "id": "43fUGIxv4KSQNsm3gp5z",
+    "branch": "Sragen",
+    "date": "2026-01-15",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "46G9DrjaLRgab05WiJ38",
+    "branch": "Sragen",
+    "date": "2025-09-19",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "4BozJZNClcdD6xtmucWg",
+    "branch": "Magetan",
+    "date": "2025-09-09",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TRANSPORT KE GRESIK",
+    "amount": 387000,
+    "notes": "TRANSPORT KE GRESIK"
+  },
+  {
+    "id": "4HUm2ToiCoLwlcNEB6k3",
+    "branch": "Magetan",
+    "date": "2026-07-13",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELI TOKEN LISTRIK",
+    "amount": 507500,
+    "notes": "BELI TOKEN LISTRIK"
+  },
+  {
+    "id": "4J1axzon105ox7kaJTBm",
+    "branch": "Sragen",
+    "date": "2026-07-31",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "4L4YbVUoXQhnSXJM5ucx",
+    "branch": "Sragen",
+    "date": "2025-10-17",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "PDAM",
+    "amount": 97000,
+    "notes": "PDAM"
+  },
+  {
+    "id": "4Mr8K1rHcWUq09URLuPy",
+    "branch": "Magetan",
+    "date": "2026-07-16",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 2500000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "4O2sKMs5Et7IUf9VlqEW",
+    "branch": "Magetan",
+    "date": "2026-03-28",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELI KERTAS ",
+    "amount": 52000,
+    "notes": "BELI KERTAS "
+  },
+  {
+    "id": "4TQfAwY54ZnUUOC7L1VE",
+    "branch": "Sragen",
+    "date": "2026-05-24",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "4asICMB5Rxk4pZie4jf6",
+    "branch": "Sragen",
+    "date": "2025-10-22",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TOKEN LISTRIK",
+    "amount": 105000,
+    "notes": "TOKEN LISTRIK"
+  },
+  {
+    "id": "4cZRbe8bGjmLZovoiWto",
+    "branch": "Magetan",
+    "date": "2025-12-17",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "FC",
+    "amount": 61000,
+    "notes": "FC"
+  },
+  {
+    "id": "4ec1pcbCmLvUMz2k8J0X",
+    "branch": "Sragen",
+    "date": "2026-04-16",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "4o91lfe2FoSrLivYzTJV",
+    "branch": "Sragen",
+    "date": "2026-06-09",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "MATERAI @10000",
+    "amount": 60000,
+    "notes": "MATERAI @10000"
+  },
+  {
+    "id": "4qksmKkFpXHo9SJC69CR",
+    "branch": "Magetan",
+    "date": "2026-04-10",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BENSIN",
+    "amount": 100000,
+    "notes": "BENSIN"
+  },
+  {
+    "id": "4vMBWTY8BcxtTiMvxAoE",
+    "branch": "Sragen",
+    "date": "2026-01-21",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TOKEN LISTRIK",
+    "amount": 105000,
+    "notes": "TOKEN LISTRIK"
+  },
+  {
+    "id": "4yOlGZCL7rf0Ze8UrssZ",
+    "branch": "Magetan",
+    "date": "2026-01-12",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "MATERAI SPJB",
+    "amount": 700000,
+    "notes": "MATERAI SPJB"
+  },
+  {
+    "id": "59lW5c4FP6G5a6Jx6Ll6",
+    "branch": "Sragen",
+    "date": "2026-05-13",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "MATERAI",
+    "amount": 100000,
+    "notes": "MATERAI"
+  },
+  {
+    "id": "5CCm1RsLH0WoTAdWSwUd",
+    "branch": "Sragen",
+    "date": "2026-03-26",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "5DPOSlPDjHFMq9M9xzLJ",
+    "branch": "Sragen",
+    "date": "2025-09-09",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "SOLAR ",
+    "amount": 100000,
+    "notes": "SOLAR "
+  },
+  {
+    "id": "5EpdcT00a4s3DHmZrQJd",
+    "branch": "Sragen",
+    "date": "2025-11-04",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BENSIN VARIO",
+    "amount": 15000,
+    "notes": "BENSIN VARIO"
+  },
+  {
+    "id": "5Fd8O5MEebKXwA8fhE2W",
+    "branch": "Sragen",
+    "date": "2025-09-24",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "GANTI BAN DALAM LUAR DAN OLI VARIO",
+    "amount": 450000,
+    "notes": "GANTI BAN DALAM LUAR DAN OLI VARIO"
+  },
+  {
+    "id": "5HGflAsgScK5PiZMTZmM",
+    "branch": "Sragen",
+    "date": "2026-07-13",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "5OWuciw98UP5cjsgRXTy",
+    "branch": "Sragen",
+    "date": "2026-05-22",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "5ULilRUdEjVrGCQCZpVR",
+    "branch": "Magetan",
+    "date": "2025-10-13",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 1000000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "5UckDfDHHdRdX7FXg8kh",
+    "branch": "Magetan",
+    "date": "2026-04-18",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELI KERTAS",
+    "amount": 675000,
+    "notes": "BELI KERTAS"
+  },
+  {
+    "id": "5ZTFXiFvyVQPTU8ijY8b",
+    "branch": "Magetan",
+    "date": "2026-01-15",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELI TOKEN",
+    "amount": 202500,
+    "notes": "BELI TOKEN"
+  },
+  {
+    "id": "5ZrlvYyX0R19uXgPEbkj",
+    "branch": "Sragen",
+    "date": "2025-10-17",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "WIFI TELKOM ",
+    "amount": 600000,
+    "notes": "WIFI TELKOM "
+  },
+  {
+    "id": "5frzW6uUFEZH49p8FSCf",
+    "branch": "Magetan",
+    "date": "2026-04-29",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "JILID",
+    "amount": 41000,
+    "notes": "JILID"
+  },
+  {
+    "id": "61uVntTd70myHCISmDF6",
+    "branch": "Sragen",
+    "date": "2025-09-16",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "644X3veOXVyaxb25V44L",
+    "branch": "Sragen",
+    "date": "2026-05-02",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "696AHQ2ipZ1xsKDeu5CQ",
+    "branch": "Magetan",
+    "date": "2026-04-06",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "MAKAN VERLAP",
+    "amount": 215000,
+    "notes": "MAKAN VERLAP"
+  },
+  {
+    "id": "6H1R8BbZkfRKYHlS7s2x",
+    "branch": "Sragen",
+    "date": "2025-11-12",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "6SMkEX1ExT9X70hGfNCO",
+    "branch": "Magetan",
+    "date": "2025-12-01",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELI KERTAS ",
+    "amount": 52500,
+    "notes": "BELI KERTAS "
+  },
+  {
+    "id": "6cGvS6pDPSRkIJbwo2FA",
+    "branch": "Sragen",
+    "date": "2025-11-27",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "6eOf9rUMP7mXBYV4rEsd",
+    "branch": "Sragen",
+    "date": "2025-09-19",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "WIFI TELKOM",
+    "amount": 600000,
+    "notes": "WIFI TELKOM"
+  },
+  {
+    "id": "6ejck5jBa7TrIdi7xEma",
+    "branch": "Sragen",
+    "date": "2026-04-01",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "SISA SALDO MARET",
+    "amount": 292000,
+    "notes": "SISA SALDO MARET"
+  },
+  {
+    "id": "6hawOdJoJrcAnQJ0xI6P",
+    "branch": "Magetan",
+    "date": "2026-07-28",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 2000000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "6jPMuDhq7H9tpjiyTwsp",
+    "branch": "Sragen",
+    "date": "2026-05-18",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "PDAM",
+    "amount": 82000,
+    "notes": "PDAM"
+  },
+  {
+    "id": "6n0zUd7H7OadlcioymlT",
+    "branch": "Sragen",
+    "date": "2025-12-22",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "6tyQilPy38HHa2hmXsB5",
+    "branch": "Sragen",
+    "date": "2026-01-31",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "7HUum4I5z0uJsTeOHbSK",
+    "branch": "Sragen",
+    "date": "2025-10-06",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "7Lbx1GjJoLE8M4b2R7Yw",
+    "branch": "Sragen",
+    "date": "2026-01-06",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "MAP MIKA",
+    "amount": 35000,
+    "notes": "MAP MIKA"
+  },
+  {
+    "id": "7LvmdulnMrSI7epXmMbr",
+    "branch": "Sragen",
+    "date": "2025-10-14",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "IURAN PERUM ROYAL AMERTA",
+    "amount": 170000,
+    "notes": "IURAN PERUM ROYAL AMERTA"
+  },
+  {
+    "id": "7Q95EYgXn5b9tvx5L0yu",
+    "branch": "Sragen",
+    "date": "2026-05-13",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "7UaHO1QmCYMgPIS102h1",
+    "branch": "Magetan",
+    "date": "2026-05-19",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "MAKAN",
+    "amount": 119000,
+    "notes": "MAKAN"
+  },
+  {
+    "id": "7a4Ayq3UK2kyuGYEyyN4",
+    "branch": "Sragen",
+    "date": "2025-12-18",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 30000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "7d6QnAW0wP5PKgZGgjye",
+    "branch": "Sragen",
+    "date": "2025-11-20",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "WIFI TELKOM",
+    "amount": 600000,
+    "notes": "WIFI TELKOM"
+  },
+  {
+    "id": "7fLSMPAXpaw6gF6BVx6c",
+    "branch": "Sragen",
+    "date": "2025-10-20",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "7jzYMGXqLaaHM5T58zgj",
+    "branch": "Sragen",
+    "date": "2025-11-20",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "7pc4ACCgJmmzMAayxqyT",
+    "branch": "Sragen",
+    "date": "2026-01-24",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "7rtBdwKQ8pfj4IVL832h",
+    "branch": "Magetan",
+    "date": "2025-12-22",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "LISTRIK MAMI",
+    "amount": 205000,
+    "notes": "LISTRIK MAMI"
+  },
+  {
+    "id": "7sDJwk4TTvK18YqlUfHT",
+    "branch": "Sragen",
+    "date": "2026-06-19",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "PDAM",
+    "amount": 135000,
+    "notes": "PDAM"
+  },
+  {
+    "id": "7sk66OOnLPNk0IJgxc6q",
+    "branch": "Sragen",
+    "date": "2025-09-10",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TRANSPORT KE MAGETAN",
+    "amount": 113000,
+    "notes": "TRANSPORT KE MAGETAN"
+  },
+  {
+    "id": "88G8h22xiWX2GME9dlwT",
+    "branch": "Sragen",
+    "date": "2025-09-25",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TOKEN LISTRIK",
+    "amount": 105000,
+    "notes": "TOKEN LISTRIK"
+  },
+  {
+    "id": "8DjW1x1dUcWRC4hpCywW",
+    "branch": "Magetan",
+    "date": "2026-02-07",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "LISTRIK",
+    "amount": 507500,
+    "notes": "LISTRIK"
+  },
+  {
+    "id": "8FJE1I2hlV8m6F9l79vh",
+    "branch": "Sragen",
+    "date": "2026-03-12",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "JILID SPIRAL ",
+    "amount": 70000,
+    "notes": "JILID SPIRAL "
+  },
+  {
+    "id": "8LYL9nKSrgSe7IW21xuS",
+    "branch": "Magetan",
+    "date": "2025-12-18",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 1000000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "8M8vPF91uYhWfzQY1hmb",
+    "branch": "Sragen",
+    "date": "2026-05-07",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "KERTAS A4 DAN FOTO COPY",
+    "amount": 83000,
+    "notes": "KERTAS A4 DAN FOTO COPY"
+  },
+  {
+    "id": "8NOxB8dqenH0NX9czSze",
+    "branch": "Sragen",
+    "date": "2026-02-19",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "KAS UMUM",
+    "amount": 2093000,
+    "notes": "KAS UMUM"
+  },
+  {
+    "id": "8OBm9XOik0MMKw2uKZkA",
+    "branch": "Sragen",
+    "date": "2026-07-08",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "KERTAS A4 DAN LAMINATING",
+    "amount": 76000,
+    "notes": "KERTAS A4 DAN LAMINATING"
+  },
+  {
+    "id": "8fOD39abFK0GM06BLlcs",
+    "branch": "Sragen",
+    "date": "2025-12-05",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "8kfwkxf9bTv9CL06FM70",
+    "branch": "Sragen",
+    "date": "2026-07-08",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "8liE6uQk1g38YW4gIXv8",
+    "branch": "Sragen",
+    "date": "2025-10-07",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "8rOvo23SSjyg058hfupl",
+    "branch": "Sragen",
+    "date": "2025-12-23",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "8rSSd3ABl3Apb78L9Lsg",
+    "branch": "Sragen",
+    "date": "2025-11-03",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "8stOTrWUygZY3cwDPrjH",
+    "branch": "Sragen",
+    "date": "2026-01-12",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "PERTEMUAN PUD DI SOLO",
+    "amount": 100000,
+    "notes": "PERTEMUAN PUD DI SOLO"
+  },
+  {
+    "id": "8xgyxOaP3dKgCXBPHpbB",
+    "branch": "Magetan",
+    "date": "2025-11-17",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 1000000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "9A6qGqwah1Yd3VfSVxbF",
+    "branch": "Magetan",
+    "date": "2025-10-06",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "SERVIS AC",
+    "amount": 50000,
+    "notes": "SERVIS AC"
+  },
+  {
+    "id": "9AtLdodhnUcMqnAKy1At",
+    "branch": "Sragen",
+    "date": "2026-06-12",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "9CfCfVEIpmZRPsHZDen3",
+    "branch": "Sragen",
+    "date": "2025-09-17",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "KERTAS A4, AMPLOP PUTIH,  MAP MIKA",
+    "amount": 98000,
+    "notes": "KERTAS A4, AMPLOP PUTIH,  MAP MIKA"
+  },
+  {
+    "id": "9PoJACTxDyRkDsRZSVvY",
+    "branch": "Sragen",
+    "date": "2025-12-10",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 30000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "9Tl2MiQjrtaJzjuHcX5x",
+    "branch": "Sragen",
+    "date": "2025-09-19",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "GAJI IBU YANG BANTU DI SRAGEN BULAN AGUSTUS",
+    "amount": 600000,
+    "notes": "GAJI IBU YANG BANTU DI SRAGEN BULAN AGUSTUS"
+  },
+  {
+    "id": "9UVkKvVbKS5wP5e0Mq4C",
+    "branch": "Magetan",
+    "date": "2026-07-08",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELI LEM",
+    "amount": 57500,
+    "notes": "BELI LEM"
+  },
+  {
+    "id": "9X2ZJAf82hhTSVh7gIlK",
+    "branch": "Sragen",
+    "date": "2026-01-29",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "PERTEMUAN DI DINAS PUD AAE DAN BU KADIS",
+    "amount": 126000,
+    "notes": "PERTEMUAN DI DINAS PUD AAE DAN BU KADIS"
+  },
+  {
+    "id": "9hbICmwtOJrbJXSY4OLI",
+    "branch": "Magetan",
+    "date": "2026-04-27",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "IURAN RAPAT",
+    "amount": 155000,
+    "notes": "IURAN RAPAT"
+  },
+  {
+    "id": "9kdZC9QgloNzEh3vtiNu",
+    "branch": "Sragen",
+    "date": "2026-03-01",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "SISA SALDO FEBRUARI",
+    "amount": 205000,
+    "notes": "SISA SALDO FEBRUARI"
+  },
+  {
+    "id": "9mMoGbU91wfifcAExogP",
+    "branch": "Magetan",
+    "date": "2026-03-06",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 1500000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "9r7MChVaxg5Cx5lsmIkz",
+    "branch": "Sragen",
+    "date": "2026-04-03",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "9s88KsbVIiHIfQbSCSUC",
+    "branch": "Sragen",
+    "date": "2026-01-12",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "9tIq8rtrZUpKgqPqpPCg",
+    "branch": "Sragen",
+    "date": "2025-10-22",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "9uGrKBkQIZfMBp8Y4OWx",
+    "branch": "Magetan",
+    "date": "2025-09-03",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "FELIYANTI",
+    "amount": 500000,
+    "notes": "FELIYANTI"
+  },
+  {
+    "id": "9xMzEkSkYEhpoYNdF0eO",
+    "branch": "Sragen",
+    "date": "2026-02-05",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "IURA PERUM ROYAL AMERTA ",
+    "amount": 170000,
+    "notes": "IURA PERUM ROYAL AMERTA "
+  },
+  {
+    "id": "A0gN02UiW31la6d59Kx7",
+    "branch": "Sragen",
+    "date": "2026-06-08",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "A9PuNtkvLl3eMQf9jdmb",
+    "branch": "Magetan",
+    "date": "2026-06-19",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELI MOUSE",
+    "amount": 150000,
+    "notes": "BELI MOUSE"
+  },
+  {
+    "id": "AGRoMvRQnSkcd6MPAFkm",
+    "branch": "Sragen",
+    "date": "2026-01-19",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "PULSA KANTOR",
+    "amount": 30000,
+    "notes": "PULSA KANTOR"
+  },
+  {
+    "id": "AHPzOvRhgKyHw163HLOx",
+    "branch": "Magetan",
+    "date": "2025-12-09",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "IURAN MATREI SPJB",
+    "amount": 502500,
+    "notes": "IURAN MATREI SPJB"
+  },
+  {
+    "id": "AIeBdCKYoDGXjqZc0WKI",
+    "branch": "Magetan",
+    "date": "2026-07-22",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "KE MGT",
+    "amount": 50000,
+    "notes": "KE MGT"
+  },
+  {
+    "id": "AJevj7pSHx6uXtw3yrqf",
+    "branch": "Sragen",
+    "date": "2026-07-10",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "KAS UMUM",
+    "amount": 1853000,
+    "notes": "KAS UMUM"
+  },
+  {
+    "id": "AKdv9VpHgL5Mwe1vlmGA",
+    "branch": "Magetan",
+    "date": "2026-04-10",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "IURAN VERLAP",
+    "amount": 690000,
+    "notes": "IURAN VERLAP"
+  },
+  {
+    "id": "AQvt0kKTPRoOD8IlLXI9",
+    "branch": "Sragen",
+    "date": "2025-09-23",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "ASpThUj1zDdhrHj8IQR8",
+    "branch": "Magetan",
+    "date": "2026-02-26",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 1000000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "Adc2uUy23bU6GDVPxIU1",
+    "branch": "Sragen",
+    "date": "2026-02-24",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BENSIN VARIO",
+    "amount": 30000,
+    "notes": "BENSIN VARIO"
+  },
+  {
+    "id": "AdsHfnplEhGiQgYNqwtk",
+    "branch": "Magetan",
+    "date": "2025-10-09",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "KE SBY",
+    "amount": 859000,
+    "notes": "KE SBY"
+  },
+  {
+    "id": "AnLZWAo0JUB6R5j3FluZ",
+    "branch": "Magetan",
+    "date": "2025-12-08",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELI MATREI",
+    "amount": 300000,
+    "notes": "BELI MATREI"
+  },
+  {
+    "id": "AsWCVVlx3CS1sPqZ0fDN",
+    "branch": "Sragen",
+    "date": "2026-03-16",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "AuvI9ywFVdDVVfrGWiPr",
+    "branch": "Sragen",
+    "date": "2026-03-17",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "PDAM",
+    "amount": 273000,
+    "notes": "PDAM"
+  },
+  {
+    "id": "AvGpatlS45zsGqH3574h",
+    "branch": "Sragen",
+    "date": "2026-04-21",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TOKEN LISTRIK",
+    "amount": 105000,
+    "notes": "TOKEN LISTRIK"
+  },
+  {
+    "id": "AvM9hI7AfX4dLzJ4xymu",
+    "branch": "Sragen",
+    "date": "2025-09-09",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TOL KE SOLO",
+    "amount": 100000,
+    "notes": "TOL KE SOLO"
+  },
+  {
+    "id": "B07H5G17f5zkLKtk7vlZ",
+    "branch": "Magetan",
+    "date": "2026-05-05",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TAKZIYAH",
+    "amount": 315000,
+    "notes": "TAKZIYAH"
+  },
+  {
+    "id": "BEMglu1E7KHULQ8zdVaY",
+    "branch": "Sragen",
+    "date": "2026-06-05",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "BEsdl8enzzQvylq8NqGZ",
+    "branch": "Sragen",
+    "date": "2026-01-20",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "WIFI TELKOM",
+    "amount": 600000,
+    "notes": "WIFI TELKOM"
+  },
+  {
+    "id": "BIIyLSo0BHpXk7F707rm",
+    "branch": "Magetan",
+    "date": "2026-04-09",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 500000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "BJPscAUenD0SA0VRTB5R",
+    "branch": "Magetan",
+    "date": "2025-12-29",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 6250000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "BM6JEIJ3n7C16yVfb7AZ",
+    "branch": "Sragen",
+    "date": "2025-11-04",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "KERTAS A4 ",
+    "amount": 75000,
+    "notes": "KERTAS A4 "
+  },
+  {
+    "id": "BNpHbV9N24IIOUp5rNQE",
+    "branch": "Magetan",
+    "date": "2025-12-30",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "DANDAN TRUK 2",
+    "amount": 5250000,
+    "notes": "DANDAN TRUK 2"
+  },
+  {
+    "id": "BOKwtD9ii85bppY2B5he",
+    "branch": "Sragen",
+    "date": "2025-12-31",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TUTUP BUKU",
+    "amount": 1343000,
+    "notes": "TUTUP BUKU"
+  },
+  {
+    "id": "BPGcDJNskjJ1JNieSczA",
+    "branch": "Sragen",
+    "date": "2026-01-14",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "BdwI6Kqqbo43nOfSq2vq",
+    "branch": "Sragen",
+    "date": "2025-09-24",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "REKON PPTS DAN PUD BERSMA AE DAN AAE ",
+    "amount": 600000,
+    "notes": "REKON PPTS DAN PUD BERSMA AE DAN AAE "
+  },
+  {
+    "id": "BhVmHKUWB64Kw3Wei0nc",
+    "branch": "Sragen",
+    "date": "2026-06-26",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "BxhWpbAqoHqp04IzIHeF",
+    "branch": "Magetan",
+    "date": "2026-07-09",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BENSIN KE PAJAK",
+    "amount": 100000,
+    "notes": "BENSIN KE PAJAK"
+  },
+  {
+    "id": "BzODbhtJWKksOaRNBvFW",
+    "branch": "Sragen",
+    "date": "2026-05-12",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "AQUA GALON DAN GELAS ",
+    "amount": 52000,
+    "notes": "AQUA GALON DAN GELAS "
+  },
+  {
+    "id": "C3tpnJ0ni6yhHOZqjNDH",
+    "branch": "Sragen",
+    "date": "2026-01-26",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "C4lu1fyFFGWixnqmRFYo",
+    "branch": "Sragen",
+    "date": "2026-01-23",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "LIMINERAL SNACK + AKUA KARDUS",
+    "amount": 167000,
+    "notes": "LIMINERAL SNACK + AKUA KARDUS"
+  },
+  {
+    "id": "CFtJyjZyNxgWvdEARapm",
+    "branch": "Sragen",
+    "date": "2026-02-06",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "CGyhEHDmsf7BlQe15dzC",
+    "branch": "Sragen",
+    "date": "2025-11-05",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "CUKIZP5JaDTkukoCYb4J",
+    "branch": "Sragen",
+    "date": "2025-11-17",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BENSIN VARIO",
+    "amount": 50000,
+    "notes": "BENSIN VARIO"
+  },
+  {
+    "id": "CotSXBHGr4BXbUSSSCsH",
+    "branch": "Sragen",
+    "date": "2026-02-13",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "SPION VARIO",
+    "amount": 70000,
+    "notes": "SPION VARIO"
+  },
+  {
+    "id": "CplEU8XnDU6Uu579ge0R",
+    "branch": "Sragen",
+    "date": "2026-07-16",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BENSIN VARIO",
+    "amount": 27000,
+    "notes": "BENSIN VARIO"
+  },
+  {
+    "id": "CriHatqNYha2Oins4Dkk",
+    "branch": "Magetan",
+    "date": "2026-03-22",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "WIFI",
+    "amount": 983000,
+    "notes": "WIFI"
+  },
+  {
+    "id": "CyjUKrhsMG3DyOQyQhFF",
+    "branch": "Sragen",
+    "date": "2025-10-25",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "D2rmL577SrNhKj7hKLPl",
+    "branch": "Magetan",
+    "date": "2026-06-30",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "IURAN PUD",
+    "amount": 450000,
+    "notes": "IURAN PUD"
+  },
+  {
+    "id": "D2zzneW1mujEjAw2Brb2",
+    "branch": "Magetan",
+    "date": "2025-10-28",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "ACARA TEMU PPTS PPL DAN PI",
+    "amount": 1987000,
+    "notes": "ACARA TEMU PPTS PPL DAN PI"
+  },
+  {
+    "id": "D8JM86N3kKDEMScQd3wz",
+    "branch": "Sragen",
+    "date": "2025-11-03",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "STIKER HET",
+    "amount": 180000,
+    "notes": "STIKER HET"
+  },
+  {
+    "id": "D8dgj2vKNJcpOkW1HDkt",
+    "branch": "Sragen",
+    "date": "2026-03-13",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "DAzQ2bFP5UpGLHk6zUEe",
+    "branch": "Sragen",
+    "date": "2026-02-13",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "KIRIM BG KE YOGYA",
+    "amount": 300000,
+    "notes": "KIRIM BG KE YOGYA"
+  },
+  {
+    "id": "DGKL6XqCPfkvoqZjc4LN",
+    "branch": "Sragen",
+    "date": "2025-12-31",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 30000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "DNC5ZZOsSLzWdI4sOGZS",
+    "branch": "Sragen",
+    "date": "2026-06-17",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "DUIMurdLSBGExf8scVQU",
+    "branch": "Sragen",
+    "date": "2026-02-12",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "DXLLQWBPW4ffbKOchcdO",
+    "branch": "Sragen",
+    "date": "2026-05-19",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "DeK3YdIxfREsy3akSLEn",
+    "branch": "Magetan",
+    "date": "2026-04-27",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "MATREI",
+    "amount": 60000,
+    "notes": "MATREI"
+  },
+  {
+    "id": "DoIPEs2fln41Bd9CA6cS",
+    "branch": "Magetan",
+    "date": "2025-09-23",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "SERVIS PRINTER",
+    "amount": 650000,
+    "notes": "SERVIS PRINTER"
+  },
+  {
+    "id": "E0YEVXzBda8zidjbswR3",
+    "branch": "Magetan",
+    "date": "2026-04-13",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 2000000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "E6jzQMLUoEXVs1BnuYsG",
+    "branch": "Sragen",
+    "date": "2026-02-02",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "SEMEN DAN TENAGA",
+    "amount": 60000,
+    "notes": "SEMEN DAN TENAGA"
+  },
+  {
+    "id": "EGtd6aHkIdwV9D89VpfF",
+    "branch": "Magetan",
+    "date": "2025-09-18",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 1000000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "EKgMKzlGBQCQVbdm3NUW",
+    "branch": "Magetan",
+    "date": "2026-02-15",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "LISTRIK",
+    "amount": 202500,
+    "notes": "LISTRIK"
+  },
+  {
+    "id": "EPGykiEPCeoE0iu7tM7q",
+    "branch": "Sragen",
+    "date": "2025-09-17",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "EQ7M90C6Qk6kiXOMyqQk",
+    "branch": "Sragen",
+    "date": "2026-07-15",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "EcwPI9RiO26sgb7nfxP2",
+    "branch": "Sragen",
+    "date": "2026-04-08",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "Ewm0axnasRNmu69nb0rW",
+    "branch": "Sragen",
+    "date": "2026-06-29",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "Ex0ttnJoOaNpVYxcx40v",
+    "branch": "Sragen",
+    "date": "2025-11-28",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TOKEN LISTRIK",
+    "amount": 105000,
+    "notes": "TOKEN LISTRIK"
+  },
+  {
+    "id": "F0iYjFIp9QlLVLl5p6bZ",
+    "branch": "Magetan",
+    "date": "2026-02-10",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELI ATK",
+    "amount": 183000,
+    "notes": "BELI ATK"
+  },
+  {
+    "id": "F6RElWv5hUl31Akg1ErP",
+    "branch": "Magetan",
+    "date": "2025-09-12",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "STEMPEL",
+    "amount": 360000,
+    "notes": "STEMPEL"
+  },
+  {
+    "id": "FC1LrdY0lioPVS6SryGw",
+    "branch": "Sragen",
+    "date": "2026-06-03",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "FIBwpA6CuZPxEC96ey3W",
+    "branch": "Sragen",
+    "date": "2025-10-11",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "GAJI IBU YANG BANTU\" DI SRAGEN BULAN SEPTEMBER",
+    "amount": 600000,
+    "notes": "GAJI IBU YANG BANTU\" DI SRAGEN BULAN SEPTEMBER"
+  },
+  {
+    "id": "FQXTekYhz4xluVgq4OqF",
+    "branch": "Magetan",
+    "date": "2026-07-09",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELI KERTAS",
+    "amount": 55000,
+    "notes": "BELI KERTAS"
+  },
+  {
+    "id": "FQtXh3vHTv29k2TxENRK",
+    "branch": "Sragen",
+    "date": "2025-11-21",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "GAJI IBU YANG BANTU DI SRAGEN BULAN OKTOBER",
+    "amount": 600000,
+    "notes": "GAJI IBU YANG BANTU DI SRAGEN BULAN OKTOBER"
+  },
+  {
+    "id": "FUqSvb7nazyB4hUVOHJp",
+    "branch": "Sragen",
+    "date": "2025-12-08",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 30000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "FgJoXjptP1GdsxZBjC5O",
+    "branch": "Sragen",
+    "date": "2026-04-02",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "AQUA GALON",
+    "amount": 60000,
+    "notes": "AQUA GALON"
+  },
+  {
+    "id": "FhyHBXUzBRlB8yFVPKqS",
+    "branch": "Sragen",
+    "date": "2026-01-24",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "KAS UMUM",
+    "amount": 1730000,
+    "notes": "KAS UMUM"
+  },
+  {
+    "id": "Fn8CVkcESjmAxR9CS79z",
+    "branch": "Sragen",
+    "date": "2026-04-17",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "FokRrC80R5Npbi0NkhMx",
+    "branch": "Sragen",
+    "date": "2026-04-07",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "FOTO COPY",
+    "amount": 72000,
+    "notes": "FOTO COPY"
+  },
+  {
+    "id": "Frt7M9pdE34BrQp0HAAg",
+    "branch": "Magetan",
+    "date": "2025-10-15",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "CETAKAN ",
+    "amount": 550000,
+    "notes": "CETAKAN "
+  },
+  {
+    "id": "FwI74wMDy3EkVvNm35ZO",
+    "branch": "Sragen",
+    "date": "2026-06-18",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TOKEN LISTRIK",
+    "amount": 105000,
+    "notes": "TOKEN LISTRIK"
+  },
+  {
+    "id": "FxDJk6hOPAt0SIx1VHJg",
+    "branch": "Magetan",
+    "date": "2025-10-14",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELI KERTAS ",
+    "amount": 52000,
+    "notes": "BELI KERTAS "
+  },
+  {
+    "id": "G1NUved9kTGi9aHqL68Y",
+    "branch": "Magetan",
+    "date": "2026-01-06",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "ATK, TINTA",
+    "amount": 483000,
+    "notes": "ATK, TINTA"
+  },
+  {
+    "id": "GEVKLEoEbvfQbGBnxVrs",
+    "branch": "Magetan",
+    "date": "2026-02-25",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "LISTRIK MAMI",
+    "amount": 502500,
+    "notes": "LISTRIK MAMI"
+  },
+  {
+    "id": "GFQwUWHE9L6jbKINvcO1",
+    "branch": "Sragen",
+    "date": "2026-03-09",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "GPhUxYMqUZqO8TfKhvyE",
+    "branch": "Sragen",
+    "date": "2026-04-11",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "GTGtNGzMXzIFebvT4STO",
+    "branch": "Sragen",
+    "date": "2026-04-20",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "WIFI TELKOM",
+    "amount": 285000,
+    "notes": "WIFI TELKOM"
+  },
+  {
+    "id": "GUxGT3LqHLvSTfyucbwo",
+    "branch": "Magetan",
+    "date": "2026-01-23",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 1000000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "GWg4xreoH7rknvE1cq0e",
+    "branch": "Sragen",
+    "date": "2026-04-06",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "AQUA DAN LIMINERAL",
+    "amount": 30000,
+    "notes": "AQUA DAN LIMINERAL"
+  },
+  {
+    "id": "GY9ZTK2kzTVoffnPb91L",
+    "branch": "Magetan",
+    "date": "2026-02-16",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "ATK",
+    "amount": 52000,
+    "notes": "ATK"
+  },
+  {
+    "id": "GYYpzaCWxudtartxyNM4",
+    "branch": "Sragen",
+    "date": "2025-09-18",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "Ge2rQToz0JplL3Z2sM96",
+    "branch": "Sragen",
+    "date": "2026-03-31",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "IURAN GO LIVE IPUBERS",
+    "amount": 479059,
+    "notes": "IURAN GO LIVE IPUBERS"
+  },
+  {
+    "id": "GlQHdrluXFAcG42QFFzX",
+    "branch": "Sragen",
+    "date": "2026-07-16",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "GyKLbb5JmYZn1FiVX3PU",
+    "branch": "Sragen",
+    "date": "2026-07-24",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "AQUA DAN LIMINERAL",
+    "amount": 55000,
+    "notes": "AQUA DAN LIMINERAL"
+  },
+  {
+    "id": "H9cbaq5Is76nu3cjRQIu",
+    "branch": "Sragen",
+    "date": "2026-02-20",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "HB97rw6c0w0fBLYPBmBm",
+    "branch": "Sragen",
+    "date": "2026-02-26",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "HClZKjyQzziVZv2xjvF6",
+    "branch": "Sragen",
+    "date": "2025-10-15",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "KERTAS CAVER 1 RIM ",
+    "amount": 55000,
+    "notes": "KERTAS CAVER 1 RIM "
+  },
+  {
+    "id": "HII5UX4RytK9UQP6G0ie",
+    "branch": "Sragen",
+    "date": "2025-11-17",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "HOlUUbRNZKh2IqTv93Dq",
+    "branch": "Sragen",
+    "date": "2026-02-05",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "MATERAI @10000",
+    "amount": 150000,
+    "notes": "MATERAI @10000"
+  },
+  {
+    "id": "HW99kj6NtqAsBUFl9Fiv",
+    "branch": "Sragen",
+    "date": "2026-01-16",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "HWTSXzV2NFzpjreZbJx0",
+    "branch": "Magetan",
+    "date": "2025-12-27",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "SERVIS PRINTER",
+    "amount": 150000,
+    "notes": "SERVIS PRINTER"
+  },
+  {
+    "id": "Hbi7eErEuuJP36UodQdu",
+    "branch": "Magetan",
+    "date": "2026-05-22",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BENSIN",
+    "amount": 100000,
+    "notes": "BENSIN"
+  },
+  {
+    "id": "HeMEvkff91Wza0YOvW7u",
+    "branch": "Sragen",
+    "date": "2026-07-29",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "Hl9GMrsU2WCs7aZ8TD4H",
+    "branch": "Sragen",
+    "date": "2025-10-27",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "HnFP5BPMPKUUm0mb9EJI",
+    "branch": "Magetan",
+    "date": "2026-01-20",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BENSIN KE MAGETAN",
+    "amount": 50000,
+    "notes": "BENSIN KE MAGETAN"
+  },
+  {
+    "id": "Hql5UVMP2GrCBJtfpBam",
+    "branch": "Sragen",
+    "date": "2026-03-03",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "HrEfmcT2U7mkteDv2JrL",
+    "branch": "Magetan",
+    "date": "2025-11-04",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "MATREI LAPORAN",
+    "amount": 50000,
+    "notes": "MATREI LAPORAN"
+  },
+  {
+    "id": "I6jX2m92SXgR4voGusg6",
+    "branch": "Sragen",
+    "date": "2025-12-20",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 30000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "IAbgh4xyPxUckI7a4zWL",
+    "branch": "Sragen",
+    "date": "2026-01-06",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "ICv8BfSvNTfU5KKbxelT",
+    "branch": "Sragen",
+    "date": "2026-01-17",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "IKUBydbPctNXkTLP5081",
+    "branch": "Sragen",
+    "date": "2026-01-28",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "ILiQYTSyN2p0qxgWfeHO",
+    "branch": "Sragen",
+    "date": "2026-06-08",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "SOLAR KARANGANYAR",
+    "amount": 100000,
+    "notes": "SOLAR KARANGANYAR"
+  },
+  {
+    "id": "IOdZGpls69uH4RYCAlFG",
+    "branch": "Sragen",
+    "date": "2026-01-27",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "KLEM KABEL, KABEL TIS, LAKBAN HITAM",
+    "amount": 116000,
+    "notes": "KLEM KABEL, KABEL TIS, LAKBAN HITAM"
+  },
+  {
+    "id": "IUPkhsbAuKogYloURnCM",
+    "branch": "Magetan",
+    "date": "2025-10-29",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 0,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "IVDGWLbDmmKFlKZhxcVS",
+    "branch": "Sragen",
+    "date": "2026-07-31",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "JILID DAN KERTAS HVS WARNA",
+    "amount": 189000,
+    "notes": "JILID DAN KERTAS HVS WARNA"
+  },
+  {
+    "id": "IVxjH3vbzl1eSyVG1GjW",
+    "branch": "Magetan",
+    "date": "2026-07-09",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BENSIN PAJAK",
+    "amount": 100000,
+    "notes": "BENSIN PAJAK"
+  },
+  {
+    "id": "IbpvoV1ZOOFUOLa9ohCk",
+    "branch": "Sragen",
+    "date": "2025-09-02",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "IURAN BAIS KUNJUNGAN KE PUD",
+    "amount": 158000,
+    "notes": "IURAN BAIS KUNJUNGAN KE PUD"
+  },
+  {
+    "id": "IfuXW8w1Nivn88vS5Hc9",
+    "branch": "Sragen",
+    "date": "2026-07-13",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "PERTEMUAN AE DAN PUD",
+    "amount": 100000,
+    "notes": "PERTEMUAN AE DAN PUD"
+  },
+  {
+    "id": "IqeBBG5sFQAVxbz2FBU4",
+    "branch": "Sragen",
+    "date": "2026-01-30",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "IsWqS0971X5xNitnLKGm",
+    "branch": "Sragen",
+    "date": "2025-09-18",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "SNACK DAN MINERAL",
+    "amount": 122000,
+    "notes": "SNACK DAN MINERAL"
+  },
+  {
+    "id": "J2gYPXQabPzHRUyhdd8y",
+    "branch": "Sragen",
+    "date": "2026-02-28",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "SISA SALDO FEBRUARI",
+    "amount": 205000,
+    "notes": "SISA SALDO FEBRUARI"
+  },
+  {
+    "id": "J2i4JVL5QaBylAVJIpbg",
+    "branch": "Magetan",
+    "date": "2025-09-30",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELI MAKAN DI BPP KARANGREJO",
+    "amount": 92000,
+    "notes": "BELI MAKAN DI BPP KARANGREJO"
+  },
+  {
+    "id": "J9agvopW7UHBBmWWEqjZ",
+    "branch": "Magetan",
+    "date": "2026-07-16",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "IURAN HKP ",
+    "amount": 571300,
+    "notes": "IURAN HKP "
+  },
+  {
+    "id": "JFiuH8EsgB0lshlXj7mp",
+    "branch": "Sragen",
+    "date": "2025-10-18",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "JOusnV78TcYZ6C7NATO9",
+    "branch": "Magetan",
+    "date": "2026-06-23",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BENSIN AMBON",
+    "amount": 50000,
+    "notes": "BENSIN AMBON"
+  },
+  {
+    "id": "JSbOcasdVhk8X9yBY1c3",
+    "branch": "Magetan",
+    "date": "2025-10-27",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 2000000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "JUB5ylVN00ddVAsawvgy",
+    "branch": "Sragen",
+    "date": "2026-05-09",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "JczvcA9fOQ2j8n6lka63",
+    "branch": "Sragen",
+    "date": "2025-10-23",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "Jd6SYuLx1m1Lb9HyupsU",
+    "branch": "Sragen",
+    "date": "2025-09-16",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "IURAN PERUMAHAN UNTUK KEBERSIHAN",
+    "amount": 200000,
+    "notes": "IURAN PERUMAHAN UNTUK KEBERSIHAN"
+  },
+  {
+    "id": "JmW4t1TYiqWTVofwD9G4",
+    "branch": "Sragen",
+    "date": "2026-07-30",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "JpUfp247u3PomDxtEdh1",
+    "branch": "Magetan",
+    "date": "2026-07-14",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BENSIN KE PAJAK",
+    "amount": 100000,
+    "notes": "BENSIN KE PAJAK"
+  },
+  {
+    "id": "Js0blRr1eC0y22tTaKaz",
+    "branch": "Sragen",
+    "date": "2025-10-09",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "JtAMKVypUN0gjbWhKMRX",
+    "branch": "Sragen",
+    "date": "2025-10-29",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "JtWnM2vn3u8uPyNuqvQj",
+    "branch": "Sragen",
+    "date": "2026-05-12",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "K47x83KXoETW7yVEM7Yl",
+    "branch": "Magetan",
+    "date": "2025-11-15",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "WIFI",
+    "amount": 512000,
+    "notes": "WIFI"
+  },
+  {
+    "id": "KBga3zAA5hfezRcj1kUX",
+    "branch": "Sragen",
+    "date": "2026-01-27",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "KDhDfUabps11gEBVu3du",
+    "branch": "Sragen",
+    "date": "2026-05-30",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "KIFFaIxPDd55pbaHsHtW",
+    "branch": "Sragen",
+    "date": "2026-04-14",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BENSIN VARIO",
+    "amount": 20000,
+    "notes": "BENSIN VARIO"
+  },
+  {
+    "id": "KKCZfOnnQqFw4ezuUWGq",
+    "branch": "Sragen",
+    "date": "2026-02-25",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "HET PPTS",
+    "amount": 200000,
+    "notes": "HET PPTS"
+  },
+  {
+    "id": "KNFrtlJnHy7TJAHZ0GOd",
+    "branch": "Sragen",
+    "date": "2026-06-08",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TOKEN LISTRIK",
+    "amount": 105000,
+    "notes": "TOKEN LISTRIK"
+  },
+  {
+    "id": "KUnD6Gq2YuiWJXZpXDBs",
+    "branch": "Magetan",
+    "date": "2025-12-12",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELI F4",
+    "amount": 58500,
+    "notes": "BELI F4"
+  },
+  {
+    "id": "KaDi5WaWZha6qzCtUxng",
+    "branch": "Sragen",
+    "date": "2025-10-16",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "KeGJEZvFE0nuk2jdanHU",
+    "branch": "Magetan",
+    "date": "2026-07-02",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 1000000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "KouiLMxyEsrtQkLCni5D",
+    "branch": "Sragen",
+    "date": "2025-12-02",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "KsAPAIJN7kgpXxQzuk3w",
+    "branch": "Magetan",
+    "date": "2025-12-23",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "FC KTP",
+    "amount": 221000,
+    "notes": "FC KTP"
+  },
+  {
+    "id": "KwThoxSsVgYff9F995Vx",
+    "branch": "Sragen",
+    "date": "2026-01-15",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "KAS UMUM",
+    "amount": 882000,
+    "notes": "KAS UMUM"
+  },
+  {
+    "id": "L5jMLSJPLWgO5YYdJT58",
+    "branch": "Sragen",
+    "date": "2026-05-11",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TIKET BANTU KORAMIL ",
+    "amount": 150000,
+    "notes": "TIKET BANTU KORAMIL "
+  },
+  {
+    "id": "LJue0HpcZRY5lM4PHJtv",
+    "branch": "Magetan",
+    "date": "2025-12-11",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "FC",
+    "amount": 528000,
+    "notes": "FC"
+  },
+  {
+    "id": "LUNLsAsYHRm1hEtJ9WNK",
+    "branch": "Sragen",
+    "date": "2025-12-31",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "GAJI IBU YANG BANTU DI SRAGEN BULAN DESEMBER",
+    "amount": 600000,
+    "notes": "GAJI IBU YANG BANTU DI SRAGEN BULAN DESEMBER"
+  },
+  {
+    "id": "LZlTWPvF91xRCtHUT5dS",
+    "branch": "Sragen",
+    "date": "2025-10-29",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "KE SAMBIREJO ",
+    "amount": 50000,
+    "notes": "KE SAMBIREJO "
+  },
+  {
+    "id": "Lj0tlDhi8mgGEPwsMnOo",
+    "branch": "Magetan",
+    "date": "2025-12-04",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "MATREI SPJB SRAGEN",
+    "amount": 200000,
+    "notes": "MATREI SPJB SRAGEN"
+  },
+  {
+    "id": "LrJwtKst2Fm0fXPId9cW",
+    "branch": "Sragen",
+    "date": "2025-12-17",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "GAJI IBU YANG BANTU\" DI SRAGEN BULAN NOVEMBER",
+    "amount": 600000,
+    "notes": "GAJI IBU YANG BANTU\" DI SRAGEN BULAN NOVEMBER"
+  },
+  {
+    "id": "LzRNr77soEarkAczewFh",
+    "branch": "Sragen",
+    "date": "2025-10-10",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 2930000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "M3LBi61gi9iOcb8BxBwt",
+    "branch": "Sragen",
+    "date": "2026-07-08",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "MONEV TIM KP3 DAN INTEL KEC. SAMBIREJO",
+    "amount": 735000,
+    "notes": "MONEV TIM KP3 DAN INTEL KEC. SAMBIREJO"
+  },
+  {
+    "id": "M6sE5nOSSF2d9t3OV5Jk",
+    "branch": "Magetan",
+    "date": "2026-03-18",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BUBER DGN DPR RI DAN DINAS",
+    "amount": 580000,
+    "notes": "BUBER DGN DPR RI DAN DINAS"
+  },
+  {
+    "id": "MFDeaxEwNHap8meEMo5v",
+    "branch": "Sragen",
+    "date": "2026-04-04",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "MJip7UT5aZtxWc2WKCK9",
+    "branch": "Magetan",
+    "date": "2025-11-04",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "IURAN  PUD",
+    "amount": 300000,
+    "notes": "IURAN  PUD"
+  },
+  {
+    "id": "MXcTEw6kdq06kzrVaImL",
+    "branch": "Magetan",
+    "date": "2026-02-24",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "MZBhZH2ipRPf4LjrWCJl",
+    "branch": "Sragen",
+    "date": "2026-07-20",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TOKEN LISTRIK",
+    "amount": 105000,
+    "notes": "TOKEN LISTRIK"
+  },
+  {
+    "id": "Mjsxltjm8fKGie9wY6yW",
+    "branch": "Sragen",
+    "date": "2026-06-10",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "MlFQOwdVG5S4WOQm3uAC",
+    "branch": "Magetan",
+    "date": "2026-02-09",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 5000000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "MlScKYhmg0psLGTWKE4I",
+    "branch": "Magetan",
+    "date": "2025-10-06",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELI MATERAI",
+    "amount": 40000,
+    "notes": "BELI MATERAI"
+  },
+  {
+    "id": "Msozb3xCPeftuJmVNeES",
+    "branch": "Magetan",
+    "date": "2026-03-17",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "IURAN BUBER MGT",
+    "amount": 170000,
+    "notes": "IURAN BUBER MGT"
+  },
+  {
+    "id": "Mv7a1P50Jxe89FpJmZTC",
+    "branch": "Sragen",
+    "date": "2026-07-23",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "N3Y8fOlAwqDNuDOJr2XS",
+    "branch": "Sragen",
+    "date": "2025-09-12",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "N4F2aEMlHByMDondgZnA",
+    "branch": "Magetan",
+    "date": "2026-06-08",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 2000000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "N4UdHgRlxt7UV5q5a2tY",
+    "branch": "Sragen",
+    "date": "2026-01-09",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BENSIN VARIO",
+    "amount": 56000,
+    "notes": "BENSIN VARIO"
+  },
+  {
+    "id": "NHZaGOJaLtLAWhpQjEu2",
+    "branch": "Sragen",
+    "date": "2026-06-30",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "NQ7glDbsjJVH9Lzr2gvt",
+    "branch": "Sragen",
+    "date": "2026-05-08",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TOKEN LISTRIK",
+    "amount": 105000,
+    "notes": "TOKEN LISTRIK"
+  },
+  {
+    "id": "NQw1bxVbKrLsQin1F0gI",
+    "branch": "Magetan",
+    "date": "2025-10-17",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "RAPAT MARON D BPP",
+    "amount": 187000,
+    "notes": "RAPAT MARON D BPP"
+  },
+  {
+    "id": "NhB86ZyfJ2jrrXKnTSwZ",
+    "branch": "Sragen",
+    "date": "2026-04-21",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "NlPMyRhY605oSJAM0k0W",
+    "branch": "Sragen",
+    "date": "2026-01-20",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "NoEmfzhrd7daiepsnbkg",
+    "branch": "Magetan",
+    "date": "2025-09-03",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 1000000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "NtPnFAb9F7N2G7KmSxjj",
+    "branch": "Sragen",
+    "date": "2026-03-17",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TOKEN LISTRIK",
+    "amount": 105000,
+    "notes": "TOKEN LISTRIK"
+  },
+  {
+    "id": "Ny6dv22ikWhOWMYoYoSQ",
+    "branch": "Sragen",
+    "date": "2026-04-06",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "IURAN PERUM ROYAL AMERTA",
+    "amount": 170000,
+    "notes": "IURAN PERUM ROYAL AMERTA"
+  },
+  {
+    "id": "O2EmEaq4eHhWFdwYxnen",
+    "branch": "Sragen",
+    "date": "2026-01-30",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "FC DAN KIRIM SUREL ",
+    "amount": 50000,
+    "notes": "FC DAN KIRIM SUREL "
+  },
+  {
+    "id": "O6ZbiIoqHbBVnsRaitWA",
+    "branch": "Magetan",
+    "date": "2026-03-20",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 1000000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "OFFWthFYkavX7PXqPu8g",
+    "branch": "Magetan",
+    "date": "2026-07-02",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 1000000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "OKJnzWx9H0ZlFmtukZh5",
+    "branch": "Magetan",
+    "date": "2025-12-22",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELI BOLPOINT",
+    "amount": 33500,
+    "notes": "BELI BOLPOINT"
+  },
+  {
+    "id": "ONlVtARPCgi0mCcGaJOb",
+    "branch": "Sragen",
+    "date": "2026-04-25",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "OOtHtxus81N09F5q79vi",
+    "branch": "Sragen",
+    "date": "2026-02-25",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "NGIRIM REVISI BG DI YOGYA ",
+    "amount": 500000,
+    "notes": "NGIRIM REVISI BG DI YOGYA "
+  },
+  {
+    "id": "OQyVJEArWYXCJJ1NWztq",
+    "branch": "Sragen",
+    "date": "2026-05-18",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "OWi75HTWQgYVJsxQcMKV",
+    "branch": "Sragen",
+    "date": "2026-06-08",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "PERTEMUAN PUD DAN PI DI LARITA",
+    "amount": 100000,
+    "notes": "PERTEMUAN PUD DAN PI DI LARITA"
+  },
+  {
+    "id": "Oenuxgku8C9yocji92QF",
+    "branch": "Sragen",
+    "date": "2026-03-17",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "Ogen0JG3bvFDX6iHZocQ",
+    "branch": "Magetan",
+    "date": "2025-09-09",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "SUMBANGAN MAMI KE AE MAGETAN",
+    "amount": 1500000,
+    "notes": "SUMBANGAN MAMI KE AE MAGETAN"
+  },
+  {
+    "id": "OpxiSmpFXqgor0C9Ef6a",
+    "branch": "Magetan",
+    "date": "2025-10-09",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BENSIN",
+    "amount": 450000,
+    "notes": "BENSIN"
+  },
+  {
+    "id": "OrIfkjfeEjo3DqX031oa",
+    "branch": "Sragen",
+    "date": "2025-12-12",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 30000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "OulrkGVfikxOqdhwGtuE",
+    "branch": "Magetan",
+    "date": "2025-09-18",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BANNER PUD",
+    "amount": 65000,
+    "notes": "BANNER PUD"
+  },
+  {
+    "id": "OvEVagosLx819MnrGQuD",
+    "branch": "Sragen",
+    "date": "2026-03-11",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "IURAN THR RUKO PERUM ROYAL AMERTA ",
+    "amount": 75000,
+    "notes": "IURAN THR RUKO PERUM ROYAL AMERTA "
+  },
+  {
+    "id": "OzsESaqaGjtoH6HkogtR",
+    "branch": "Sragen",
+    "date": "2026-07-18",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "P2DONb9fveZjsBupdIUd",
+    "branch": "Sragen",
+    "date": "2026-04-22",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "P4yLvZFcA7UHIAYIStVW",
+    "branch": "Sragen",
+    "date": "2025-11-11",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BANDALAM VARIO DAN TAMBAL BAN",
+    "amount": 45000,
+    "notes": "BANDALAM VARIO DAN TAMBAL BAN"
+  },
+  {
+    "id": "P91k1m8IIIJhk8bsKs8B",
+    "branch": "Sragen",
+    "date": "2025-10-28",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "PAArR2uy8LNC5zCEm7Ng",
+    "branch": "Sragen",
+    "date": "2026-04-15",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "KAS UMUM",
+    "amount": 1100000,
+    "notes": "KAS UMUM"
+  },
+  {
+    "id": "PATBEPGs7sjMEji8JG1I",
+    "branch": "Magetan",
+    "date": "2026-02-15",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 1000000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "PSHhV6eVbWUIxLEoD1jH",
+    "branch": "Sragen",
+    "date": "2026-04-14",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "PT8uxjViAFeew2KmlcmB",
+    "branch": "Magetan",
+    "date": "2026-06-10",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELI KERTAS",
+    "amount": 52000,
+    "notes": "BELI KERTAS"
+  },
+  {
+    "id": "PcsxRIgMTqxFx7UZQjjk",
+    "branch": "Sragen",
+    "date": "2025-10-20",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "KAS UMUM",
+    "amount": 2536000,
+    "notes": "KAS UMUM"
+  },
+  {
+    "id": "PhewPWVzdLD6gnJPe0RI",
+    "branch": "Sragen",
+    "date": "2026-03-14",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "IURAN PERUM ROYAL AMERTA",
+    "amount": 170000,
+    "notes": "IURAN PERUM ROYAL AMERTA"
+  },
+  {
+    "id": "Pov6CHYLmuxEGD6seLfE",
+    "branch": "Magetan",
+    "date": "2026-01-13",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "KERTAS, MAP SPJB",
+    "amount": 176500,
+    "notes": "KERTAS, MAP SPJB"
+  },
+  {
+    "id": "PwCWGHHpVlm93e0binAy",
+    "branch": "Magetan",
+    "date": "2026-04-20",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "WIFI",
+    "amount": 312000,
+    "notes": "WIFI"
+  },
+  {
+    "id": "PwHBskbboqiBd8lJNaQ4",
+    "branch": "Sragen",
+    "date": "2025-09-06",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "Q1eCYi4dInoi5pjBLIC4",
+    "branch": "Sragen",
+    "date": "2026-02-19",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "WIFI INDIHOME",
+    "amount": 136500,
+    "notes": "WIFI INDIHOME"
+  },
+  {
+    "id": "Q57PUSIzzpZrz41tNbSV",
+    "branch": "Sragen",
+    "date": "2026-03-31",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "Q8ExEnxguEMcRwHpk17v",
+    "branch": "Sragen",
+    "date": "2026-03-03",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "AQUA DAN LIMINERAL",
+    "amount": 90000,
+    "notes": "AQUA DAN LIMINERAL"
+  },
+  {
+    "id": "QDMWmkb9et5ufOz6tVou",
+    "branch": "Sragen",
+    "date": "2026-02-14",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "QGbUB4oyXZM7ets8BqJf",
+    "branch": "Sragen",
+    "date": "2025-12-30",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 30000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "QMHg1L7GQMdUmj43equl",
+    "branch": "Magetan",
+    "date": "2026-07-01",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BENSIN KE PAJAK",
+    "amount": 100000,
+    "notes": "BENSIN KE PAJAK"
+  },
+  {
+    "id": "QYTlA65ZNMIsf78BMlf8",
+    "branch": "Sragen",
+    "date": "2026-07-01",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "QdKMwL6A2s4pJOXWQlWG",
+    "branch": "Sragen",
+    "date": "2026-02-19",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "PDAM",
+    "amount": 161000,
+    "notes": "PDAM"
+  },
+  {
+    "id": "Qk5q6GSSeHPDGAWT7hAL",
+    "branch": "Sragen",
+    "date": "2026-03-17",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "WIFI TELKOM",
+    "amount": 137000,
+    "notes": "WIFI TELKOM"
+  },
+  {
+    "id": "Qk7R1q0yA5LBYi5QNcyb",
+    "branch": "Magetan",
+    "date": "2026-01-06",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BENSIN",
+    "amount": 100000,
+    "notes": "BENSIN"
+  },
+  {
+    "id": "Qlw26QwhkeKYU3gwpnvC",
+    "branch": "Sragen",
+    "date": "2026-01-12",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "QqaWoTvoJJJLsCzQBRXU",
+    "branch": "Magetan",
+    "date": "2026-07-28",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "IURAN HKP RESEP",
+    "amount": 2000000,
+    "notes": "IURAN HKP RESEP"
+  },
+  {
+    "id": "Qt7radOTajQ2jxRBd3j9",
+    "branch": "Sragen",
+    "date": "2025-11-15",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "R6kpu5z5YSDbi0v2toZd",
+    "branch": "Sragen",
+    "date": "2026-04-07",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "GAJI IBU YANG BANTU DI SRAGEN BULAN MARET",
+    "amount": 600000,
+    "notes": "GAJI IBU YANG BANTU DI SRAGEN BULAN MARET"
+  },
+  {
+    "id": "RI0F39V1LhkFw6dtj7AJ",
+    "branch": "Sragen",
+    "date": "2026-03-05",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "RR8nBwWVOn7Aawq9u9P5",
+    "branch": "Sragen",
+    "date": "2026-04-28",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "RWQRY3X2QLFwWEPGivus",
+    "branch": "Magetan",
+    "date": "2026-04-30",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "ATK",
+    "amount": 285000,
+    "notes": "ATK"
+  },
+  {
+    "id": "RYkRZM9OSjGuKw8oZ3fK",
+    "branch": "Magetan",
+    "date": "2026-04-24",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "IURAN ADPI",
+    "amount": 150000,
+    "notes": "IURAN ADPI"
+  },
+  {
+    "id": "RZbChKUmiJrhQlJiJG1X",
+    "branch": "Sragen",
+    "date": "2025-12-01",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "Rg96XSe3t9V55iLhZAt8",
+    "branch": "Sragen",
+    "date": "2026-01-22",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "RlcVQhiZFnlKUjwEhJsT",
+    "branch": "Magetan",
+    "date": "2025-09-17",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELI MATREI",
+    "amount": 40000,
+    "notes": "BELI MATREI"
+  },
+  {
+    "id": "RmqBliTmZN2Bd6Ud2mDL",
+    "branch": "Magetan",
+    "date": "2025-10-14",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELI KERTAS ",
+    "amount": 52000,
+    "notes": "BELI KERTAS "
+  },
+  {
+    "id": "RnzcPCD6dSpcti9kOkQ9",
+    "branch": "Sragen",
+    "date": "2026-01-15",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "KERTAS A4 DAN STAPLES ",
+    "amount": 100000,
+    "notes": "KERTAS A4 DAN STAPLES "
+  },
+  {
+    "id": "S1a4wEAFA5oiQjl04Vtj",
+    "branch": "Sragen",
+    "date": "2025-09-02",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "SNACK AQUA KARDUS 220L",
+    "amount": 100500,
+    "notes": "SNACK AQUA KARDUS 220L"
+  },
+  {
+    "id": "S2nUHf5tj7M4yCUz40pY",
+    "branch": "Magetan",
+    "date": "2025-11-19",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "MAS MUL BELI REMOT",
+    "amount": 250000,
+    "notes": "MAS MUL BELI REMOT"
+  },
+  {
+    "id": "SFzxfJyINBZhnUWTljyj",
+    "branch": "Magetan",
+    "date": "2026-02-24",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "DEWO NGAWI",
+    "amount": 100000,
+    "notes": "DEWO NGAWI"
+  },
+  {
+    "id": "SKrI8aNsfutD7Y3UXfCE",
+    "branch": "Sragen",
+    "date": "2025-09-08",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "SMTaewpuvVwpBNzcWcOC",
+    "branch": "Sragen",
+    "date": "2026-07-13",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TOKEN LISTRIK",
+    "amount": 105000,
+    "notes": "TOKEN LISTRIK"
+  },
+  {
+    "id": "SOnR2cMwObK19KJmVf0R",
+    "branch": "Sragen",
+    "date": "2025-10-01",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "PERTEMUAN SAMBIREJO",
+    "amount": 100000,
+    "notes": "PERTEMUAN SAMBIREJO"
+  },
+  {
+    "id": "SPDc6L8OkI7wDS3jx0lx",
+    "branch": "Sragen",
+    "date": "2025-11-04",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "SPkRpoWCBRBlG3QMjCu3",
+    "branch": "Sragen",
+    "date": "2025-09-18",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "SANGU AE SRAGEN DAN TRANSPORT",
+    "amount": 1100000,
+    "notes": "SANGU AE SRAGEN DAN TRANSPORT"
+  },
+  {
+    "id": "SQAyyCeu6PhyuS3Ww9Qm",
+    "branch": "Sragen",
+    "date": "2025-09-15",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "SUNPK1acVrdogwhdtshM",
+    "branch": "Sragen",
+    "date": "2026-01-31",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "KAS UMUM",
+    "amount": 1012000,
+    "notes": "KAS UMUM"
+  },
+  {
+    "id": "SUYvWo3neoLzcXtMKbOH",
+    "branch": "Magetan",
+    "date": "2025-10-29",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "STIKER HET TURUN HARGA",
+    "amount": 300000,
+    "notes": "STIKER HET TURUN HARGA"
+  },
+  {
+    "id": "SWCmBTHmbdYhEkLkpc7o",
+    "branch": "Sragen",
+    "date": "2025-12-24",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 70000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "SlRXMtgKwJOnuzZMRrFH",
+    "branch": "Sragen",
+    "date": "2026-02-18",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "SlhdKG29oZ05HNnYOqtT",
+    "branch": "Magetan",
+    "date": "2025-12-22",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "CINDERAMATA KORLUH KEC BARAT",
+    "amount": 565000,
+    "notes": "CINDERAMATA KORLUH KEC BARAT"
+  },
+  {
+    "id": "Sp4kIRvhlyu5Ph6ZwVh5",
+    "branch": "Magetan",
+    "date": "2026-06-11",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELI MATREI",
+    "amount": 200000,
+    "notes": "BELI MATREI"
+  },
+  {
+    "id": "Suqlo9B2QpdZJ6go9eYP",
+    "branch": "Sragen",
+    "date": "2025-12-03",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "SvcMeOP8yOoi21fCROSf",
+    "branch": "Magetan",
+    "date": "2026-06-22",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 2000000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "T2Oia2kkY8IJn0HuW6MR",
+    "branch": "Magetan",
+    "date": "2026-07-17",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "DEWO KE PAJAK",
+    "amount": 100000,
+    "notes": "DEWO KE PAJAK"
+  },
+  {
+    "id": "T8r8aAHvkdBa9iJ9rK6n",
+    "branch": "Sragen",
+    "date": "2026-06-22",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "TAkAuph2zyCVzbDGeBwG",
+    "branch": "Magetan",
+    "date": "2026-01-06",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELI MAKAN, KE BPJS",
+    "amount": 117000,
+    "notes": "BELI MAKAN, KE BPJS"
+  },
+  {
+    "id": "TDoQy3Srdz548SambsQ4",
+    "branch": "Sragen",
+    "date": "2026-07-20",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "Tb0aVSRpKR0G9BtpoQsR",
+    "branch": "Sragen",
+    "date": "2025-09-26",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "TdWyCDPtjlzYB7Wz6G32",
+    "branch": "Sragen",
+    "date": "2025-09-11",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "Tobbp6dGUt6buKQmqqDS",
+    "branch": "Magetan",
+    "date": "2025-09-04",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BENSIN BAGUS",
+    "amount": 100000,
+    "notes": "BENSIN BAGUS"
+  },
+  {
+    "id": "TunXmgO0tnEajAlx5zwj",
+    "branch": "Sragen",
+    "date": "2025-11-18",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BANTU KE KANTOR MAGETAN",
+    "amount": 120000,
+    "notes": "BANTU KE KANTOR MAGETAN"
+  },
+  {
+    "id": "U39ysL3gmUwB3e56d6lZ",
+    "branch": "Magetan",
+    "date": "2026-03-05",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "KE SBY",
+    "amount": 1416000,
+    "notes": "KE SBY"
+  },
+  {
+    "id": "U6nv1V0WlGiMTCJ47VkG",
+    "branch": "Sragen",
+    "date": "2025-09-15",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI BHAYU",
+    "amount": 1921500,
+    "notes": "DARI BHAYU"
+  },
+  {
+    "id": "U7z3udyErioQpwGtvCc3",
+    "branch": "Sragen",
+    "date": "2026-02-19",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 1000000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "UI6t8wbE6hSSBsA7KfuP",
+    "branch": "Magetan",
+    "date": "2026-04-13",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "IURAN PUD",
+    "amount": 577000,
+    "notes": "IURAN PUD"
+  },
+  {
+    "id": "UNU3g1UqgUHyqVXhA4pS",
+    "branch": "Sragen",
+    "date": "2026-03-25",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "URPuD1rsfJNiH1RrK5le",
+    "branch": "Sragen",
+    "date": "2026-05-02",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TOKEN LISTRIK",
+    "amount": 105000,
+    "notes": "TOKEN LISTRIK"
+  },
+  {
+    "id": "UXI4isEObBoAQmNgG8q9",
+    "branch": "Sragen",
+    "date": "2026-03-27",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "UXdREDAn85xaV3K8Xe8s",
+    "branch": "Sragen",
+    "date": "2025-10-31",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "PERTEMUAN PUD DAN AAE KLAIM BA",
+    "amount": 100000,
+    "notes": "PERTEMUAN PUD DAN AAE KLAIM BA"
+  },
+  {
+    "id": "UZPTAVuDRQxViMwybvr0",
+    "branch": "Sragen",
+    "date": "2026-04-07",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "KAS UMUM",
+    "amount": 1000000,
+    "notes": "KAS UMUM"
+  },
+  {
+    "id": "UdGG0dVaOOOolQuYY12t",
+    "branch": "Magetan",
+    "date": "2025-09-20",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "WIFI",
+    "amount": 512000,
+    "notes": "WIFI"
+  },
+  {
+    "id": "UkQSgwq6JfJKSuJvITqC",
+    "branch": "Magetan",
+    "date": "2026-06-10",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELI TOKEN",
+    "amount": 507500,
+    "notes": "BELI TOKEN"
+  },
+  {
+    "id": "UoRfdth9ZhTvW3rlr5hx",
+    "branch": "Sragen",
+    "date": "2025-12-31",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "IURAN PERUM ROYAL AMERTA JANUARI ",
+    "amount": 170000,
+    "notes": "IURAN PERUM ROYAL AMERTA JANUARI "
+  },
+  {
+    "id": "UyRuvInGsYw37c9wIHgU",
+    "branch": "Magetan",
+    "date": "2026-07-17",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELI KAOS PUD",
+    "amount": 195000,
+    "notes": "BELI KAOS PUD"
+  },
+  {
+    "id": "V7AysCC5AziN3hwMgUcn",
+    "branch": "Sragen",
+    "date": "2026-05-04",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "V7Zupm7V2sZqKv2kQ7yU",
+    "branch": "Magetan",
+    "date": "2026-01-24",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "LISTRIK",
+    "amount": 502500,
+    "notes": "LISTRIK"
+  },
+  {
+    "id": "VBmhYIPmMHbuxo2AMeWg",
+    "branch": "Sragen",
+    "date": "2026-03-07",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "VE0upFnkfCLKIlzfnewU",
+    "branch": "Sragen",
+    "date": "2025-12-13",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 30000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "VUIdtKR6YltlgLtfPDtY",
+    "branch": "Sragen",
+    "date": "2026-05-11",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "VVM5Zo8LkIoleTOtklFK",
+    "branch": "Sragen",
+    "date": "2026-03-05",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "KAS UMUM",
+    "amount": 200000,
+    "notes": "KAS UMUM"
+  },
+  {
+    "id": "VcLr9weWLzmArCqKBZf5",
+    "branch": "Sragen",
+    "date": "2026-02-11",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TOKEN LISTRIK",
+    "amount": 105000,
+    "notes": "TOKEN LISTRIK"
+  },
+  {
+    "id": "VgS16hzmYjHhHuvwFXN2",
+    "branch": "Sragen",
+    "date": "2026-04-27",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "VgZys756IYNnY86kEr0q",
+    "branch": "Sragen",
+    "date": "2026-04-24",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "Vn8jQbtitOPNaWtD7iUX",
+    "branch": "Magetan",
+    "date": "2026-04-27",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BENSIN",
+    "amount": 50000,
+    "notes": "BENSIN"
+  },
+  {
+    "id": "VnjeUNprhbdIzcC8yYZT",
+    "branch": "Sragen",
+    "date": "2026-01-31",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "SETBOX",
+    "amount": 250000,
+    "notes": "SETBOX"
+  },
+  {
+    "id": "VzDgHNtujYMlWnlJpd19",
+    "branch": "Magetan",
+    "date": "2025-12-03",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELI MAKANAN RAPAT",
+    "amount": 33500,
+    "notes": "BELI MAKANAN RAPAT"
+  },
+  {
+    "id": "W1c9q4AC4nhSUv3eVbX5",
+    "branch": "Magetan",
+    "date": "2026-02-20",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "ATK",
+    "amount": 231500,
+    "notes": "ATK"
+  },
+  {
+    "id": "W37uJ1Yfh1e1yG72g8GY",
+    "branch": "Sragen",
+    "date": "2026-02-19",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BG",
+    "amount": 1000000,
+    "notes": "BG"
+  },
+  {
+    "id": "W6O7oPOsZkJTFMM1NZNF",
+    "branch": "Sragen",
+    "date": "2026-07-10",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "WGjKHMMPy7C8oBZFKrju",
+    "branch": "Magetan",
+    "date": "2026-01-30",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BENSIN KE MAGETAN",
+    "amount": 50000,
+    "notes": "BENSIN KE MAGETAN"
+  },
+  {
+    "id": "WMa2zBLkHit8oWkLxwuM",
+    "branch": "Magetan",
+    "date": "2026-06-30",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "KARANGAN BUNGA HARI BAYANGKARA",
+    "amount": 500000,
+    "notes": "KARANGAN BUNGA HARI BAYANGKARA"
+  },
+  {
+    "id": "WUAaQa7GNfssWi74B1aa",
+    "branch": "Sragen",
+    "date": "2025-12-19",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "KAS UMUM",
+    "amount": 3015000,
+    "notes": "KAS UMUM"
+  },
+  {
+    "id": "WjL3fxVccfl1sUYUso6n",
+    "branch": "Sragen",
+    "date": "2026-07-02",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TOKEN LISTRIK",
+    "amount": 105000,
+    "notes": "TOKEN LISTRIK"
+  },
+  {
+    "id": "WkI1L0sKx57z8gWTSc31",
+    "branch": "Sragen",
+    "date": "2026-03-17",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "KAS UMUM",
+    "amount": 1675000,
+    "notes": "KAS UMUM"
+  },
+  {
+    "id": "WmvcOIMCV9lHb0AliaR7",
+    "branch": "Sragen",
+    "date": "2026-07-06",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "IURA PERUM ROYAL AMERTA",
+    "amount": 170000,
+    "notes": "IURA PERUM ROYAL AMERTA"
+  },
+  {
+    "id": "Wq1V0hMO0GryY4RzK3Vf",
+    "branch": "Sragen",
+    "date": "2026-02-04",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BENSIN VARIO",
+    "amount": 50000,
+    "notes": "BENSIN VARIO"
+  },
+  {
+    "id": "WwxkWrOxdV33orhZLnBJ",
+    "branch": "Magetan",
+    "date": "2026-06-20",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BAYAR WIFI",
+    "amount": 314000,
+    "notes": "BAYAR WIFI"
+  },
+  {
+    "id": "X139yTT60aYlIole7sEt",
+    "branch": "Sragen",
+    "date": "2026-06-25",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "X6KL6XmEl6tyK8s4a7Cl",
+    "branch": "Sragen",
+    "date": "2026-07-18",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "PDAM",
+    "amount": 97000,
+    "notes": "PDAM"
+  },
+  {
+    "id": "X9uxyif2mQ0TWAhdrBWt",
+    "branch": "Magetan",
+    "date": "2026-05-20",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "WIFI",
+    "amount": 312000,
+    "notes": "WIFI"
+  },
+  {
+    "id": "XCzt7QV4USOPZcwCTJVb",
+    "branch": "Sragen",
+    "date": "2026-07-22",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "XNSUsfpCRnE26UxfpXCW",
+    "branch": "Magetan",
+    "date": "2026-02-06",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELI MAKAN LAPORAN PPTS",
+    "amount": 86000,
+    "notes": "BELI MAKAN LAPORAN PPTS"
+  },
+  {
+    "id": "XQeSqJwuyjWGgyDZiP4o",
+    "branch": "Sragen",
+    "date": "2026-05-29",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "XT3jfCbP7MbMxuYBNoLN",
+    "branch": "Sragen",
+    "date": "2026-01-10",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "XYNAdNMETMT6k4DEftki",
+    "branch": "Sragen",
+    "date": "2026-01-23",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "Xb2X2JIMNCONynfIAURT",
+    "branch": "Sragen",
+    "date": "2025-11-01",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "XnDpAVOU9bRQTobziQLN",
+    "branch": "Sragen",
+    "date": "2026-06-06",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "XnwpKTKcEu4q6TyBpg8X",
+    "branch": "Sragen",
+    "date": "2026-07-25",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "XsGEYaGozjIIs1LyAu41",
+    "branch": "Magetan",
+    "date": "2025-10-30",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 1000000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "XtcasYOwLIX7kjnAejrU",
+    "branch": "Sragen",
+    "date": "2026-05-06",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "XuQobcifmeTG9EJb9ZOM",
+    "branch": "Sragen",
+    "date": "2026-06-24",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "XvqM2XVHHcHewfrMkTlT",
+    "branch": "Magetan",
+    "date": "2026-01-26",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "MAMIN DINAS BPP",
+    "amount": 228000,
+    "notes": "MAMIN DINAS BPP"
+  },
+  {
+    "id": "Y2JTOofpsPIQaUEtK0fy",
+    "branch": "Sragen",
+    "date": "2026-07-21",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "Y6me9QG0cRLUHkXo3CWo",
+    "branch": "Magetan",
+    "date": "2026-06-12",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "SEWRVIS PC",
+    "amount": 150000,
+    "notes": "SEWRVIS PC"
+  },
+  {
+    "id": "Y98YKUOsqFCGVgwGJgE4",
+    "branch": "Sragen",
+    "date": "2026-07-23",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "KAS UMUM",
+    "amount": 1000000,
+    "notes": "KAS UMUM"
+  },
+  {
+    "id": "YAzx4Zz4JsRFKSAJzslZ",
+    "branch": "Sragen",
+    "date": "2025-10-16",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI M. OCA.",
+    "amount": 800000,
+    "notes": "DARI M. OCA."
+  },
+  {
+    "id": "YNbIZRR3hOeHFgfLYZ1Y",
+    "branch": "Magetan",
+    "date": "2026-01-09",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BENSIN",
+    "amount": 100000,
+    "notes": "BENSIN"
+  },
+  {
+    "id": "YNlSlUEHeFbMtZQpHGdK",
+    "branch": "Magetan",
+    "date": "2026-06-29",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 1000000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "YOThOh9PKPlx5fuEJqsU",
+    "branch": "Sragen",
+    "date": "2025-10-31",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "YQUMIz0wDMK0nOnl0n6q",
+    "branch": "Sragen",
+    "date": "2026-04-07",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "YSn9s07EMAqQpFGs7brt",
+    "branch": "Sragen",
+    "date": "2025-09-29",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "YT4NWo6tLxJ8J5jzB9Lo",
+    "branch": "Sragen",
+    "date": "2025-09-20",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "YWBIsQNhZpRGpUmVgEY9",
+    "branch": "Sragen",
+    "date": "2026-04-15",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "KERTAS NCR",
+    "amount": 200000,
+    "notes": "KERTAS NCR"
+  },
+  {
+    "id": "YX2o6bYQPIzqTc5fUv3k",
+    "branch": "Sragen",
+    "date": "2026-04-20",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "YX9roq7t4OcsvTnwa9pM",
+    "branch": "Sragen",
+    "date": "2026-02-20",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "KAS UMUM",
+    "amount": 1500000,
+    "notes": "KAS UMUM"
+  },
+  {
+    "id": "Yctfbw0mdcMfZ5ZIb0nf",
+    "branch": "Sragen",
+    "date": "2025-09-27",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "Yg1QnRUD2Rlu85brpTaR",
+    "branch": "Sragen",
+    "date": "2025-12-19",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "WIFI TELKOM ",
+    "amount": 600000,
+    "notes": "WIFI TELKOM "
+  },
+  {
+    "id": "Yx42azgDtgteJetmaIeQ",
+    "branch": "Magetan",
+    "date": "2025-11-17",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 1000000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "YzomuRknkg88SBOjIPUB",
+    "branch": "Sragen",
+    "date": "2026-03-11",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TOKEN LISTRIK",
+    "amount": 105000,
+    "notes": "TOKEN LISTRIK"
+  },
+  {
+    "id": "Z6RHUcGPF8JT4kYGm0CI",
+    "branch": "Magetan",
+    "date": "2026-05-29",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "IURAN BAYANGKARA",
+    "amount": 506000,
+    "notes": "IURAN BAYANGKARA"
+  },
+  {
+    "id": "ZA3ZILthSy3UQ6JAzXxe",
+    "branch": "Sragen",
+    "date": "2026-06-19",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "ZCypBvymtHRbqq2Ds02F",
+    "branch": "Sragen",
+    "date": "2025-11-05",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "PERTEMUAN DI SAMBIREJO",
+    "amount": 100000,
+    "notes": "PERTEMUAN DI SAMBIREJO"
+  },
+  {
+    "id": "ZDHaK1Ut24WAvPzrT3LP",
+    "branch": "Sragen",
+    "date": "2026-02-18",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "AMBIL BG DI YOGYA YANG HARUS DIREVISI",
+    "amount": 300000,
+    "notes": "AMBIL BG DI YOGYA YANG HARUS DIREVISI"
+  },
+  {
+    "id": "ZEGbWEF61OnKWDxOqgDn",
+    "branch": "Sragen",
+    "date": "2025-09-09",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "ZJykun1gMeueA1ARB6lC",
+    "branch": "Magetan",
+    "date": "2026-02-16",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "LISTRIK",
+    "amount": 505000,
+    "notes": "LISTRIK"
+  },
+  {
+    "id": "ZO18SwdAmuTLnELdbKWe",
+    "branch": "Sragen",
+    "date": "2025-12-06",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "ZW4YO21dRwC8vs6si9dz",
+    "branch": "Sragen",
+    "date": "2025-09-20",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "KAS UMUM",
+    "amount": 2100000,
+    "notes": "KAS UMUM"
+  },
+  {
+    "id": "ZWs0ntAAfB6DozJvxI86",
+    "branch": "Magetan",
+    "date": "2025-10-02",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "KE MAGETAN",
+    "amount": 100000,
+    "notes": "KE MAGETAN"
+  },
+  {
+    "id": "ZfCZbedlgbfwOL5xuw8C",
+    "branch": "Sragen",
+    "date": "2026-07-09",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "Zggq1udxF41mbMbbF4d7",
+    "branch": "Sragen",
+    "date": "2026-06-02",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "ZglhvKjMyXcb0QvSosjL",
+    "branch": "Magetan",
+    "date": "2025-11-13",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 1000000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "ZpzdLvYooSGsjCodir1V",
+    "branch": "Sragen",
+    "date": "2025-10-31",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "KAS UMUM",
+    "amount": 1164000,
+    "notes": "KAS UMUM"
+  },
+  {
+    "id": "ZuZGtrnFvt7YPxpILums",
+    "branch": "Magetan",
+    "date": "2026-04-29",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BENSIN",
+    "amount": 50000,
+    "notes": "BENSIN"
+  },
+  {
+    "id": "a2xidlCesNlkHgwibyKT",
+    "branch": "Sragen",
+    "date": "2026-06-04",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "aJNHLqmwWcHoPaLxs22t",
+    "branch": "Sragen",
+    "date": "2025-09-11",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "SEDOT TINJA ",
+    "amount": 250000,
+    "notes": "SEDOT TINJA "
+  },
+  {
+    "id": "aOEZG8kYC7CDPUcBMqLQ",
+    "branch": "Sragen",
+    "date": "2025-11-19",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "MUTER KE SAMBIREJO DENGAN AAE",
+    "amount": 150000,
+    "notes": "MUTER KE SAMBIREJO DENGAN AAE"
+  },
+  {
+    "id": "aTvG8wxzXZ4aPP6IWOvL",
+    "branch": "Sragen",
+    "date": "2026-06-03",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "SCANK AAE KAB SRAGEN ",
+    "amount": 120000,
+    "notes": "SCANK AAE KAB SRAGEN "
+  },
+  {
+    "id": "aUifrcZYspH3SGEGzhdh",
+    "branch": "Sragen",
+    "date": "2026-02-02",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "aZLAvjIcrqOyK8QqWGVi",
+    "branch": "Sragen",
+    "date": "2026-01-05",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "acdHY82ODtbtzTuEn3HE",
+    "branch": "Sragen",
+    "date": "2026-02-19",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TOKEN LISTRIK",
+    "amount": 105500,
+    "notes": "TOKEN LISTRIK"
+  },
+  {
+    "id": "aewOIYK48ARiD7TNlNMV",
+    "branch": "Magetan",
+    "date": "2025-12-23",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "PROMO ORGANIK",
+    "amount": 3150000,
+    "notes": "PROMO ORGANIK"
+  },
+  {
+    "id": "b5TfszWGaLITie6X4nD1",
+    "branch": "Sragen",
+    "date": "2026-04-14",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TOKEN LISTRIK",
+    "amount": 105000,
+    "notes": "TOKEN LISTRIK"
+  },
+  {
+    "id": "bMkzf88TKcNY3FeJ4P38",
+    "branch": "Sragen",
+    "date": "2025-10-24",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "bVqHQxQHvBxmW6QG0g2Y",
+    "branch": "Sragen",
+    "date": "2026-05-07",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "bXJbZuwSyVRIf9x4TzsI",
+    "branch": "Magetan",
+    "date": "2026-02-24",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BPP MPT BARAT",
+    "amount": 3000000,
+    "notes": "BPP MPT BARAT"
+  },
+  {
+    "id": "baDHK81rBO4vnDsSNeM2",
+    "branch": "Magetan",
+    "date": "2026-04-28",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "MATERAI",
+    "amount": 20000,
+    "notes": "MATERAI"
+  },
+  {
+    "id": "bfK0aSGb4chreIwmwXr1",
+    "branch": "Sragen",
+    "date": "2025-11-29",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "bnEBsDCvCgPzZyJSyKYs",
+    "branch": "Sragen",
+    "date": "2026-03-17",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "AMBIL PARCEL DI MAGETAN DAN MUTER GUDANG",
+    "amount": 150000,
+    "notes": "AMBIL PARCEL DI MAGETAN DAN MUTER GUDANG"
+  },
+  {
+    "id": "bplbd54NB9k02Yv2SnyS",
+    "branch": "Magetan",
+    "date": "2026-04-07",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "JAJAN VERLAP",
+    "amount": 172000,
+    "notes": "JAJAN VERLAP"
+  },
+  {
+    "id": "bsu7amDc61ljBlV5DJ3r",
+    "branch": "Magetan",
+    "date": "2026-07-14",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 1000000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "c8LjlCQrpolvobf1PIYa",
+    "branch": "Sragen",
+    "date": "2026-02-04",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TOKEN LISTRIK",
+    "amount": 105000,
+    "notes": "TOKEN LISTRIK"
+  },
+  {
+    "id": "c9F4g1KJs5npnxLydQhl",
+    "branch": "Sragen",
+    "date": "2026-04-16",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "PERTEMUAN VERVAL DAN KEC. SAMBIREJO",
+    "amount": 100000,
+    "notes": "PERTEMUAN VERVAL DAN KEC. SAMBIREJO"
+  },
+  {
+    "id": "cBwBfqjvpxljrPFwaO51",
+    "branch": "Sragen",
+    "date": "2026-01-14",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "RAPAT DI MAGETAN ",
+    "amount": 100000,
+    "notes": "RAPAT DI MAGETAN "
+  },
+  {
+    "id": "cFHiCiHS1bfEWyrYaKuz",
+    "branch": "Sragen",
+    "date": "2025-11-24",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "cGjDYonlxcPN9H23IOKm",
+    "branch": "Sragen",
+    "date": "2026-07-17",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "KERTAS NCR",
+    "amount": 176000,
+    "notes": "KERTAS NCR"
+  },
+  {
+    "id": "cMPHZe0b5MOxJBCQfxWf",
+    "branch": "Magetan",
+    "date": "2025-11-17",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "IURAN PERTEMUAN PPTS SE KABUPATEN",
+    "amount": 1140000,
+    "notes": "IURAN PERTEMUAN PPTS SE KABUPATEN"
+  },
+  {
+    "id": "ccRYlja7XB5uC6xvlapR",
+    "branch": "Sragen",
+    "date": "2025-09-02",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "ch3a288lQzoCZEVYLDP9",
+    "branch": "Sragen",
+    "date": "2026-07-17",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "KAS UMUM",
+    "amount": 500000,
+    "notes": "KAS UMUM"
+  },
+  {
+    "id": "cmojz1UtsjTiGXOh3mBC",
+    "branch": "Magetan",
+    "date": "2025-12-23",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELI MAKAN",
+    "amount": 150000,
+    "notes": "BELI MAKAN"
+  },
+  {
+    "id": "cp9VDR38rgwHrgTYRWXT",
+    "branch": "Sragen",
+    "date": "2025-11-25",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "cqwNGfANy1hYFoEgDbYw",
+    "branch": "Sragen",
+    "date": "2025-12-29",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "KAS UMUM",
+    "amount": 2500000,
+    "notes": "KAS UMUM"
+  },
+  {
+    "id": "cwuD7isZ7qPGWaIUzZUV",
+    "branch": "Sragen",
+    "date": "2025-11-19",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TOKEN LISTRIK",
+    "amount": 105000,
+    "notes": "TOKEN LISTRIK"
+  },
+  {
+    "id": "d4lEiBI89WG0OO7KmahQ",
+    "branch": "Sragen",
+    "date": "2025-09-24",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "d5Iv1KvQtwDP2PCUwEEa",
+    "branch": "Magetan",
+    "date": "2025-11-04",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 1000000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "d5hSPLkcUXQPi3qJlULV",
+    "branch": "Sragen",
+    "date": "2026-05-09",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "GAJI IBU YANG BANTU DI SRAGEN BULAN APRIL ",
+    "amount": 600000,
+    "notes": "GAJI IBU YANG BANTU DI SRAGEN BULAN APRIL "
+  },
+  {
+    "id": "d8o6SkcCQRWoPmewO49g",
+    "branch": "Magetan",
+    "date": "2025-10-17",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "IURAN PROMOSI ORGANIK",
+    "amount": 1547500,
+    "notes": "IURAN PROMOSI ORGANIK"
+  },
+  {
+    "id": "dDQJcAOyTVnzJg1QIywp",
+    "branch": "Magetan",
+    "date": "2026-04-29",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "IURAN OLEH OLEH REKON",
+    "amount": 185000,
+    "notes": "IURAN OLEH OLEH REKON"
+  },
+  {
+    "id": "dHlx2vFwwXhjm1ZPEUmp",
+    "branch": "Magetan",
+    "date": "2026-07-02",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELI KERTAS",
+    "amount": 55000,
+    "notes": "BELI KERTAS"
+  },
+  {
+    "id": "dJiS7UBFnKEfoQIYi1nN",
+    "branch": "Sragen",
+    "date": "2026-01-13",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "dSRx00ZgHOCvVm9b8sNe",
+    "branch": "Sragen",
+    "date": "2026-03-24",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "dSh1H18AJcTV6ZUolYZI",
+    "branch": "Sragen",
+    "date": "2026-04-23",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BENSIN VARIO",
+    "amount": 20000,
+    "notes": "BENSIN VARIO"
+  },
+  {
+    "id": "dZBHjUbCHxCKgGcMjuGo",
+    "branch": "Sragen",
+    "date": "2026-03-06",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "dePgHc0EiVmY6TAVtX5Y",
+    "branch": "Sragen",
+    "date": "2025-10-16",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TRANSPOT KE SEMARANG",
+    "amount": 800000,
+    "notes": "TRANSPOT KE SEMARANG"
+  },
+  {
+    "id": "dpmy4fkiBlZ5nAQlGYFb",
+    "branch": "Magetan",
+    "date": "2026-02-13",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "RAPAT KEE NGAWI",
+    "amount": 50000,
+    "notes": "RAPAT KEE NGAWI"
+  },
+  {
+    "id": "dxX99yw4eEAmShF8wRBU",
+    "branch": "Sragen",
+    "date": "2025-10-22",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI M.OCA",
+    "amount": 700000,
+    "notes": "DARI M.OCA"
+  },
+  {
+    "id": "e4FEV91rOo3eec9ualvb",
+    "branch": "Sragen",
+    "date": "2026-04-30",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "e4bBMKbOKgoMd7uz1oDg",
+    "branch": "Sragen",
+    "date": "2025-10-03",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "eHRC90BEMj9UJw48hpgG",
+    "branch": "Magetan",
+    "date": "2026-03-30",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "LISTRIK",
+    "amount": 505000,
+    "notes": "LISTRIK"
+  },
+  {
+    "id": "eOWMttsKE2MVWjoFkjTI",
+    "branch": "Sragen",
+    "date": "2025-11-18",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "ekqWwSDuG1ogxmtS9dpk",
+    "branch": "Sragen",
+    "date": "2026-05-19",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TOKEN LISTRIK",
+    "amount": 105000,
+    "notes": "TOKEN LISTRIK"
+  },
+  {
+    "id": "emxI95zNh7T80cSMWkVk",
+    "branch": "Sragen",
+    "date": "2025-12-16",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 30000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "f2FbjGmnbowm3mgsf8y1",
+    "branch": "Sragen",
+    "date": "2026-04-18",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "GEMBOK KANTOR",
+    "amount": 115000,
+    "notes": "GEMBOK KANTOR"
+  },
+  {
+    "id": "f7Jmlvyatf5BzVE1GP8W",
+    "branch": "Sragen",
+    "date": "2026-04-08",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TOKEN LISTRIK",
+    "amount": 105000,
+    "notes": "TOKEN LISTRIK"
+  },
+  {
+    "id": "f7Z2qeLHdL8EETW1MPC6",
+    "branch": "Sragen",
+    "date": "2026-04-23",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "f9El18m3h7Ia9ijvA0LQ",
+    "branch": "Sragen",
+    "date": "2026-05-20",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "fAduvJ2OcBwyn2kc2vCE",
+    "branch": "Sragen",
+    "date": "2026-04-29",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "fBsg4ReWY5Vjo90KtLjX",
+    "branch": "Magetan",
+    "date": "2026-02-20",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 1000000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "fJlyDln3g14gQ8pL708k",
+    "branch": "Magetan",
+    "date": "2026-06-10",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "KE MGT",
+    "amount": 50000,
+    "notes": "KE MGT"
+  },
+  {
+    "id": "fWIhEKcFqFfrtTPQ9oPg",
+    "branch": "Sragen",
+    "date": "2025-10-15",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "JILID LAPORAN DAN FOTO COPY",
+    "amount": 74000,
+    "notes": "JILID LAPORAN DAN FOTO COPY"
+  },
+  {
+    "id": "fgU9prlUN1DhOuumh65E",
+    "branch": "Magetan",
+    "date": "2025-10-29",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "SAKU AAE",
+    "amount": 250000,
+    "notes": "SAKU AAE"
+  },
+  {
+    "id": "fvS18WXIsiOEimyuz8Xw",
+    "branch": "Sragen",
+    "date": "2026-05-25",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "fz4NB72fVL2rmJESg6vL",
+    "branch": "Magetan",
+    "date": "2026-04-30",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "REKON",
+    "amount": 784000,
+    "notes": "REKON"
+  },
+  {
+    "id": "g2eKcwy86lkOWDqdgLk8",
+    "branch": "Sragen",
+    "date": "2026-06-25",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TOKEN LISTRIK",
+    "amount": 105000,
+    "notes": "TOKEN LISTRIK"
+  },
+  {
+    "id": "g342LplUpEWHjO4wmg89",
+    "branch": "Sragen",
+    "date": "2026-03-09",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BATRAI A3 ",
+    "amount": 25000,
+    "notes": "BATRAI A3 "
+  },
+  {
+    "id": "g4el2tfgO2PBk0BtR5je",
+    "branch": "Sragen",
+    "date": "2026-03-04",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "ACARA DI SOLO NOVOTEL",
+    "amount": 400000,
+    "notes": "ACARA DI SOLO NOVOTEL"
+  },
+  {
+    "id": "gAfrAIG4ZKrBTyFrUEqQ",
+    "branch": "Sragen",
+    "date": "2025-09-01",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TOKEN LISTRIK",
+    "amount": 105000,
+    "notes": "TOKEN LISTRIK"
+  },
+  {
+    "id": "gBJqRiXWr6447zCdC2N0",
+    "branch": "Magetan",
+    "date": "2025-10-16",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 1000000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "gLzxflDmJh3JZPvp6OQU",
+    "branch": "Magetan",
+    "date": "2025-12-22",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 3150000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "gMQ1X5yl00ximosIwpME",
+    "branch": "Sragen",
+    "date": "2026-02-10",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "gY8Q22CoAutcOUSuAgq9",
+    "branch": "Sragen",
+    "date": "2025-10-14",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "gZ1ZblmyTzNJ0srq5n7q",
+    "branch": "Magetan",
+    "date": "2025-11-12",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELI TOKEN MAMI",
+    "amount": 202500,
+    "notes": "BELI TOKEN MAMI"
+  },
+  {
+    "id": "gjtptzi47wSQXE4KHv7l",
+    "branch": "Sragen",
+    "date": "2026-05-23",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "glmatmoevVK7qq9IaDHJ",
+    "branch": "Magetan",
+    "date": "2026-05-26",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 1000000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "guLBDRnt9QpXOXUlxHSq",
+    "branch": "Sragen",
+    "date": "2025-11-28",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "KAS UMUM",
+    "amount": 500000,
+    "notes": "KAS UMUM"
+  },
+  {
+    "id": "gwBi1cT6XG5QVa3Rl9MN",
+    "branch": "Magetan",
+    "date": "2026-05-01",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "LISTRIK",
+    "amount": 505000,
+    "notes": "LISTRIK"
+  },
+  {
+    "id": "gx6R70oaTCBeBdRoRDG8",
+    "branch": "Sragen",
+    "date": "2026-02-05",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "gxlZttgbK9GEhItHlLdL",
+    "branch": "Sragen",
+    "date": "2026-03-14",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "h0ujligBFOktLWrlASul",
+    "branch": "Sragen",
+    "date": "2026-04-01",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "SISA SALDO MARET",
+    "amount": 292000,
+    "notes": "SISA SALDO MARET"
+  },
+  {
+    "id": "h2ZfjOLk66WPfIquyqam",
+    "branch": "Sragen",
+    "date": "2025-11-12",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TOKEN LISTRIK",
+    "amount": 105000,
+    "notes": "TOKEN LISTRIK"
+  },
+  {
+    "id": "hAP3pLJlDBocTnMvZHld",
+    "branch": "Sragen",
+    "date": "2026-01-08",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "hLifohxQQmnJdooynGEd",
+    "branch": "Sragen",
+    "date": "2026-02-19",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "hMRKivrjx5z6t0hlT9C4",
+    "branch": "Sragen",
+    "date": "2025-11-13",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "hNJ712kxHXRWODEX3tfR",
+    "branch": "Magetan",
+    "date": "2026-07-14",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "RAPAT NGAWI",
+    "amount": 100000,
+    "notes": "RAPAT NGAWI"
+  },
+  {
+    "id": "hR8MqHsquglyZ8HfcT56",
+    "branch": "Sragen",
+    "date": "2025-12-09",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 30000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "hYfOOEZTdEcbr4hiFniI",
+    "branch": "Magetan",
+    "date": "2026-03-04",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 1500000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "hieCvMLB0Uy7hpnkevnw",
+    "branch": "Sragen",
+    "date": "2025-10-16",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "SCANK KUNJUNGAN AE DAN AAE KE PUD",
+    "amount": 85000,
+    "notes": "SCANK KUNJUNGAN AE DAN AAE KE PUD"
+  },
+  {
+    "id": "hnLeXUlX1T3MOamAtRtk",
+    "branch": "Sragen",
+    "date": "2026-03-12",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "hoSEFdWRWlYVQOtGEmuk",
+    "branch": "Sragen",
+    "date": "2025-09-12",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BUKU BESAR",
+    "amount": 50000,
+    "notes": "BUKU BESAR"
+  },
+  {
+    "id": "hvjerTZgIObDEQebYzBZ",
+    "branch": "Magetan",
+    "date": "2026-02-11",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BPP KR REJO",
+    "amount": 1500000,
+    "notes": "BPP KR REJO"
+  },
+  {
+    "id": "hzshkSEytlLUZ1cbWmHF",
+    "branch": "Sragen",
+    "date": "2026-06-19",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "WIFI TELKOM",
+    "amount": 285000,
+    "notes": "WIFI TELKOM"
+  },
+  {
+    "id": "iJEyC9MIiLxYF8OD8MCl",
+    "branch": "Magetan",
+    "date": "2026-01-26",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "SAKU MAS EDY",
+    "amount": 300000,
+    "notes": "SAKU MAS EDY"
+  },
+  {
+    "id": "iKLQsm2C0uxWDP4U6WIJ",
+    "branch": "Sragen",
+    "date": "2026-03-02",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "PULSA KANTOR",
+    "amount": 50000,
+    "notes": "PULSA KANTOR"
+  },
+  {
+    "id": "iMJbhJYgCgqLEzyTpbws",
+    "branch": "Sragen",
+    "date": "2026-07-14",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "iN8Ncqvv5wqmWmFZ6XeD",
+    "branch": "Sragen",
+    "date": "2026-01-01",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "SISA SALDO 2025",
+    "amount": 1343000,
+    "notes": "SISA SALDO 2025"
+  },
+  {
+    "id": "iUd0Qny6FzwcbWRGQcSN",
+    "branch": "Magetan",
+    "date": "2025-12-23",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "KERTAS",
+    "amount": 112000,
+    "notes": "KERTAS"
+  },
+  {
+    "id": "icPDHse32T6dwdS0jFi7",
+    "branch": "Sragen",
+    "date": "2026-05-29",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "KERTAS HVS WARNA",
+    "amount": 85000,
+    "notes": "KERTAS HVS WARNA"
+  },
+  {
+    "id": "ieIV6A3CDDzljeWOxHIG",
+    "branch": "Magetan",
+    "date": "2026-07-13",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BENSIN KE NGAWI",
+    "amount": 200000,
+    "notes": "BENSIN KE NGAWI"
+  },
+  {
+    "id": "igIKo70qIx2wsPiAsr6e",
+    "branch": "Sragen",
+    "date": "2026-06-13",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "iny9eDVhzLGEm9MbLgGj",
+    "branch": "Sragen",
+    "date": "2026-04-15",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "KUNJUNGN MONEV TIM KP3 SRAGEN",
+    "amount": 200000,
+    "notes": "KUNJUNGN MONEV TIM KP3 SRAGEN"
+  },
+  {
+    "id": "iovjv1KZ51NRxSi5tXzX",
+    "branch": "Sragen",
+    "date": "2025-10-10",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "ir8lf8BJW2s0gtE5jXNx",
+    "branch": "Magetan",
+    "date": "2025-09-23",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 1000000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "iref8BkoIZ0QbdLGQGPj",
+    "branch": "Sragen",
+    "date": "2026-01-22",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "IURAN PUD KE YOGYA",
+    "amount": 280000,
+    "notes": "IURAN PUD KE YOGYA"
+  },
+  {
+    "id": "iwqiNJQlO0TAjnqxU3d7",
+    "branch": "Sragen",
+    "date": "2025-09-04",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "MATERAI ",
+    "amount": 20000,
+    "notes": "MATERAI "
+  },
+  {
+    "id": "ixY6YAyEPgA0m9dvHZ1x",
+    "branch": "Sragen",
+    "date": "2025-12-11",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 30000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "j5Mf4Xrm8NQ2n02BYeN6",
+    "branch": "Magetan",
+    "date": "2026-03-30",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 1000000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "j9EvV2cJbrCW30YhZKKF",
+    "branch": "Magetan",
+    "date": "2025-12-18",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "WIFI",
+    "amount": 512000,
+    "notes": "WIFI"
+  },
+  {
+    "id": "jA4YMVldMkgChVUCMSwD",
+    "branch": "Sragen",
+    "date": "2026-07-02",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "jOTPPPTAudCjWUaHhFh8",
+    "branch": "Sragen",
+    "date": "2026-02-25",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "jUMkx6lWE5wqSXMwvpSf",
+    "branch": "Sragen",
+    "date": "2026-07-07",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BENSIN VARIO",
+    "amount": 30000,
+    "notes": "BENSIN VARIO"
+  },
+  {
+    "id": "jXg9RsyDmciqBbOU57iO",
+    "branch": "Sragen",
+    "date": "2025-10-04",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "jYk2HdmbKrAEtTHzVErq",
+    "branch": "Sragen",
+    "date": "2026-02-23",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "ja43CGKUoww2HqlcroaN",
+    "branch": "Magetan",
+    "date": "2025-11-10",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 500000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "jbJDkmuWQUZgShm5kuhN",
+    "branch": "Sragen",
+    "date": "2025-12-21",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "jghLklJ6wFxOPGb5g7Bf",
+    "branch": "Sragen",
+    "date": "2025-10-21",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "jwSJzqOBa3nyUKwKbkWg",
+    "branch": "Sragen",
+    "date": "2026-01-28",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BENSIN VARIO",
+    "amount": 50000,
+    "notes": "BENSIN VARIO"
+  },
+  {
+    "id": "k0BGyw8S0aTnU44fLv2y",
+    "branch": "Magetan",
+    "date": "2026-02-04",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "FC",
+    "amount": 38500,
+    "notes": "FC"
+  },
+  {
+    "id": "k2NEQbaohuvN8wjg6JPM",
+    "branch": "Sragen",
+    "date": "2026-05-08",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "IURAN PERUM ROYAL AMERTA",
+    "amount": 170000,
+    "notes": "IURAN PERUM ROYAL AMERTA"
+  },
+  {
+    "id": "k5M7H9Kuhmx4tSoM242o",
+    "branch": "Sragen",
+    "date": "2026-02-03",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "k9zNhEvlcNVRKqZScUG3",
+    "branch": "Sragen",
+    "date": "2025-12-16",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TOKEN LISTRIK",
+    "amount": 105000,
+    "notes": "TOKEN LISTRIK"
+  },
+  {
+    "id": "kGqAVQTi5AbGgKDbRZiC",
+    "branch": "Sragen",
+    "date": "2026-04-23",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "KAS UMUM",
+    "amount": 1053000,
+    "notes": "KAS UMUM"
+  },
+  {
+    "id": "kJv84k6tG2uETzyr3MUz",
+    "branch": "Sragen",
+    "date": "2026-07-03",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "PULSA KANTOR",
+    "amount": 67000,
+    "notes": "PULSA KANTOR"
+  },
+  {
+    "id": "kabG7eQcIc0OTT3OwgbM",
+    "branch": "Sragen",
+    "date": "2025-12-15",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 30000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "kgbMmAD2mgBNLyYWiSVs",
+    "branch": "Magetan",
+    "date": "2025-11-04",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "IURAN  PUD",
+    "amount": 300000,
+    "notes": "IURAN  PUD"
+  },
+  {
+    "id": "l3rwGNEtnE0FY3YA7Onl",
+    "branch": "Sragen",
+    "date": "2026-07-24",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "KAS UMUM",
+    "amount": 2000000,
+    "notes": "KAS UMUM"
+  },
+  {
+    "id": "l6re0Oa4FWQX5cHhlx5x",
+    "branch": "Sragen",
+    "date": "2025-10-08",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "AQUA KARDUS @220ML DAN LIMENERAL",
+    "amount": 76000,
+    "notes": "AQUA KARDUS @220ML DAN LIMENERAL"
+  },
+  {
+    "id": "lGnl9V6b7yFUVmxc3GPB",
+    "branch": "Sragen",
+    "date": "2025-09-01",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "leFbZ3wI0fVwi0l32SVK",
+    "branch": "Sragen",
+    "date": "2026-05-04",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TEKNISI WIFI",
+    "amount": 20000,
+    "notes": "TEKNISI WIFI"
+  },
+  {
+    "id": "llAjtuvukIMIasxlSMQV",
+    "branch": "Sragen",
+    "date": "2025-12-22",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "LAMPU KANTOR",
+    "amount": 152000,
+    "notes": "LAMPU KANTOR"
+  },
+  {
+    "id": "lwDvg2DSqazxZ7E4zNYY",
+    "branch": "Sragen",
+    "date": "2025-11-28",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "lxBZxFetHx7BdxbvQzZJ",
+    "branch": "Sragen",
+    "date": "2026-05-20",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "KAS UMUM",
+    "amount": 2000000,
+    "notes": "KAS UMUM"
+  },
+  {
+    "id": "lxm5DThVM2BaVgcwtA8z",
+    "branch": "Magetan",
+    "date": "2025-09-09",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 2000000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "m2GqmgU0UHoPkfrZ8OzB",
+    "branch": "Sragen",
+    "date": "2026-03-12",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "COVER COKLAT",
+    "amount": 85000,
+    "notes": "COVER COKLAT"
+  },
+  {
+    "id": "mDaTe5rTAYwjjwdAuEMn",
+    "branch": "Sragen",
+    "date": "2025-10-10",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "PERTEMUAN DI LATAR UMAH ",
+    "amount": 150000,
+    "notes": "PERTEMUAN DI LATAR UMAH "
+  },
+  {
+    "id": "mEOdGM5PrFe5S89ILDP7",
+    "branch": "Sragen",
+    "date": "2026-07-04",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "mLOl0gppNxyIyD4TBLyr",
+    "branch": "Magetan",
+    "date": "2025-12-22",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BENSIN",
+    "amount": 50000,
+    "notes": "BENSIN"
+  },
+  {
+    "id": "mMA3HCmVDqxTCda79hKM",
+    "branch": "Sragen",
+    "date": "2026-03-11",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "mNkuNkypQ3YHQURnPVH3",
+    "branch": "Sragen",
+    "date": "2026-01-06",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "MATERAI",
+    "amount": 200000,
+    "notes": "MATERAI"
+  },
+  {
+    "id": "mQ3gOM5UBVlz65rW6e98",
+    "branch": "Sragen",
+    "date": "2026-01-20",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "PDAM",
+    "amount": 98000,
+    "notes": "PDAM"
+  },
+  {
+    "id": "mQuYpfddqRRBhe0Ov8l6",
+    "branch": "Sragen",
+    "date": "2026-02-13",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "GAJI IBU YANG BANTU DI SRAGEN BULAN JANUARI ",
+    "amount": 600000,
+    "notes": "GAJI IBU YANG BANTU DI SRAGEN BULAN JANUARI "
+  },
+  {
+    "id": "mRp2zewnN8GMWilZnH4V",
+    "branch": "Magetan",
+    "date": "2025-10-16",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "AE, AAE, BALUK",
+    "amount": 400000,
+    "notes": "AE, AAE, BALUK"
+  },
+  {
+    "id": "mSgUnOBAgaxpRof6waNW",
+    "branch": "Sragen",
+    "date": "2025-09-29",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "KAS UMUM",
+    "amount": 1575000,
+    "notes": "KAS UMUM"
+  },
+  {
+    "id": "mZccjgfXx83SUOfJRxAM",
+    "branch": "Sragen",
+    "date": "2026-02-24",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "mc1ABYpd2KpQKr7Ui5jT",
+    "branch": "Magetan",
+    "date": "2025-10-21",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "KE  MAGETAN",
+    "amount": 60000,
+    "notes": "KE  MAGETAN"
+  },
+  {
+    "id": "mckCrhqGafLjflfTYvlK",
+    "branch": "Sragen",
+    "date": "2025-11-11",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BENSIN VARIO",
+    "amount": 15000,
+    "notes": "BENSIN VARIO"
+  },
+  {
+    "id": "mkdOvmLfArX8jFkR0YeE",
+    "branch": "Sragen",
+    "date": "2026-06-15",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "KE JOGJA KIRIM DATA KOMPENSASI TAHAP 2 ",
+    "amount": 400000,
+    "notes": "KE JOGJA KIRIM DATA KOMPENSASI TAHAP 2 "
+  },
+  {
+    "id": "mlZJgzS7aYtCEag58dRi",
+    "branch": "Magetan",
+    "date": "2026-06-02",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "KE MGT",
+    "amount": 50000,
+    "notes": "KE MGT"
+  },
+  {
+    "id": "mn2P99B9zhEdHkbGvP2f",
+    "branch": "Magetan",
+    "date": "2025-09-16",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "STIKER HET DAN ANGKUTAN MGT SRG",
+    "amount": 132000,
+    "notes": "STIKER HET DAN ANGKUTAN MGT SRG"
+  },
+  {
+    "id": "n0BWhtDWziEsEoW55S0b",
+    "branch": "Sragen",
+    "date": "2026-07-03",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "n1jAofXvhuCwr8HaeApL",
+    "branch": "Sragen",
+    "date": "2025-10-08",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "n90drFgoGipMMlRbOREA",
+    "branch": "Sragen",
+    "date": "2026-04-06",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "nBLe3s3ib3uAMDldBZUC",
+    "branch": "Sragen",
+    "date": "2025-10-10",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "IURAN PAGUYUPAN PUD KAB. SRAGEN",
+    "amount": 2930000,
+    "notes": "IURAN PAGUYUPAN PUD KAB. SRAGEN"
+  },
+  {
+    "id": "nI81cCHHNX3uWnXXSRYD",
+    "branch": "Sragen",
+    "date": "2026-07-07",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "nJ37UzcJq6ApGwDDvvhX",
+    "branch": "Sragen",
+    "date": "2025-10-11",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "nJcgGWC6xtVoNRQjG6cs",
+    "branch": "Sragen",
+    "date": "2025-12-04",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "nKxKMFTi8OiTk2G2IFMP",
+    "branch": "Sragen",
+    "date": "2026-01-05",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "IURAN PAGUYUPAN SRAGEN ",
+    "amount": 612000,
+    "notes": "IURAN PAGUYUPAN SRAGEN "
+  },
+  {
+    "id": "nNqWAjWNHwbJYkcKJpNn",
+    "branch": "Sragen",
+    "date": "2026-01-07",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "nXgR3TxwXZaZVxITOuZG",
+    "branch": "Sragen",
+    "date": "2026-06-08",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "PERTEMUAN PUD PPTS DAN PI DI MASARAN MONGGO MAMPIR",
+    "amount": 100000,
+    "notes": "PERTEMUAN PUD PPTS DAN PI DI MASARAN MONGGO MAMPIR"
+  },
+  {
+    "id": "nYzYvMEZFL5YZGHCUMSw",
+    "branch": "Sragen",
+    "date": "2026-03-10",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BABINSA KORAMIL",
+    "amount": 200000,
+    "notes": "BABINSA KORAMIL"
+  },
+  {
+    "id": "ngn5yJbIuSyfKwNnG2MW",
+    "branch": "Sragen",
+    "date": "2026-01-07",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TOKEN LISTRIK",
+    "amount": 105000,
+    "notes": "TOKEN LISTRIK"
+  },
+  {
+    "id": "ngsfoslyehhXAlAhRYm3",
+    "branch": "Magetan",
+    "date": "2025-10-17",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 1500000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "niTzm0HN4EvTzkr0gZzf",
+    "branch": "Sragen",
+    "date": "2026-02-13",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "nqdzTKtOGWyj0l4HNZtW",
+    "branch": "Magetan",
+    "date": "2026-05-19",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BENSIN RAPAT KE MGT",
+    "amount": 50000,
+    "notes": "BENSIN RAPAT KE MGT"
+  },
+  {
+    "id": "nrq6GVsClkUjBDNCNsgF",
+    "branch": "Sragen",
+    "date": "2025-11-13",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "IURAN PERUMAHAN",
+    "amount": 170000,
+    "notes": "IURAN PERUMAHAN"
+  },
+  {
+    "id": "nsRhhrzuDreC12Fdi0RQ",
+    "branch": "Sragen",
+    "date": "2026-04-10",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "oCGlgXyIGPMtwnVcpGj4",
+    "branch": "Magetan",
+    "date": "2026-07-07",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "oDsIvW8qXKsMLP7TR2r5",
+    "branch": "Sragen",
+    "date": "2026-07-11",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "oEAAY4Zx0W8VNAnpgGiS",
+    "branch": "Magetan",
+    "date": "2026-02-13",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 1000000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "oEOPwnqixTKMQY8fJj9K",
+    "branch": "Sragen",
+    "date": "2026-04-29",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "KEBERSIHAN PERUM ROYAL AMERTA",
+    "amount": 100000,
+    "notes": "KEBERSIHAN PERUM ROYAL AMERTA"
+  },
+  {
+    "id": "oHSYTJxg6Rv8yi198QUT",
+    "branch": "Sragen",
+    "date": "2026-02-27",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "oKKmpE2WshjFhfIAPCJw",
+    "branch": "Magetan",
+    "date": "2026-03-25",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "WIFI",
+    "amount": 312000,
+    "notes": "WIFI"
+  },
+  {
+    "id": "oOm5gXPgORJxvsbG8au9",
+    "branch": "Sragen",
+    "date": "2025-12-06",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "IURAN PERUM ROYAL AMERTA",
+    "amount": 170000,
+    "notes": "IURAN PERUM ROYAL AMERTA"
+  },
+  {
+    "id": "oTQm66Zs6oCzO47pZIZM",
+    "branch": "Magetan",
+    "date": "2025-12-19",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELI KERTAS",
+    "amount": 54000,
+    "notes": "BELI KERTAS"
+  },
+  {
+    "id": "oUYLZWFpJ2SFFUkZcGVD",
+    "branch": "Magetan",
+    "date": "2026-02-23",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "WIFI",
+    "amount": 136200,
+    "notes": "WIFI"
+  },
+  {
+    "id": "oqIprMOZ97j3vJaXyMMd",
+    "branch": "Sragen",
+    "date": "2025-11-26",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "ov9aaxMwR9j67LHNEk8G",
+    "branch": "Sragen",
+    "date": "2026-02-09",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BENSIN VARIO",
+    "amount": 50000,
+    "notes": "BENSIN VARIO"
+  },
+  {
+    "id": "owkPBQaDK9NZe64gIrVG",
+    "branch": "Sragen",
+    "date": "2026-07-06",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "AQUA GALON",
+    "amount": 25000,
+    "notes": "AQUA GALON"
+  },
+  {
+    "id": "ozkdd8sDvy1s7WwbnWZ0",
+    "branch": "Magetan",
+    "date": "2025-09-18",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELI KERTAS ",
+    "amount": 108000,
+    "notes": "BELI KERTAS "
+  },
+  {
+    "id": "p6vvCllSYdHNlC8v8MZ9",
+    "branch": "Sragen",
+    "date": "2026-05-05",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "p7kT3XgxZKlfhWgxf8Bl",
+    "branch": "Magetan",
+    "date": "2026-02-18",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "MAP",
+    "amount": 18000,
+    "notes": "MAP"
+  },
+  {
+    "id": "pi6YlBZwjZcYWngQkVSC",
+    "branch": "Sragen",
+    "date": "2025-09-03",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BEANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BEANJA MAKANAN"
+  },
+  {
+    "id": "pit8naYNCQ6AGX1Wf0qg",
+    "branch": "Sragen",
+    "date": "2025-11-10",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "KAS UMUM",
+    "amount": 610000,
+    "notes": "KAS UMUM"
+  },
+  {
+    "id": "pj47L8ZOxYyvr2zsfHPn",
+    "branch": "Sragen",
+    "date": "2026-04-08",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BENSIN VARIO",
+    "amount": 50000,
+    "notes": "BENSIN VARIO"
+  },
+  {
+    "id": "plJ7X7EEuusffqFvgA4u",
+    "branch": "Sragen",
+    "date": "2026-02-10",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "AQUA DAN LIMINERAL ",
+    "amount": 75000,
+    "notes": "AQUA DAN LIMINERAL "
+  },
+  {
+    "id": "ppgkAmdLmzEStTA6XdoZ",
+    "branch": "Sragen",
+    "date": "2026-03-30",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "pxmpXh6pljC3I8aEFvAC",
+    "branch": "Magetan",
+    "date": "2025-11-14",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "KARANGAN BUNGA",
+    "amount": 380000,
+    "notes": "KARANGAN BUNGA"
+  },
+  {
+    "id": "q0NPK8dCQs04yPl529QP",
+    "branch": "Sragen",
+    "date": "2026-02-09",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "qCC63Uc5sCgDZgib1aZb",
+    "branch": "Magetan",
+    "date": "2026-01-26",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "SAKU 3 BPP",
+    "amount": 300000,
+    "notes": "SAKU 3 BPP"
+  },
+  {
+    "id": "qCeJ6YKWGDgus323zVmD",
+    "branch": "Magetan",
+    "date": "2026-03-04",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "PROMO ORGANIK",
+    "amount": 950000,
+    "notes": "PROMO ORGANIK"
+  },
+  {
+    "id": "qTjfaBVdaVChDQYLsFve",
+    "branch": "Sragen",
+    "date": "2026-02-28",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TOKEN LISTRIK",
+    "amount": 105000,
+    "notes": "TOKEN LISTRIK"
+  },
+  {
+    "id": "qbiR6rKzYXDfe4KyUCIB",
+    "branch": "Sragen",
+    "date": "2025-09-04",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "qir8SEBZ9KyyfTCdk2T9",
+    "branch": "Sragen",
+    "date": "2025-12-08",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TOKEN LISTRIK",
+    "amount": 105000,
+    "notes": "TOKEN LISTRIK"
+  },
+  {
+    "id": "qmIXguuDuCc7SoHlEcxY",
+    "branch": "Magetan",
+    "date": "2025-10-06",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELI MATERAI",
+    "amount": 40000,
+    "notes": "BELI MATERAI"
+  },
+  {
+    "id": "qpKgCFt6lZsmgntDEnF5",
+    "branch": "Magetan",
+    "date": "2026-07-14",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "MAMIN KE NGAWI",
+    "amount": 68000,
+    "notes": "MAMIN KE NGAWI"
+  },
+  {
+    "id": "qtxTsUU7RkppEKJCfVgs",
+    "branch": "Magetan",
+    "date": "2026-05-12",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 2000000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "quJiQvAMW9ab1ZqWmIfQ",
+    "branch": "Magetan",
+    "date": "2025-12-18",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELI KWITANSI",
+    "amount": 10000,
+    "notes": "BELI KWITANSI"
+  },
+  {
+    "id": "qzjBPzKmUd7iQC01aX20",
+    "branch": "Sragen",
+    "date": "2025-10-14",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TOKEN LISTRIK",
+    "amount": 105000,
+    "notes": "TOKEN LISTRIK"
+  },
+  {
+    "id": "r4yrgpn4ZhnCC8xcvpZX",
+    "branch": "Sragen",
+    "date": "2026-07-29",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "AQUA KARDUS DAN MINERAL ",
+    "amount": 45000,
+    "notes": "AQUA KARDUS DAN MINERAL "
+  },
+  {
+    "id": "r5c8QdAECeyNphceSziw",
+    "branch": "Sragen",
+    "date": "2026-05-30",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "KAS UMUM",
+    "amount": 1247000,
+    "notes": "KAS UMUM"
+  },
+  {
+    "id": "r6CMQMx8Qt6WJi08cX3Q",
+    "branch": "Sragen",
+    "date": "2025-10-30",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "r7kaChgZXptZ2Ge4XXmg",
+    "branch": "Sragen",
+    "date": "2025-09-08",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "IURAN PERUM ROYAL AMERTA",
+    "amount": 170000,
+    "notes": "IURAN PERUM ROYAL AMERTA"
+  },
+  {
+    "id": "r80g9Oq0AqXQq5ZzwGU4",
+    "branch": "Sragen",
+    "date": "2026-02-04",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "rKfpXzysqUPKaRK4ChYQ",
+    "branch": "Sragen",
+    "date": "2026-04-09",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "rLurRLVOcWBVXRMRJ3l3",
+    "branch": "Sragen",
+    "date": "2025-10-21",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "JILID LAPORAN ",
+    "amount": 56000,
+    "notes": "JILID LAPORAN "
+  },
+  {
+    "id": "rYiyv9BbZzaAQIOQqSEs",
+    "branch": "Sragen",
+    "date": "2026-06-27",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "AQUA DAN LIMINERAL",
+    "amount": 57000,
+    "notes": "AQUA DAN LIMINERAL"
+  },
+  {
+    "id": "renLGB8Mj6XMQtWbBOJO",
+    "branch": "Sragen",
+    "date": "2025-10-16",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "MATERAI @10",
+    "amount": 100000,
+    "notes": "MATERAI @10"
+  },
+  {
+    "id": "rflTuBtTgrxAeotQp16E",
+    "branch": "Sragen",
+    "date": "2025-12-19",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 30000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "rgr1hmkLF3834XOOQA1h",
+    "branch": "Magetan",
+    "date": "2025-10-10",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "CETAK REK KORAN BRI",
+    "amount": 650000,
+    "notes": "CETAK REK KORAN BRI"
+  },
+  {
+    "id": "rh0t3kv5qoC0stY4cLIz",
+    "branch": "Magetan",
+    "date": "2025-12-20",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "FC",
+    "amount": 35000,
+    "notes": "FC"
+  },
+  {
+    "id": "rhWse3ABV3QnyhHHT4U3",
+    "branch": "Magetan",
+    "date": "2026-01-31",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 1000000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "rjYYPEsfQzcCl15yCI9F",
+    "branch": "Sragen",
+    "date": "2025-11-22",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "rkeh6NDNbyHIo6saPUVv",
+    "branch": "Sragen",
+    "date": "2026-07-23",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "JILID SPIRAL",
+    "amount": 69000,
+    "notes": "JILID SPIRAL"
+  },
+  {
+    "id": "rpRKwOPT2Ov5k0I4gXzf",
+    "branch": "Sragen",
+    "date": "2026-06-15",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "rszs0Rtsb11N6CSGeSBZ",
+    "branch": "Sragen",
+    "date": "2026-03-28",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "rwUcfs8bnI9Kd6UCTU5Y",
+    "branch": "Sragen",
+    "date": "2026-07-22",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BENSIN VARIO",
+    "amount": 30000,
+    "notes": "BENSIN VARIO"
+  },
+  {
+    "id": "rxbHefYQyFAGHYjI7qMz",
+    "branch": "Magetan",
+    "date": "2025-09-26",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "YATIM MANDIRI",
+    "amount": 250000,
+    "notes": "YATIM MANDIRI"
+  },
+  {
+    "id": "rxbOx457pzEgs3AgAJIe",
+    "branch": "Sragen",
+    "date": "2026-07-27",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "rxkENPyW53QjD9h0QTCt",
+    "branch": "Sragen",
+    "date": "2026-03-11",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BENSIN VARIO",
+    "amount": 20000,
+    "notes": "BENSIN VARIO"
+  },
+  {
+    "id": "s7aIA53WJb5L1WnsmVzy",
+    "branch": "Magetan",
+    "date": "2026-06-22",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "SUMBANGAN MAOSPATI BOXING",
+    "amount": 1000000,
+    "notes": "SUMBANGAN MAOSPATI BOXING"
+  },
+  {
+    "id": "s7tphemg3R6duArrHiq3",
+    "branch": "Sragen",
+    "date": "2025-12-03",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "KERTAS NCR SURAT JALAN",
+    "amount": 200000,
+    "notes": "KERTAS NCR SURAT JALAN"
+  },
+  {
+    "id": "sAqfvdI39VWoC8ufBeI0",
+    "branch": "Sragen",
+    "date": "2025-11-21",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "sEWPilKANThkkyrnDqrr",
+    "branch": "Magetan",
+    "date": "2026-07-02",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "KE MGT",
+    "amount": 50000,
+    "notes": "KE MGT"
+  },
+  {
+    "id": "sFMAWIqZuRHyrdtIUvDJ",
+    "branch": "Magetan",
+    "date": "2026-07-01",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "sOidUdKeXHXXWppOPnzp",
+    "branch": "Magetan",
+    "date": "2026-06-25",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "MAKAN VERVAL DISTRIK MPT",
+    "amount": 165000,
+    "notes": "MAKAN VERVAL DISTRIK MPT"
+  },
+  {
+    "id": "sQwRnLIIUddxbLIb4Kfr",
+    "branch": "Sragen",
+    "date": "2025-12-17",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 30000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "sSVM3Mk2Ghb4n1aBRyfR",
+    "branch": "Magetan",
+    "date": "2026-06-22",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TAKZIYAH",
+    "amount": 315000,
+    "notes": "TAKZIYAH"
+  },
+  {
+    "id": "sUVlcmqlMe32g5hKaNIu",
+    "branch": "Magetan",
+    "date": "2025-12-09",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BENSIN",
+    "amount": 30000,
+    "notes": "BENSIN"
+  },
+  {
+    "id": "sZIqCaSLmBAMXAtgGRNq",
+    "branch": "Sragen",
+    "date": "2025-09-09",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "AKOMONDASI",
+    "amount": 100000,
+    "notes": "AKOMONDASI"
+  },
+  {
+    "id": "sZlCp8iOmDGnlw8KPHWK",
+    "branch": "Sragen",
+    "date": "2026-07-18",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "WIFI TELKOM",
+    "amount": 285000,
+    "notes": "WIFI TELKOM"
+  },
+  {
+    "id": "sf2Odyc3zV60NEXomZXc",
+    "branch": "Sragen",
+    "date": "2025-10-25",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BANDALAM VARIO DAN TAMBAL BAN ",
+    "amount": 48000,
+    "notes": "BANDALAM VARIO DAN TAMBAL BAN "
+  },
+  {
+    "id": "sjss4N9xbsZGpmlYjLcp",
+    "branch": "Sragen",
+    "date": "2026-01-19",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "KUNCI T ",
+    "amount": 30000,
+    "notes": "KUNCI T "
+  },
+  {
+    "id": "smkEtMCNQ08wXRsVZdOC",
+    "branch": "Sragen",
+    "date": "2025-09-25",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "sndF9GrDYYKzKvmHcbdJ",
+    "branch": "Magetan",
+    "date": "2026-02-13",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "PAK PRI",
+    "amount": 250000,
+    "notes": "PAK PRI"
+  },
+  {
+    "id": "sq7q3HOZLf5Di5uhgPzh",
+    "branch": "Magetan",
+    "date": "2026-02-18",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "KE SBY",
+    "amount": 500000,
+    "notes": "KE SBY"
+  },
+  {
+    "id": "sqoS2rEioLRznJMABtQJ",
+    "branch": "Sragen",
+    "date": "2025-11-11",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "sy82b65RNEb85GrDZrbe",
+    "branch": "Sragen",
+    "date": "2025-10-01",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "t38ezuWRhZPduXuvkiTf",
+    "branch": "Sragen",
+    "date": "2025-09-19",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "PDAM",
+    "amount": 95000,
+    "notes": "PDAM"
+  },
+  {
+    "id": "t6m14hxVfzTCDdGjYubJ",
+    "branch": "Sragen",
+    "date": "2025-09-10",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "t70sZSYSUsd1RVUkJNz7",
+    "branch": "Sragen",
+    "date": "2025-10-22",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "REKON JOGJA",
+    "amount": 700000,
+    "notes": "REKON JOGJA"
+  },
+  {
+    "id": "t9rDzmJjsZsv1biLFPOg",
+    "branch": "Sragen",
+    "date": "2025-12-24",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TOKEN LISTRIK",
+    "amount": 105000,
+    "notes": "TOKEN LISTRIK"
+  },
+  {
+    "id": "tGX9U6qUAIauKZmPhS2O",
+    "branch": "Magetan",
+    "date": "2026-01-13",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "MATREI PENUNJUKAN",
+    "amount": 360000,
+    "notes": "MATREI PENUNJUKAN"
+  },
+  {
+    "id": "tTNrYbUvvtJd9MHLCgIJ",
+    "branch": "Sragen",
+    "date": "2026-01-08",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "PERTEMUAN SAMBIREJO ",
+    "amount": 100000,
+    "notes": "PERTEMUAN SAMBIREJO "
+  },
+  {
+    "id": "tZdOtQX3RRDWZkS55w1v",
+    "branch": "Sragen",
+    "date": "2025-11-22",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "KAS UMUM",
+    "amount": 2718000,
+    "notes": "KAS UMUM"
+  },
+  {
+    "id": "tpRNFx2QRiH0JSUM9CdJ",
+    "branch": "Sragen",
+    "date": "2026-02-12",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "AMBIL BG",
+    "amount": 120000,
+    "notes": "AMBIL BG"
+  },
+  {
+    "id": "tuGG3mW7hQcn8wO7pFSV",
+    "branch": "Sragen",
+    "date": "2026-07-24",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "tuNFw6dqfwMD5F8DmaDR",
+    "branch": "Sragen",
+    "date": "2025-11-19",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN6",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN6"
+  },
+  {
+    "id": "u35qXXmO05lrcLL8xwAZ",
+    "branch": "Sragen",
+    "date": "2026-04-20",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "PDAM",
+    "amount": 88000,
+    "notes": "PDAM"
+  },
+  {
+    "id": "u6gwaguHH4uIxsCOVppz",
+    "branch": "Magetan",
+    "date": "2026-07-16",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "SAKU PPL DAN AE",
+    "amount": 2500000,
+    "notes": "SAKU PPL DAN AE"
+  },
+  {
+    "id": "u95E0AopbPk4nsavOHf1",
+    "branch": "Sragen",
+    "date": "2026-02-11",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "uD0s4SpT2LI4iflysTYE",
+    "branch": "Sragen",
+    "date": "2026-03-30",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TOKEN LISTRIK",
+    "amount": 105000,
+    "notes": "TOKEN LISTRIK"
+  },
+  {
+    "id": "uHY11lMRJdoiyijhyeGO",
+    "branch": "Sragen",
+    "date": "2026-04-02",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "uM0JWoiojS8ohjW7kb0J",
+    "branch": "Sragen",
+    "date": "2026-01-06",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "KERTAS A4",
+    "amount": 49000,
+    "notes": "KERTAS A4"
+  },
+  {
+    "id": "uPkYtSY2LEKDm6PTmgna",
+    "branch": "Magetan",
+    "date": "2025-10-06",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "LAPORAN SPIRAL",
+    "amount": 75000,
+    "notes": "LAPORAN SPIRAL"
+  },
+  {
+    "id": "uRp359lQRVcoigxMKkzT",
+    "branch": "Sragen",
+    "date": "2026-02-07",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "udt0PLXFX0Q3utMRjuXS",
+    "branch": "Sragen",
+    "date": "2026-01-02",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "usYmFzbPt9nIGxCWjhMo",
+    "branch": "Sragen",
+    "date": "2026-01-21",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "ut9BOGVan5u10xEq4baj",
+    "branch": "Magetan",
+    "date": "2026-02-16",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELI KERTAS ",
+    "amount": 52000,
+    "notes": "BELI KERTAS "
+  },
+  {
+    "id": "uzL0yGW2657T4LZNg1OB",
+    "branch": "Magetan",
+    "date": "2026-06-08",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "JENGUK KIOS",
+    "amount": 120000,
+    "notes": "JENGUK KIOS"
+  },
+  {
+    "id": "v1CxmI3kJZcrCrEHwmFk",
+    "branch": "Magetan",
+    "date": "2026-02-19",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BG SRAGEN",
+    "amount": 1000000,
+    "notes": "BG SRAGEN"
+  },
+  {
+    "id": "v1r0BQnaz3Vl03dR62N4",
+    "branch": "Magetan",
+    "date": "2025-11-04",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "KERTAS A4",
+    "amount": 52500,
+    "notes": "KERTAS A4"
+  },
+  {
+    "id": "v7rx0q9qY3nbwXessmPp",
+    "branch": "Sragen",
+    "date": "2025-09-03",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BENSIN VARIO",
+    "amount": 55000,
+    "notes": "BENSIN VARIO"
+  },
+  {
+    "id": "vEgpZ50YlxgOMwQhd9D9",
+    "branch": "Magetan",
+    "date": "2026-04-09",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELI KERTAS , TINTA",
+    "amount": 313800,
+    "notes": "BELI KERTAS , TINTA"
+  },
+  {
+    "id": "vIx4LgLdgc5YlpsmOabG",
+    "branch": "Sragen",
+    "date": "2026-06-08",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "IURAN PUD",
+    "amount": 170000,
+    "notes": "IURAN PUD"
+  },
+  {
+    "id": "vKfPhV94hC25WK2OM8Ud",
+    "branch": "Sragen",
+    "date": "2026-03-02",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "vLYc5ZV9vP15Rl8c1DLK",
+    "branch": "Sragen",
+    "date": "2026-06-09",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "vTyxSo6TfNbVxSmq1b4g",
+    "branch": "Sragen",
+    "date": "2026-06-27",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "vZD0SUjP53bmFup9KICG",
+    "branch": "Sragen",
+    "date": "2026-05-25",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TOKEN LISTRIK",
+    "amount": 105000,
+    "notes": "TOKEN LISTRIK"
+  },
+  {
+    "id": "veLR0sYIbyQscW4dPDXx",
+    "branch": "Sragen",
+    "date": "2025-09-30",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "veejEEpIYUYNRZG5BavF",
+    "branch": "Sragen",
+    "date": "2026-06-22",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "KAS UMUM",
+    "amount": 2005000,
+    "notes": "KAS UMUM"
+  },
+  {
+    "id": "vgjpPS9K9TLxLmYyaHAZ",
+    "branch": "Sragen",
+    "date": "2026-03-31",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 479059,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "vhVmXurVN3wKV48KirPG",
+    "branch": "Sragen",
+    "date": "2026-01-09",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "OLI VARIO",
+    "amount": 48000,
+    "notes": "OLI VARIO"
+  },
+  {
+    "id": "vi0ZDZ6OPUjHM6eA10Hr",
+    "branch": "Sragen",
+    "date": "2025-10-10",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 821000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "vjUSbWrATTNfeBGZRwFw",
+    "branch": "Magetan",
+    "date": "2026-04-26",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELI ATK, TINTA",
+    "amount": 483000,
+    "notes": "BELI ATK, TINTA"
+  },
+  {
+    "id": "vx4zitYLmCbEkrSAIV5J",
+    "branch": "Sragen",
+    "date": "2026-03-03",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "KERTAS A4S",
+    "amount": 85000,
+    "notes": "KERTAS A4S"
+  },
+  {
+    "id": "w2FC962Xq3eY9hOQLgYS",
+    "branch": "Sragen",
+    "date": "2026-03-31",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "KAS UMUM",
+    "amount": 1000000,
+    "notes": "KAS UMUM"
+  },
+  {
+    "id": "w6P4kmN6S4Xz2Vria1r5",
+    "branch": "Magetan",
+    "date": "2026-07-02",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELI KERTAS",
+    "amount": 55000,
+    "notes": "BELI KERTAS"
+  },
+  {
+    "id": "wOhMviiQ3TwUoOVSepgf",
+    "branch": "Magetan",
+    "date": "2025-12-21",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "wRR0V9vBNfon2ezJ54z7",
+    "branch": "Magetan",
+    "date": "2025-09-29",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 500000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "wYC77HX2El3POyv8y6HC",
+    "branch": "Magetan",
+    "date": "2026-05-01",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "MAKAN POKTAN, PPL",
+    "amount": 182000,
+    "notes": "MAKAN POKTAN, PPL"
+  },
+  {
+    "id": "wfPvUY1RhDiFNkOCTyke",
+    "branch": "Sragen",
+    "date": "2025-10-17",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "wg3SibWsWcBNjUxRtljJ",
+    "branch": "Magetan",
+    "date": "2026-07-02",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "KE MGT",
+    "amount": 50000,
+    "notes": "KE MGT"
+  },
+  {
+    "id": "x0F7Q6v34RFrGJSodleI",
+    "branch": "Magetan",
+    "date": "2025-12-09",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 1000000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "x8jAgn07OdjW3AnmrYWt",
+    "branch": "Sragen",
+    "date": "2025-12-22",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "MATERAI ",
+    "amount": 150000,
+    "notes": "MATERAI "
+  },
+  {
+    "id": "xIbrKrsOngtWMABLc5EK",
+    "branch": "Magetan",
+    "date": "2026-06-26",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 500000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "xKjWh6imNzlJDYCYbvCl",
+    "branch": "Sragen",
+    "date": "2026-02-12",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "KAS UMUM ",
+    "amount": 1405000,
+    "notes": "KAS UMUM "
+  },
+  {
+    "id": "xj7tGsRZt0A3HgoXefXW",
+    "branch": "Sragen",
+    "date": "2026-03-12",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "KAS UMUM",
+    "amount": 1000000,
+    "notes": "KAS UMUM"
+  },
+  {
+    "id": "xpzDcStGCtapuqDTHAQ3",
+    "branch": "Sragen",
+    "date": "2026-05-08",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "xqWRDxQrX9JrYrv3d2P2",
+    "branch": "Sragen",
+    "date": "2026-03-31",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "TINTAN STAMPEL ",
+    "amount": 35000,
+    "notes": "TINTAN STAMPEL "
+  },
+  {
+    "id": "xwCgQtgvbktUkA9Wuh3v",
+    "branch": "Sragen",
+    "date": "2026-06-18",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "y6LVf8Pd4l10dUYcEhjc",
+    "branch": "Sragen",
+    "date": "2026-03-16",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "GAJI IBU YANG BANTU DI SRAGEN BULAN FEBRUARI",
+    "amount": 600000,
+    "notes": "GAJI IBU YANG BANTU DI SRAGEN BULAN FEBRUARI"
+  },
+  {
+    "id": "yDjxDDIQRDMAJBHPWOoQ",
+    "branch": "Sragen",
+    "date": "2025-09-18",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "DARI OCA",
+    "amount": 1200000,
+    "notes": "DARI OCA"
+  },
+  {
+    "id": "yHN68BHBmyfK4LriYCQh",
+    "branch": "Sragen",
+    "date": "2026-04-01",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "yXVeFQll4an8lLzoDYvP",
+    "branch": "Magetan",
+    "date": "2025-10-21",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "WIFI",
+    "amount": 512000,
+    "notes": "WIFI"
+  },
+  {
+    "id": "yeEIakxJGBMGWaA5i4eG",
+    "branch": "Sragen",
+    "date": "2025-12-19",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "PDAM",
+    "amount": 130000,
+    "notes": "PDAM"
+  },
+  {
+    "id": "ykkIUUCxYJYSOUjSXauy",
+    "branch": "Sragen",
+    "date": "2025-11-14",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "ytEnpLEBxeZyClaQVnb0",
+    "branch": "Sragen",
+    "date": "2026-05-18",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "WIFI TELKOM",
+    "amount": 285000,
+    "notes": "WIFI TELKOM"
+  },
+  {
+    "id": "z2J4KIkVelmFh6zU6YTV",
+    "branch": "Magetan",
+    "date": "2025-09-02",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "SALDO AGUSTUS ",
+    "amount": 60400,
+    "notes": "SALDO AGUSTUS "
+  },
+  {
+    "id": "z3VVohwsLPu4lny8wYPJ",
+    "branch": "Sragen",
+    "date": "2026-05-26",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "z993loL7HdJ6Pt4pe3Ae",
+    "branch": "Sragen",
+    "date": "2026-03-10",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "zHYdPakKe915PnoNGzc0",
+    "branch": "Sragen",
+    "date": "2026-01-09",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "zIrsX8BjsTTXNl1RtCdi",
+    "branch": "Sragen",
+    "date": "2026-02-03",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "KUNCI VARIO",
+    "amount": 40000,
+    "notes": "KUNCI VARIO"
+  },
+  {
+    "id": "zLIufSSGeOR9MexcswPp",
+    "branch": "Sragen",
+    "date": "2025-12-29",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 30000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "zThQWo6S4eCYppvmmmSU",
+    "branch": "Sragen",
+    "date": "2025-10-10",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BENSIN VARIO",
+    "amount": 20000,
+    "notes": "BENSIN VARIO"
+  },
+  {
+    "id": "zUqTXQEQxkhILT36fzew",
+    "branch": "Sragen",
+    "date": "2026-07-27",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "PERTEMUAN PUD KP3 PROVINSI PI BESERTA PPTS KAB. SRAGEN",
+    "amount": 100000,
+    "notes": "PERTEMUAN PUD KP3 PROVINSI PI BESERTA PPTS KAB. SRAGEN"
+  },
+  {
+    "id": "zXTy2nnJCTygge3Rtaxm",
+    "branch": "Magetan",
+    "date": "2026-03-13",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "ATK",
+    "amount": 231500,
+    "notes": "ATK"
+  },
+  {
+    "id": "zbIvKClGJXkLmxTnvyN0",
+    "branch": "Sragen",
+    "date": "2026-03-04",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "zhEBtNWCfBVumZXVMKRp",
+    "branch": "Sragen",
+    "date": "2026-06-26",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "KERTAS A4",
+    "amount": 78000,
+    "notes": "KERTAS A4"
+  },
+  {
+    "id": "zoS30hygirlQNyZTQYnG",
+    "branch": "Sragen",
+    "date": "2026-07-06",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "zoUaqu79yXUm7ORFB7bG",
+    "branch": "Sragen",
+    "date": "2026-02-27",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BENSIN VARIO",
+    "amount": 20000,
+    "notes": "BENSIN VARIO"
+  },
+  {
+    "id": "zpKGxCJP9heSrAb3dR3Z",
+    "branch": "Sragen",
+    "date": "2026-04-30",
+    "type": "Pemasukan",
+    "category": "Operasional",
+    "description": "KAS UMUM",
+    "amount": 819000,
+    "notes": "KAS UMUM"
+  },
+  {
+    "id": "zpph6U2tfIMSeO5EYOG0",
+    "branch": "Sragen",
+    "date": "2026-04-18",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "BELANJA MAKANAN",
+    "amount": 60000,
+    "notes": "BELANJA MAKANAN"
+  },
+  {
+    "id": "zvik8Q08HHm6Jdtls2Oh",
+    "branch": "Sragen",
+    "date": "2026-06-17",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "GAJI IBU YANG BANTU DI SRAGEN BULAN MEI",
+    "amount": 600000,
+    "notes": "GAJI IBU YANG BANTU DI SRAGEN BULAN MEI"
+  },
+  {
+    "id": "zwyGi4F7nFPYOSOQs1Hq",
+    "branch": "Magetan",
+    "date": "2025-09-09",
+    "type": "Pengeluaran",
+    "category": "Operasional",
+    "description": "SUMBANGAN MAMI KE AE MAGETAN",
+    "amount": 1500000,
+    "notes": "SUMBANGAN MAMI KE AE MAGETAN"
+  }
+]

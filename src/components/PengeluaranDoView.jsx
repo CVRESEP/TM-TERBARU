@@ -4,12 +4,14 @@ import DateFilterBar, { matchesDateFilter } from './DateFilterBar';
 import { useSortableTable, SortIcon } from '../utils/useSortableTable';
 import { usePagination } from '../utils/usePagination';
 import TablePagination from './TablePagination';
+import ModalDetailTransaksi from './ModalDetailTransaksi';
 
 export default function PengeluaranDoView({ 
   selectedBranch, doList, penebusanList, penyaluranList = [], onAddNew, onEdit, onOpenNextStage, onDelete, onDeleteMultiple, onOpenPrint, settings, onNavigate
 }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedIds, setSelectedIds] = useState([]);
+  const [detailModalItem, setDetailModalItem] = useState(null);
   const [filterState, setFilterState] = useState({
     mode: 'all', dailyDate: '', startDate: '', endDate: '', month: '',
     year: new Date().getFullYear().toString()
@@ -117,8 +119,13 @@ export default function PengeluaranDoView({
               const sisaStokDO = Math.max(0, Number(item.qtyTon || item.qty || 0) - salurDariDO);
 
               return (
-                <tr key={item.id} style={{ backgroundColor: selectedIds.includes(item.id) ? '#fef2f2' : undefined }}>
-                  <td style={{ textAlign: 'center' }}>
+                <tr 
+                  key={item.id} 
+                  style={{ backgroundColor: selectedIds.includes(item.id) ? '#fef2f2' : undefined, cursor: 'pointer' }}
+                  onClick={() => setDetailModalItem(item)}
+                  className="table-row-hover"
+                >
+                  <td style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
                     <input 
                       type="checkbox" 
                       checked={selectedIds.includes(item.id)}
@@ -134,7 +141,7 @@ export default function PengeluaranDoView({
                   <td className="text-right" style={{ fontWeight: 700 }}>{Number(item.qtyTon || item.qty || 0).toFixed(1)} Ton</td>
                   <td className="text-right">{salurDariDO.toFixed(1)} Ton</td>
                   <td className="text-right" style={{ fontWeight: 700, color: sisaStokDO > 0 ? '#15803d' : '#9ca3af' }}>{sisaStokDO.toFixed(1)} Ton</td>
-                  <td className="text-center">
+                  <td className="text-center" onClick={(e) => e.stopPropagation()}>
                     <div style={{ display: 'flex', gap: '4px', justifyContent: 'center', flexWrap: 'wrap' }}>
                       {sisaStokDO > 0 && (
                         <button
@@ -155,11 +162,35 @@ export default function PengeluaranDoView({
               );
             })}
             {filtered.length === 0 && (
-              <tr><td colSpan={8} style={{ textAlign: 'center', padding: '20px', color: '#6b7280' }}>
-                Belum ada data pengeluaran DO. Pilih Penebusan (berisi No. DO) saat input.
+              <tr><td colSpan={9} style={{ textAlign: 'center', padding: '20px', color: '#6b7280' }}>
+                Belum ada data pengeluaran DO.
               </td></tr>
             )}
           </tbody>
+          {filtered.length > 0 && (
+            <tfoot>
+              <tr style={{ fontWeight: 800, backgroundColor: '#f8fafc', borderTop: '2px solid #cbd5e1' }}>
+                <td colSpan={5} style={{ textAlign: 'right', padding: '10px 14px' }}>TOTAL KESELURUHAN:</td>
+                <td className="text-right" style={{ color: '#0369a1' }}>
+                  {filtered.reduce((s, i) => s + Number(i.qtyTon || i.qty || 0), 0).toFixed(1)} Ton
+                </td>
+                <td className="text-right" style={{ color: '#475569' }}>
+                  {filtered.reduce((sum, item) => {
+                    const salur = (penyaluranList || []).filter(p => p && (p.doNo === item.doNo || p.doRefId === item.id)).reduce((s, p) => s + Number(p.qtyTon || p.qty || 0), 0);
+                    return sum + salur;
+                  }, 0).toFixed(1)} Ton
+                </td>
+                <td className="text-right" style={{ color: '#15803d' }}>
+                  {filtered.reduce((sum, item) => {
+                    const salur = (penyaluranList || []).filter(p => p && (p.doNo === item.doNo || p.doRefId === item.id)).reduce((s, p) => s + Number(p.qtyTon || p.qty || 0), 0);
+                    const sisa = Math.max(0, Number(item.qtyTon || item.qty || 0) - salur);
+                    return sum + sisa;
+                  }, 0).toFixed(1)} Ton
+                </td>
+                <td></td>
+              </tr>
+            </tfoot>
+          )}
         </table>
         <TablePagination 
           currentPage={currentPage} 
@@ -170,6 +201,13 @@ export default function PengeluaranDoView({
           setItemsPerPage={setItemsPerPage}
         />
       </div>
+
+      <ModalDetailTransaksi 
+        isOpen={Boolean(detailModalItem)}
+        onClose={() => setDetailModalItem(null)}
+        data={detailModalItem}
+        type="do"
+      />
     </div>
   );
 }

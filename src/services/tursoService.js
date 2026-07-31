@@ -87,6 +87,27 @@ export async function syncDataToTurso(fullData, config = {}) {
       }
     };
 
+    // Sync settings key-values
+    if (fullData.settings && typeof fullData.settings === 'object') {
+      const settingStatements = [];
+      for (const [key, value] of Object.entries(fullData.settings)) {
+        const valStr = typeof value === 'object' ? JSON.stringify(value) : String(value);
+        settingStatements.push({
+          sql: `INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value=excluded.value`,
+          args: [key, valStr]
+        });
+      }
+      for (let j = 0; j < settingStatements.length; j += 40) {
+        const chunk = settingStatements.slice(j, j + 40);
+        try {
+          if (client.batch) await client.batch(chunk, 'write');
+          else for (const stmt of chunk) await client.execute(stmt);
+        } catch {
+          for (const stmt of chunk) await client.execute(stmt).catch(() => {});
+        }
+      }
+    }
+
     await upsertBatch('users', fullData.usersList, ['id', 'username', 'password', 'name', 'role', 'branch']);
     await upsertBatch('fertilizers', fullData.fertilizers, ['id', 'name', 'priceBuy', 'priceSell', 'stock', 'supplier', 'branch']);
     await upsertBatch('suppliers', fullData.suppliers, ['id', 'name', 'phone', 'address']);

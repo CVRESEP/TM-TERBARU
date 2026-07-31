@@ -102,7 +102,10 @@ export const DEFAULT_KIOSKS = [
   { id: 'KS-SRG-02', name: 'Kios Gemah Ripah', owner: 'Joko', branch: 'Sragen', address: 'Masaran, Sragen', phone: '0813-9999-0000', code: 'Kios-331402' },
 ];
 
+import kasUmumData from './kasUmumExcelData.json';
+
 export const DEFAULT_PENEBUSAN = [];
 export const DEFAULT_DO_EXPENSES = [];
 export const DEFAULT_PENYALURAN_KIOS = [];
+export const DEFAULT_KAS_UMUM = kasUmumData || [];
 

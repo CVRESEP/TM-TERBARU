@@ -34,11 +34,37 @@ export default function KasUmumView({
 
   const formatRp = (val) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val || 0);
 
+  const getItemAmount = (item) => {
+    if (!item) return 0;
+    const candidates = [
+      item.amount, item.nominal, item.total, item.jumlah, item.nilai, 
+      item.totalCost, item.totalAmount, item.harga, item.biaya,
+      item.keluar, item.masuk, item.kredit, item.debet, item.pengeluaran, item.pemasukan
+    ];
+    for (const val of candidates) {
+      if (val !== undefined && val !== null && val !== '') {
+        const num = typeof val === 'number' ? val : Number(String(val).replace(/[^0-9.-]/g, ''));
+        if (!isNaN(num) && num > 0) return num;
+      }
+    }
+    // Dynamic fallback: scan all numeric-like values in the object
+    for (const key in item) {
+      if (['id', 'branch', 'date', 'type', 'tipe', 'category', 'kategori'].includes(key)) continue;
+      const val = item[key];
+      if (val !== undefined && val !== null && val !== '') {
+        const num = typeof val === 'number' ? val : Number(String(val).replace(/[^0-9.-]/g, ''));
+        if (!isNaN(num) && num > 0) return num;
+      }
+    }
+    return 0;
+  };
+
   const filtered = kasUmumList.filter(item => {
-    const matchBranch = selectedBranch === 'ALL' || item.branch === selectedBranch;
-    const matchSearch = (item.category || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                        (item.recipient || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                        (item.notes || '').toLowerCase().includes(searchTerm.toLowerCase());
+    const itemBranch = (item.branch || item.kabupaten || '').toLowerCase();
+    const matchBranch = selectedBranch === 'ALL' || itemBranch === selectedBranch.toLowerCase();
+    const matchSearch = (item.category || item.kategori || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        (item.recipient || item.penerima || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        (item.description || item.uraian || item.notes || '').toLowerCase().includes(searchTerm.toLowerCase());
     const matchDate = matchesDateFilter(item.date, filterState);
     return matchBranch && matchSearch && matchDate;
   });
@@ -46,9 +72,23 @@ export default function KasUmumView({
   const { sorted, sortKey, sortDir, thProps } = useSortableTable(filtered, 'date', 'desc');
   const { currentPage, setCurrentPage, totalPages, paginatedData, itemsPerPage, setItemsPerPage } = usePagination(sorted, 10);
 
-  // Calculations
-  const totalMasuk = filtered.filter(i => i.type === 'Pemasukan').reduce((s, i) => s + Number(i.amount || 0), 0);
-  const totalKeluar = filtered.filter(i => i.type === 'Pengeluaran').reduce((s, i) => s + Number(i.amount || 0), 0);
+  // Calculations (Support Pemasukan/Masuk vs Pengeluaran/Keluar)
+  const totalMasuk = filtered.reduce((s, i) => {
+    const rawType = String(i.type || i.tipe || '').toLowerCase();
+    if (rawType.includes('masuk') || rawType.includes('in') || rawType.includes('pemasukan')) {
+      return s + getItemAmount(i);
+    }
+    return s;
+  }, 0);
+
+  const totalKeluar = filtered.reduce((s, i) => {
+    const rawType = String(i.type || i.tipe || '').toLowerCase();
+    if (!rawType.includes('masuk') && !rawType.includes('in') && !rawType.includes('pemasukan')) {
+      return s + getItemAmount(i);
+    }
+    return s;
+  }, 0);
+
   const saldoAkhir = totalMasuk - totalKeluar;
 
   const handleOpenModal = (item = null) => {
@@ -193,8 +233,13 @@ export default function KasUmumView({
           </thead>
           <tbody>
             {paginatedData.map(item => (
-              <tr key={item.id} style={{ backgroundColor: selectedIds.includes(item.id) ? '#fef2f2' : undefined }}>
-                <td style={{ textAlign: 'center' }}>
+              <tr 
+                key={item.id} 
+                style={{ backgroundColor: selectedIds.includes(item.id) ? '#fef2f2' : undefined, cursor: 'pointer' }}
+                onClick={() => handleOpenModal(item)}
+                className="table-row-hover"
+              >
+                <td style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
                   <input 
                     type="checkbox" 
                     checked={selectedIds.includes(item.id)}
@@ -209,16 +254,16 @@ export default function KasUmumView({
                 <td className="text-center">{formatDateDisplay(item.date)}</td>
                 <td style={{ fontWeight: 600 }}>{item.category}</td>
                 <td className="text-center">
-                  <span className={`badge ${item.type === 'Pemasukan' ? 'badge-success' : 'badge-danger'}`}>
-                    {item.type}
+                  <span className={`badge ${String(item.type || item.tipe || '').toLowerCase().includes('masuk') ? 'badge-success' : 'badge-danger'}`}>
+                    {String(item.type || item.tipe || '').toLowerCase().includes('masuk') ? 'Pemasukan' : 'Pengeluaran'}
                   </span>
                 </td>
-                <td>{item.recipient || '-'}</td>
-                <td className="text-right" style={{ fontWeight: 800, color: item.type === 'Pemasukan' ? '#15803d' : '#dc2626' }}>
-                  {formatRp(item.amount)}
+                <td>{item.recipient || item.penerima || '-'}</td>
+                <td className="text-right" style={{ fontWeight: 800, color: String(item.type || item.tipe || '').toLowerCase().includes('masuk') ? '#15803d' : '#dc2626' }}>
+                  {formatRp(getItemAmount(item))}
                 </td>
-                <td style={{ fontSize: '12px' }}>{item.notes || '-'}</td>
-                <td className="text-center">
+                <td style={{ fontSize: '12px' }}>{item.uraian || item.notes || item.description || item.catatan || '-'}</td>
+                <td className="text-center" onClick={(e) => e.stopPropagation()}>
                   <div style={{ display: 'flex', gap: '4px', justifyContent: 'center' }}>
                     <button className="btn-secondary" style={{ fontSize: '11px', padding: '3px 7px' }} onClick={() => handleOpenModal(item)}>Edit</button>
                     <button className="btn-danger" style={{ fontSize: '11px', padding: '3px 7px' }} onClick={() => onDeleteKasUmum(item.id)}>Hapus</button>
@@ -228,12 +273,25 @@ export default function KasUmumView({
             ))}
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={8} style={{ textAlign: 'center', padding: '20px', color: '#6b7280' }}>
+                <td colSpan={9} style={{ textAlign: 'center', padding: '20px', color: '#6b7280' }}>
                   Belum ada transaksi Kas Umum. Klik "+ Catat Kas Umum" untuk membuat catatan baru.
                 </td>
               </tr>
             )}
           </tbody>
+          {filtered.length > 0 && (
+            <tfoot>
+              <tr style={{ fontWeight: 800, backgroundColor: '#f8fafc', borderTop: '2px solid #cbd5e1' }}>
+                <td colSpan={6} style={{ textAlign: 'right', padding: '10px 14px' }}>TOTAL SALDO KAS UMUM:</td>
+                <td className="text-right" style={{
+                  color: filtered.reduce((s, i) => s + (i.type === 'Pemasukan' ? Number(i.amount || 0) : -Number(i.amount || 0)), 0) >= 0 ? '#15803d' : '#dc2626'
+                }}>
+                  {formatRp(filtered.reduce((s, i) => s + (i.type === 'Pemasukan' ? Number(i.amount || 0) : -Number(i.amount || 0)), 0))}
+                </td>
+                <td colSpan={2}></td>
+              </tr>
+            </tfoot>
+          )}
         </table>
 
         <TablePagination

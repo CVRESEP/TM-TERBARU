@@ -54,9 +54,10 @@ import {
   DEFAULT_KIOSKS,
   DEFAULT_PENEBUSAN,
   DEFAULT_DO_EXPENSES,
-  DEFAULT_PENYALURAN_KIOS
+  DEFAULT_PENYALURAN_KIOS,
+  DEFAULT_KAS_UMUM
 } from './data/initialData';
-import { normalizeAllData } from './utils/dataNormalizer';
+import { normalizeAllData, normalizeKasUmumList } from './utils/dataNormalizer';
 
 const LOCAL_STORAGE_KEY = 'tani_makmur_baru_db_clean_v6';
 const SESSION_KEY = 'tani_makmur_baru_session';
@@ -124,7 +125,7 @@ export default function App() {
           setPayments(parsed.payments || []);
           setDeposits(parsed.deposits || []);
           setKasAngkutanList(parsed.kasAngkutanList || []);
-          setKasUmumList(parsed.kasUmumList || []);
+          setKasUmumList(normalizeKasUmumList(parsed.kasUmumList && parsed.kasUmumList.length > 0 ? parsed.kasUmumList : DEFAULT_KAS_UMUM));
           setActivityLogs(parsed.activityLogs || []);
           if (parsed.activeTab) setActiveTab(parsed.activeTab);
           if (parsed.selectedBranch && currentUser.role !== 'admin') setSelectedBranch(parsed.selectedBranch);
@@ -132,7 +133,7 @@ export default function App() {
           loadDefaults();
         }
       } else {
-        loadDefaults();
+        setKasUmumList(normalizeKasUmumList(DEFAULT_KAS_UMUM));
       }
     };
 
@@ -159,7 +160,7 @@ export default function App() {
             if (d.payments && d.payments.length > 0) setPayments(d.payments);
             if (d.deposits && d.deposits.length > 0) setDeposits(d.deposits);
             if (d.kasAngkutanList && d.kasAngkutanList.length > 0) setKasAngkutanList(d.kasAngkutanList);
-            if (d.kasUmumList && d.kasUmumList.length > 0) setKasUmumList(d.kasUmumList);
+            setKasUmumList(normalizeKasUmumList(d.kasUmumList && d.kasUmumList.length > 0 ? d.kasUmumList : DEFAULT_KAS_UMUM));
             if (d.activityLogs && d.activityLogs.length > 0) setActivityLogs(d.activityLogs);
 
             console.log('✅ Data berhasil dimuat langsung dari Turso Cloud Database!');

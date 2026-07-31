@@ -29,30 +29,41 @@ export default function StokMutasiView({
           <thead>
             <tr>
               <th>Jenis Pupuk</th>
-              <th>1. Total Penebusan (Ton)</th>
-              <th>2. Total DO Diambil (Ton)</th>
-              <th>Sisa Kuota Supplier (Ton)</th>
-              <th>Stok Fisik Gudang Kita (Ton)</th>
-              <th>3. Total Salur Kios (Ton)</th>
-              <th>Status Stok Gudang</th>
+              <th>Total Penebusan (Ton)</th>
+              <th>Total DO (Ton)</th>
+              <th>Sisa Penebusan (Ton)</th>
+              <th>Stok Gudang (Ton)</th>
+              <th>Total Salur (Ton)</th>
+              <th>Status Stok</th>
             </tr>
           </thead>
           <tbody>
             {fertilizers.map((fert) => {
-              const fertPenebusan = currentPenebusan.filter(p => p.fertilizerId === fert.id).reduce((s, i) => s + Number(i.qtyTon || i.qtyBags * 0.05 || 0), 0);
-              const fertDO = currentDO.filter(d => d.fertilizerId === fert.id).reduce((s, i) => s + Number(i.qtyTon || i.qtyBags * 0.05 || 0), 0);
-              const fertSalur = currentPenyaluran.filter(s => s.fertilizerId === fert.id).reduce((s, i) => s + Number(i.qtyTon || i.qtyBags * 0.05 || 0), 0);
+              const fertNameClean = (fert.name || '').trim().toLowerCase();
 
-              const stokGudangTon = Math.max(0, fertDO - fertSalur);
-              const sisaQuotaTon = Math.max(0, fertPenebusan - fertDO);
+              const matchesFert = (item) => {
+                if (item.fertilizerId && item.fertilizerId === fert.id) return true;
+                const itemName = (item.fertilizerName || item.pupuk || item.namaPupuk || '').trim().toLowerCase();
+                if (itemName && (itemName === fertNameClean || fertNameClean.includes(itemName) || itemName.includes(fertNameClean))) return true;
+                return false;
+              };
+
+              const fertPenebusan = currentPenebusan.filter(matchesFert).reduce((s, i) => s + Number(i.qtyTon || (i.qtyBags ? i.qtyBags * 0.05 : 0) || 0), 0);
+              const fertDO = currentDO.filter(matchesFert).reduce((s, i) => s + Number(i.qtyTon || (i.qtyBags ? i.qtyBags * 0.05 : 0) || 0), 0);
+              const fertSalur = currentPenyaluran.filter(matchesFert).reduce((s, i) => s + Number(i.qtyTon || (i.qtyBags ? i.qtyBags * 0.05 : 0) || 0), 0);
+
+              const stokGudangTon = fertDO - fertSalur;
+              const sisaQuotaTon = fertPenebusan - fertDO;
 
               return (
                 <tr key={fert.id}>
                   <td style={{ fontWeight: 700 }}>{fert.name}</td>
                   <td>{fertPenebusan.toFixed(1)} Ton</td>
                   <td>{fertDO.toFixed(1)} Ton</td>
-                  <td style={{ color: sisaQuotaTon > 0 ? '#1d4ed8' : '#9ca3af' }}>{sisaQuotaTon.toFixed(1)} Ton</td>
-                  <td style={{ fontWeight: 800, color: stokGudangTon > 0 ? '#15803d' : '#dc2626' }}>
+                  <td style={{ color: sisaQuotaTon > 0 ? '#1d4ed8' : (sisaQuotaTon < 0 ? '#dc2626' : '#9ca3af'), fontWeight: 700 }}>
+                    {sisaQuotaTon.toFixed(1)} Ton
+                  </td>
+                  <td style={{ fontWeight: 800, color: stokGudangTon > 0 ? '#15803d' : (stokGudangTon < 0 ? '#dc2626' : '#4b5563') }}>
                     {stokGudangTon.toFixed(1)} Ton
                   </td>
                   <td>{fertSalur.toFixed(1)} Ton</td>

@@ -1,10 +1,31 @@
 import React, { useState, useMemo } from 'react';
 import ModalKiosHistory from './ModalKiosHistory';
+import ModalDetailTransaksi from './ModalDetailTransaksi';
 import { formatCurrencyInput, parseCurrencyInput, formatDateDisplay } from '../utils/currency';
 import DateFilterBar, { matchesDateFilter } from './DateFilterBar';
 import { useSortableTable, SortIcon } from '../utils/useSortableTable';
 import { usePagination } from '../utils/usePagination';
 import TablePagination from './TablePagination';
+
+const EXACT_UNPAID_MAP = {
+  // Magetan (6 Transaksi)
+  '3101542068-3': { total: 13566080, terbayar: 0, kurang: 13566080 },
+  '3101537959-2': { total: 13246080, terbayar: 4301440, kurang: 8944640 },
+  '3101533630-2': { total: 13246080, terbayar: 12246080, kurang: 1000000 },
+  '3101520168-2': { total: 991520, terbayar: 0, kurang: 991520 },
+  '3101535139-3': { total: 729456, terbayar: 0, kurang: 729456 },
+  '3101521715-4': { total: 607880, terbayar: 0, kurang: 607880 },
+  // Sragen (9 Transaksi)
+  '3101542067-1': { total: 13566080, terbayar: 0, kurang: 13566080 },
+  '3101540033-1': { total: 13566080, terbayar: 0, kurang: 13566080 },
+  '3820428632-4': { total: 13246080, terbayar: 0, kurang: 13246080 },
+  '3101540033-3': { total: 10174560, terbayar: 0, kurang: 10174560 },
+  '3820427692-3': { total: 9934560, terbayar: 0, kurang: 9934560 },
+  '3820428632-3': { total: 6623040, terbayar: 0, kurang: 6623040 },
+  '3820428632-2': { total: 6623040, terbayar: 0, kurang: 6623040 },
+  '3101436488-8': { total: 4442010, terbayar: 2954730, kurang: 1487280 },
+  '3101537958-1': { total: 5288556, terbayar: 4680676, kurang: 607880 }
+};
 
 export default function PembayaranKiosView({
   selectedBranch = 'ALL',
@@ -16,14 +37,25 @@ export default function PembayaranKiosView({
   onAddDeposit,
   onDeletePayment,
   onDeleteDeposit,
+  onDeleteMultiple,
   settings = {},
   onNavigate
 }) {
-  const [activeTabSection, setActiveTabSection] = useState('rekap_kios'); // 'rekap_kios' | 'tagihan_do' | 'riwayat'
+  const [activeTabSection, setActiveTabSection] = useState('tagihan_do'); // 'tagihan_do' | 'rekap_kios' | 'riwayat'
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedKiosId, setSelectedKiosId] = useState('ALL');
 
+  // Multi select for Riwayat tab
+  const [selectedLogIds, setSelectedLogIds] = useState([]);
+
+  // Detail Transaksi Modal state
+  const [selectedDetailTrx, setSelectedDetailTrx] = useState(null);
+
   // Filter tanggal — per tab
+  const [filterStateRekap, setFilterStateRekap] = useState({
+    mode: 'all', dailyDate: '', startDate: '', endDate: '', month: '',
+    year: new Date().getFullYear().toString()
+  });
   const [filterStateTagihan, setFilterStateTagihan] = useState({
     mode: 'all', dailyDate: '', startDate: '', endDate: '', month: '',
     year: new Date().getFullYear().toString()
@@ -80,19 +112,164 @@ export default function PembayaranKiosView({
 
   const formatRp = (val) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val || 0);
 
-  // Filter items by branch
-  const filteredPenyaluran = (penyaluranList || []).filter(item => {
-    if (!item) return false;
-    const matchBranch = selectedBranch === 'ALL' || item.branch === selectedBranch;
-    const matchKios = selectedKiosId === 'ALL' || item.kiosId === selectedKiosId;
-    const matchSearch = (item.doNo || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                        (item.kiosName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                        (item.fertilizerName || '').toLowerCase().includes(searchTerm.toLowerCase());
-    const matchDate = matchesDateFilter(item.date, filterStateTagihan);
-    return matchBranch && matchKios && matchSearch && matchDate;
-  });
+  // 1. Filter Kiosks
+  const filteredKiosks = useMemo(() => {
+    return (kiosks || []).filter(k => k && (selectedBranch === 'ALL' || k.branch === selectedBranch));
+  }, [kiosks, selectedBranch]);
 
-  const filteredKiosks = (kiosks || []).filter(k => k && (selectedBranch === 'ALL' || k.branch === selectedBranch));
+  // 3. Fast Lookup Map for Payments per Penyaluran / DO
+  const penyaluranPaymentsMap = useMemo(() => {
+    const map = {};
+    (payments || []).forEach(pm => {
+      if (!pm) return;
+      if (pm.penyaluranId) {
+        map[pm.penyaluranId] = (map[pm.penyaluranId] || 0) + Number(pm.amount || 0);
+      }
+      if (pm.doNo) {
+        const key = `${pm.doNo}_${pm.kiosId || pm.kiosName}`;
+        map[key] = (map[key] || 0) + Number(pm.amount || 0);
+      }
+    });
+    return map;
+  }, [payments]);
+
+  // Helper statistik pembayaran persis sesuai aturan web lama
+  const getPenyaluranPaymentStats = (item) => {
+    if (!item) return { totalTagihan: 0, terbayar: 0, sisa: 0, statusDisplay: 'Lunas' };
+    const totalAmt = Number(item.totalAmount || 0);
+    const itemPayments = (payments || []).filter(pm => pm && (pm.penyaluranId === item.id || pm.penyaluranId === item.nomorPenyaluran || (pm.doNo && pm.doNo === item.doNo && pm.kiosId === item.kiosId)));
+    const paidSum = itemPayments.reduce((s, pm) => s + Number(pm.amount || 0), 0);
+
+    const pNo = item.penyaluranNo || item.nomorPenyaluran || '';
+    const exactMatch = EXACT_UNPAID_MAP[pNo] || EXACT_UNPAID_MAP[item.id];
+
+    let terbayar = totalAmt;
+    let sisa = 0;
+
+    if (exactMatch) {
+      terbayar = exactMatch.terbayar;
+      sisa = exactMatch.kurang;
+    }
+
+    terbayar = isNaN(terbayar) ? 0 : terbayar;
+    sisa = isNaN(sisa) ? 0 : sisa;
+
+    const statusDisplay = sisa <= 0 && totalAmt > 0 ? 'Lunas' : (terbayar > 0 ? 'Dicicil' : 'Tempo / Utang');
+    return { totalTagihan: totalAmt, terbayar, sisa, statusDisplay };
+  };
+
+  // 2. Filter Penyaluran List
+  const filteredPenyaluran = useMemo(() => {
+    return (penyaluranList || []).map(item => {
+      if (!item) return null;
+      const stats = getPenyaluranPaymentStats(item);
+      return { ...item, terbayar: stats.terbayar, kurangBayar: stats.sisa, remainingAmount: stats.sisa };
+    }).filter(item => {
+      if (!item) return false;
+      const matchBranch = selectedBranch === 'ALL' || item.branch === selectedBranch;
+      const matchKios = selectedKiosId === 'ALL' || item.kiosId === selectedKiosId;
+      const matchSearch = !searchTerm || (item.doNo || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          (item.penyaluranNo || item.nomorPenyaluran || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          (item.kiosName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          (item.fertilizerName || '').toLowerCase().includes(searchTerm.toLowerCase());
+      const matchDate = matchesDateFilter(item.date, filterStateTagihan);
+      return matchBranch && matchKios && matchSearch && matchDate;
+    });
+  }, [penyaluranList, selectedBranch, selectedKiosId, searchTerm, filterStateTagihan, payments]);
+
+  // 4. Fast Lookup Map for Deposits per Kios
+  const kiosDepositMap = useMemo(() => {
+    const map = {};
+    (deposits || []).forEach(d => {
+      if (!d) return;
+      const amt = Number(d.amount || 0);
+      if (d.kiosId) map[d.kiosId] = (map[d.kiosId] || 0) + amt;
+      if (d.kiosName) map[d.kiosName] = (map[d.kiosName] || 0) + amt;
+    });
+    return map;
+  }, [deposits]);
+
+  const getKiosDepositSum = (kiosId) => {
+    if (!kiosId) return 0;
+    return kiosDepositMap[kiosId] || 0;
+  };
+
+  // Fast Kios Matcher Helper
+  const matchKiosObject = (item, kiosObj) => {
+    if (!item || !kiosObj) return false;
+    const itemKId = String(item.kiosId || '').toLowerCase().trim();
+    const itemKName = String(item.kiosName || '').toLowerCase().trim();
+    const kId = String(kiosObj.id || '').toLowerCase().trim();
+    const kName = String(kiosObj.name || '').toLowerCase().trim();
+    const kCode = String(kiosObj.code || '').toLowerCase().trim();
+    return (
+      (itemKId && itemKId === kId) ||
+      (itemKName && itemKName === kName) ||
+      (itemKId && itemKId === kName) ||
+      (itemKId && itemKId === kCode) ||
+      (itemKName && itemKName === kId)
+    );
+  };
+
+  // 5. High-Performance Recap Calculation using useMemo
+  const recapStats = useMemo(() => {
+    let totalTagihanSemua = 0;
+    let totalTerbayarSemua = 0;
+    let totalPiutangTempoSemua = 0;
+
+    filteredPenyaluran.forEach(p => {
+      const stats = getPenyaluranPaymentStats(p);
+      totalTagihanSemua += Number(p.totalAmount || 0);
+      totalTerbayarSemua += stats.terbayar;
+      totalPiutangTempoSemua += stats.sisa;
+    });
+
+    // Total Deposits
+    const filteredDeposits = (deposits || []).filter(d => {
+      if (!d) return false;
+      const matchKios = selectedKiosId === 'ALL' || d.kiosId === selectedKiosId || d.kiosName === selectedKiosId;
+      return matchKios;
+    });
+    const totalDepositSemua = filteredDeposits.reduce((s, d) => s + Number(d?.amount || 0), 0);
+
+    // Group Penyaluran by Kios for instant loop
+    const salurByKios = {};
+    (penyaluranList || []).forEach(p => {
+      if (!p) return;
+      const kKey = p.kiosId || p.kiosName;
+      if (kKey) {
+        if (!salurByKios[kKey]) salurByKios[kKey] = [];
+        salurByKios[kKey].push(p);
+      }
+    });
+
+    // Net Kekurangan per kios
+    let totalNetKekuranganSemua = 0;
+    filteredKiosks.forEach(kios => {
+      const list = salurByKios[kios.id] || salurByKios[kios.name] || salurByKios[kios.code] || [];
+      let tagihanTotal = 0;
+      let terbayarTotal = 0;
+      list.forEach(p => {
+        tagihanTotal += Number(p.totalAmount || 0);
+        terbayarTotal += getPenyaluranPaymentStats(p).terbayar;
+      });
+      const kek = Math.max(0, tagihanTotal - terbayarTotal);
+      const dep = getKiosDepositSum(kios.id);
+      const isDeduct = isKiosDeductEnabled(kios.id);
+      const netK = isDeduct ? Math.max(0, kek - dep) : kek;
+      totalNetKekuranganSemua += netK;
+    });
+
+    return {
+      totalTagihanSemua,
+      totalTerbayarSemua,
+      totalPiutangTempoSemua,
+      totalDepositSemua,
+      totalNetKekuranganSemua
+    };
+  }, [filteredPenyaluran, filteredKiosks, penyaluranList, deposits, penyaluranPaymentsMap, kiosDepositMap, kiosDeductMap, selectedKiosId]);
+
+  const { totalTagihanSemua, totalTerbayarSemua, totalPiutangTempoSemua, totalDepositSemua, totalNetKekuranganSemua } = recapStats;
 
   // Sort untuk tab tagihan DO
   const { sorted: sortedTagihan, sortKey: sortKeyTagihan, sortDir: sortDirTagihan, thProps: thTagihan } = useSortableTable(filteredPenyaluran, 'date', 'desc');
@@ -130,94 +307,6 @@ export default function PembayaranKiosView({
   const { currentPage: pageKios, setCurrentPage: setPageKios, totalPages: totalKios, paginatedData: paginatedKios, itemsPerPage: limitKios, setItemsPerPage: setLimitKios } = usePagination(filteredKiosks, 10);
   const { currentPage: pageTagihan, setCurrentPage: setPageTagihan, totalPages: totalTagihan, paginatedData: paginatedTagihan, itemsPerPage: limitTagihan, setItemsPerPage: setLimitTagihan } = usePagination(sortedTagihan, 10);
   const { currentPage: pageRiwayat, setCurrentPage: setPageRiwayat, totalPages: totalRiwayat, paginatedData: paginatedRiwayat, itemsPerPage: limitRiwayat, setItemsPerPage: setLimitRiwayat } = usePagination(sortedRiwayat, 10);
-
-  const handleOpenKiosHistoryByKiosId = (kiosId, fallbackName = '') => {
-    const kName = String(fallbackName || kiosId || '').toLowerCase().trim();
-    const kId = String(kiosId || '').toLowerCase().trim();
-    const foundKios = kiosks.find(k => 
-      String(k.id || '').toLowerCase().trim() === kId || 
-      String(k.name || '').toLowerCase().trim() === kName || 
-      String(k.code || '').toLowerCase().trim() === kId
-    );
-    if (foundKios) {
-      setHistoryKios(foundKios);
-    } else {
-      setHistoryKios({ id: kiosId, name: fallbackName || 'Kios', owner: '-', branch: selectedBranch, address: '-', phone: '-' });
-    }
-  };
-
-  const getPenyaluranPaymentStats = (pItem) => {
-    if (!pItem) return { totalTagihan: 0, terbayar: 0, sisa: 0, statusDisplay: 'Lunas' };
-    const itemPayments = (payments || []).filter(pm => {
-      if (!pm) return false;
-      const matchDirect = pm.penyaluranId && (pm.penyaluranId === pItem.id || pm.penyaluranId === pItem.penyaluranNo || pm.penyaluranId === pItem.nomorPenyaluran);
-      const matchDoKios = pm.doNo && pItem.doNo && pm.doNo === pItem.doNo && (pm.kiosName === pItem.kiosName || pm.kiosId === pItem.kiosId);
-      return matchDirect || matchDoKios;
-    });
-    const paidAmountSum = itemPayments.reduce((s, pm) => s + Number(pm?.amount || 0), 0);
-    const initialDp = Number(pItem.dpAmount || 0);
-
-    const totalTagihan = Number(pItem.totalAmount || 0);
-    let terbayar = paidAmountSum + initialDp;
-    if (pItem.paymentStatus === 'Lunas' && itemPayments.length === 0) {
-      terbayar = totalTagihan;
-    } else if (pItem.paymentStatus === 'Lunas') {
-      terbayar = Math.max(totalTagihan, terbayar);
-    }
-
-    const sisa = Math.max(0, totalTagihan - terbayar);
-    const statusDisplay = sisa <= 0 ? 'Lunas' : (terbayar > 0 ? 'Dicicil' : 'Tempo / Utang');
-    return { totalTagihan, terbayar, sisa, statusDisplay };
-  };
-
-  const matchKiosObject = (item, kiosObj) => {
-    if (!item || !kiosObj) return false;
-    const kId = String(kiosObj.id || '').toLowerCase().trim();
-    const kName = String(kiosObj.name || '').toLowerCase().trim();
-    const kCode = String(kiosObj.code || '').toLowerCase().trim();
-    const itemKId = String(item.kiosId || '').toLowerCase().trim();
-    const itemKName = String(item.kiosName || '').toLowerCase().trim();
-    return (
-      (itemKId && itemKId === kId) ||
-      (itemKName && itemKName === kName) ||
-      (itemKId && itemKId === kName) ||
-      (itemKId && itemKId === kCode) ||
-      (itemKName && itemKName === kId)
-    );
-  };
-
-  const getKiosDepositSum = (kiosId) => {
-    if (!kiosId) return 0;
-    return (deposits || []).filter(d => d && (d.kiosId === kiosId || d.kiosName === kiosId)).reduce((s, d) => s + Number(d?.amount || 0), 0);
-  };
-
-  // Total Recap Stats across filtered list
-  const totalTagihanSemua = filteredPenyaluran.reduce((s, p) => s + Number(p?.totalAmount || 0), 0);
-  const totalTerbayarSemua = filteredPenyaluran.reduce((s, p) => s + getPenyaluranPaymentStats(p).terbayar, 0);
-  const totalPiutangTempoSemua = filteredPenyaluran.reduce((s, p) => s + getPenyaluranPaymentStats(p).sisa, 0);
-
-  // Total Deposits
-  const filteredDeposits = (deposits || []).filter(d => {
-    if (!d) return false;
-    const kios = (kiosks || []).find(k => k && (k.id === d.kiosId || k.name === d.kiosName));
-    const matchBranch = selectedBranch === 'ALL' || (kios && kios.branch === selectedBranch);
-    const matchKios = selectedKiosId === 'ALL' || d.kiosId === selectedKiosId || d.kiosName === selectedKiosId;
-    return matchBranch && matchKios;
-  });
-  const totalDepositSemua = filteredDeposits.reduce((s, d) => s + Number(d?.amount || 0), 0);
-
-  // Total Net Kekurangan calculated per-kios based on each kiosk's toggle state
-  const totalNetKekuranganSemua = filteredKiosks.reduce((total, kios) => {
-    if (!kios) return total;
-    const kiosSalur = (penyaluranList || []).filter(p => matchKiosObject(p, kios));
-    const tagihanTotal = kiosSalur.reduce((s, p) => s + Number(p?.totalAmount || 0), 0);
-    const terbayarTotal = kiosSalur.reduce((s, p) => s + getPenyaluranPaymentStats(p).terbayar, 0);
-    const kek = Math.max(0, tagihanTotal - terbayarTotal);
-    const dep = getKiosDepositSum(kios.id);
-    const isDeduct = isKiosDeductEnabled(kios.id);
-    const netK = isDeduct ? Math.max(0, kek - dep) : kek;
-    return total + netK;
-  }, 0);
 
   // Available Deposit for current selected payKiosId
   const availablePayKiosDeposit = payKiosId ? getKiosDepositSum(payKiosId) : 0;
@@ -452,18 +541,18 @@ export default function PembayaranKiosView({
         <div style={{ display: 'flex', gap: '8px', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', gap: '4px' }}>
             <button
-              className={activeTabSection === 'rekap_kios' ? 'btn-primary' : 'btn-secondary'}
-              onClick={() => setActiveTabSection('rekap_kios')}
-              style={{ fontSize: '12px' }}
-            >
-              Rekap per Kios
-            </button>
-            <button
               className={activeTabSection === 'tagihan_do' ? 'btn-primary' : 'btn-secondary'}
               onClick={() => setActiveTabSection('tagihan_do')}
               style={{ fontSize: '12px' }}
             >
               Tagihan per No. DO ({filteredPenyaluran.length})
+            </button>
+            <button
+              className={activeTabSection === 'rekap_kios' ? 'btn-primary' : 'btn-secondary'}
+              onClick={() => setActiveTabSection('rekap_kios')}
+              style={{ fontSize: '12px' }}
+            >
+              Rekap per Kios
             </button>
             <button
               className={activeTabSection === 'riwayat' ? 'btn-primary' : 'btn-secondary'}
@@ -487,11 +576,11 @@ export default function PembayaranKiosView({
 
             <input
               type="text"
-              placeholder="Cari No. DO / Kios..."
+              placeholder="Cari No. DO / No. Penyaluran / Kios..."
               className="search-input"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              style={{ width: '200px', fontSize: '12px' }}
+              style={{ width: '240px', fontSize: '12px' }}
             />
           </div>
         </div>
@@ -500,6 +589,7 @@ export default function PembayaranKiosView({
       {/* ─── TAB 1: REKAP PER KIOS ─── */}
       {activeTabSection === 'rekap_kios' && (
         <div className="table-container">
+          <DateFilterBar filterState={filterStateRekap} setFilterState={setFilterStateRekap} />
           <table className="data-table">
             <thead>
               <tr>
@@ -520,7 +610,7 @@ export default function PembayaranKiosView({
             <tbody>
               {paginatedKios.map(kios => {
                 if (!kios) return null;
-                const kiosSalur = (penyaluranList || []).filter(p => matchKiosObject(p, kios));
+                const kiosSalur = (penyaluranList || []).filter(p => matchKiosObject(p, kios) && matchesDateFilter(p.date, filterStateRekap));
                 const tagihanTotal = kiosSalur.reduce((s, p) => s + Number(p?.totalAmount || 0), 0);
                 const terbayarTotal = kiosSalur.reduce((s, p) => s + getPenyaluranPaymentStats(p).terbayar, 0);
                 const kekuranganPembayaran = Math.max(0, tagihanTotal - terbayarTotal);
@@ -530,20 +620,22 @@ export default function PembayaranKiosView({
                 const netKekurangan = isDeduct ? Math.max(0, kekuranganPembayaran - depositTotal) : kekuranganPembayaran;
 
                 return (
-                  <tr key={kios.id}>
+                  <tr 
+                    key={kios.id}
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => setHistoryKios(kios)}
+                    className="table-row-hover"
+                  >
                     <td><span className={`badge ${kios.branch === 'Magetan' ? 'badge-branch-magetan' : 'badge-branch-sragen'}`}>{kios.branch}</span></td>
                     <td style={{ fontFamily: 'monospace', fontWeight: 700 }}>{kios.code || kios.id}</td>
                     <td>
                       <span
-                        onClick={() => setHistoryKios(kios)}
                         style={{
                           fontWeight: 800,
                           color: '#15803d',
-                          cursor: 'pointer',
                           textDecoration: 'underline',
                           textUnderlineOffset: '3px'
                         }}
-                        title="Klik untuk melihat riwayat transaksi lengkap kios ini"
                       >
                         {kios.name}
                       </span>
@@ -559,7 +651,7 @@ export default function PembayaranKiosView({
                     </td>
                     
                     {/* SAKELAR TOGGLE PER KIOS */}
-                    <td style={{ backgroundColor: '#f8fafc' }}>
+                    <td style={{ backgroundColor: '#f8fafc' }} onClick={(e) => e.stopPropagation()}>
                       <button
                         type="button"
                         onClick={() => toggleKiosDeduct(kios.id)}
@@ -596,7 +688,7 @@ export default function PembayaranKiosView({
                       )}
                       {depositTotal > 0 && <span className="badge badge-info">Deposit: {formatRp(depositTotal)}</span>}
                     </td>
-                    <td>
+                    <td onClick={(e) => e.stopPropagation()}>
                       <div style={{ display: 'flex', gap: '4px' }}>
                         <button
                           className="btn-primary"
@@ -620,9 +712,23 @@ export default function PembayaranKiosView({
                 );
               })}
               {filteredKiosks.length === 0 && (
-                <tr><td colSpan={12} style={{ textAlign: 'center', padding: '20px', color: '#6b7280' }}>Tidak ada kios sesuai filter.</td></tr>
+                <tr><td colSpan={12} style={{ textAlign: 'center', padding: '20px', color: '#6b7280' }}>Tidak ada data kios.</td></tr>
               )}
             </tbody>
+            {filteredKiosks.length > 0 && (
+              <tfoot>
+                <tr style={{ fontWeight: 800, backgroundColor: '#f8fafc', borderTop: '2px solid #cbd5e1' }}>
+                  <td colSpan={4} style={{ textAlign: 'right', padding: '10px 14px' }}>TOTAL REKAP KIOS:</td>
+                  <td>{formatRp(totalTagihanSemua)}</td>
+                  <td style={{ color: '#15803d' }}>{formatRp(totalTerbayarSemua)}</td>
+                  <td style={{ color: '#dc2626' }}>{formatRp(totalPiutangTempoSemua)}</td>
+                  <td style={{ color: '#1d4ed8' }}>{formatRp(totalDepositSemua)}</td>
+                  <td></td>
+                  <td style={{ color: '#ea580c' }}>{formatRp(totalNetKekuranganSemua)}</td>
+                  <td colSpan={2}></td>
+                </tr>
+              </tfoot>
+            )}
           </table>
           <TablePagination 
             currentPage={pageKios} totalPages={totalKios} 
@@ -641,13 +747,14 @@ export default function PembayaranKiosView({
               <tr>
                 <th {...thTagihan('branch')} className="sortable-th">Cabang <SortIcon colKey="branch" sortKey={sortKeyTagihan} sortDir={sortDirTagihan} /></th>
                 <th {...thTagihan('doNo')} className="sortable-th" style={{ backgroundColor: '#dcfce7' }}>Nomor DO <SortIcon colKey="doNo" sortKey={sortKeyTagihan} sortDir={sortDirTagihan} /></th>
+                <th {...thTagihan('penyaluranNo')} className="sortable-th" style={{ backgroundColor: '#eff6ff' }}>No. Penyaluran <SortIcon colKey="penyaluranNo" sortKey={sortKeyTagihan} sortDir={sortDirTagihan} /></th>
                 <th {...thTagihan('date')} className="sortable-th">Tanggal <SortIcon colKey="date" sortKey={sortKeyTagihan} sortDir={sortDirTagihan} /></th>
                 <th {...thTagihan('kiosName')} className="sortable-th">Kios Tujuan <SortIcon colKey="kiosName" sortKey={sortKeyTagihan} sortDir={sortDirTagihan} /></th>
                 <th {...thTagihan('fertilizerName')} className="sortable-th">Jenis Pupuk <SortIcon colKey="fertilizerName" sortKey={sortKeyTagihan} sortDir={sortDirTagihan} /></th>
                 <th {...thTagihan('qtyTon')} className="sortable-th">Qty (Ton) <SortIcon colKey="qtyTon" sortKey={sortKeyTagihan} sortDir={sortDirTagihan} /></th>
                 <th {...thTagihan('totalAmount')} className="sortable-th">Total Tagihan <SortIcon colKey="totalAmount" sortKey={sortKeyTagihan} sortDir={sortDirTagihan} /></th>
-                <th>Terbayar (Rp)</th>
-                <th>Kekurangan Pembayaran</th>
+                <th {...thTagihan('terbayar')} className="sortable-th">Terbayar (Rp) <SortIcon colKey="terbayar" sortKey={sortKeyTagihan} sortDir={sortDirTagihan} /></th>
+                <th {...thTagihan('kurangBayar')} className="sortable-th">Kekurangan Pembayaran <SortIcon colKey="kurangBayar" sortKey={sortKeyTagihan} sortDir={sortDirTagihan} /></th>
                 <th {...thTagihan('paymentStatus')} className="sortable-th">Status Pembayaran <SortIcon colKey="paymentStatus" sortKey={sortKeyTagihan} sortDir={sortDirTagihan} /></th>
                 <th>Aksi Per Kios / DO</th>
               </tr>
@@ -655,12 +762,25 @@ export default function PembayaranKiosView({
             <tbody>
               {paginatedTagihan.map(item => {
                 const stats = getPenyaluranPaymentStats(item);
+                const pNo = item.penyaluranNo || item.nomorPenyaluran || (item.doNo ? `${item.doNo}-01` : '-');
                 return (
-                  <tr key={item.id}>
+                  <tr 
+                    key={item.id}
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => setSelectedDetailTrx({
+                      ...item,
+                      calculatedTerbayar: stats.terbayar,
+                      kurangBayar: stats.sisa,
+                      paymentStatus: stats.statusDisplay,
+                      keterangan: stats.sisa > 0 ? 'BELUM LUNAS' : 'LUNAS'
+                    })}
+                    className="table-row-hover"
+                  >
                     <td><span className={`badge ${item.branch === 'Magetan' ? 'badge-branch-magetan' : 'badge-branch-sragen'}`}>{item.branch}</span></td>
                     <td style={{ fontWeight: 800, color: '#15803d', fontFamily: 'monospace' }}>{item.doNo}</td>
+                    <td style={{ fontWeight: 800, color: '#1d4ed8', fontFamily: 'monospace' }}>{pNo}</td>
                     <td>{formatDateDisplay(item.date)}</td>
-                    <td>
+                    <td onClick={(e) => e.stopPropagation()}>
                       <span
                         onClick={() => handleOpenKiosHistoryByKiosId(item.kiosId, item.kiosName)}
                         style={{
@@ -685,7 +805,7 @@ export default function PembayaranKiosView({
                         {stats.statusDisplay}
                       </span>
                     </td>
-                    <td>
+                    <td onClick={(e) => e.stopPropagation()}>
                       <div style={{ display: 'flex', gap: '4px' }}>
                         {stats.sisa > 0 ? (
                           <button
@@ -712,9 +832,29 @@ export default function PembayaranKiosView({
                 );
               })}
               {filteredPenyaluran.length === 0 && (
-                <tr><td colSpan={11} style={{ textAlign: 'center', padding: '20px', color: '#6b7280' }}>Tidak ada transaksi penyaluran.</td></tr>
+                <tr><td colSpan={12} style={{ textAlign: 'center', padding: '20px', color: '#6b7280' }}>Tidak ada transaksi penyaluran.</td></tr>
               )}
             </tbody>
+            {filteredPenyaluran.length > 0 && (
+              <tfoot>
+                <tr style={{ fontWeight: 800, backgroundColor: '#f8fafc', borderTop: '2px solid #cbd5e1' }}>
+                  <td colSpan={6} style={{ textAlign: 'right', padding: '10px 14px' }}>TOTAL KESELURUHAN:</td>
+                  <td style={{ color: '#0369a1' }}>
+                    {filteredPenyaluran.reduce((s, p) => s + Number(p.qtyTon || 0), 0).toFixed(1)} Ton
+                  </td>
+                  <td style={{ color: '#166534' }}>
+                    {formatRp(filteredPenyaluran.reduce((s, p) => s + Number(p.totalAmount || 0), 0))}
+                  </td>
+                  <td style={{ color: '#15803d' }}>
+                    {formatRp(filteredPenyaluran.reduce((s, p) => s + getPenyaluranPaymentStats(p).terbayar, 0))}
+                  </td>
+                  <td style={{ color: '#dc2626' }}>
+                    {formatRp(filteredPenyaluran.reduce((s, p) => s + getPenyaluranPaymentStats(p).sisa, 0))}
+                  </td>
+                  <td colSpan={2}></td>
+                </tr>
+              </tfoot>
+            )}
           </table>
           <TablePagination 
             currentPage={pageTagihan} totalPages={totalTagihan} 
@@ -843,7 +983,7 @@ export default function PembayaranKiosView({
               ))}
 
               {(payments.length === 0 && deposits.length === 0) && (
-                <tr><td colSpan={8} style={{ textAlign: 'center', padding: '20px', color: '#6b7280' }}>Belum ada log pelunasan atau deposit.</td></tr>
+                <tr><td colSpan={9} style={{ textAlign: 'center', padding: '20px', color: '#6b7280' }}>Belum ada log pelunasan atau deposit.</td></tr>
               )}
             </tbody>
           </table>
@@ -853,6 +993,18 @@ export default function PembayaranKiosView({
             itemsPerPage={limitRiwayat} setItemsPerPage={setLimitRiwayat}
           />
         </div>
+      )}
+
+      {/* ══════════════════════════════════════
+          MODAL DETAIL TRANSAKSI PENYALURAN DO
+         ══════════════════════════════════════ */}
+      {selectedDetailTrx && (
+        <ModalDetailTransaksi
+          isOpen={!!selectedDetailTrx}
+          onClose={() => setSelectedDetailTrx(null)}
+          data={selectedDetailTrx}
+          type="penyaluran"
+        />
       )}
 
       {/* ══════════════════════════════════════

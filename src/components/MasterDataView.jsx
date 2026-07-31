@@ -144,8 +144,13 @@ export default function MasterDataView({
             </thead>
             <tbody>
               {filteredKiosks.map(k => (
-                <tr key={k.id} style={{ backgroundColor: selectedKiosIds.includes(k.id) ? '#fef2f2' : undefined }}>
-                  <td style={{ textAlign: 'center' }}>
+                <tr 
+                  key={k.id} 
+                  style={{ backgroundColor: selectedKiosIds.includes(k.id) ? '#fef2f2' : undefined, cursor: 'pointer' }}
+                  onClick={() => setHistoryKios(k)}
+                  className="table-row-hover"
+                >
+                  <td style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
                     <input 
                       type="checkbox" 
                       checked={selectedKiosIds.includes(k.id)}
@@ -157,15 +162,12 @@ export default function MasterDataView({
                   <td style={{ fontFamily: 'monospace', fontWeight: 700 }}>{k.code || k.id}</td>
                   <td>
                     <span
-                      onClick={() => setHistoryKios(k)}
                       style={{
                         fontWeight: 800,
                         color: '#15803d',
-                        cursor: 'pointer',
                         textDecoration: 'underline',
                         textUnderlineOffset: '3px'
                       }}
-                      title="Klik untuk melihat riwayat transaksi lengkap kios ini"
                     >
                       {k.name}
                     </span>
@@ -178,7 +180,7 @@ export default function MasterDataView({
                   </td>
                   <td>{k.address}</td>
                   <td>{k.phone}</td>
-                  <td>
+                  <td onClick={(e) => e.stopPropagation()}>
                     <div style={{ display: 'flex', gap: '4px' }}>
                       <button className="btn-secondary" style={{ fontSize: '11px', padding: '3px 7px' }} onClick={() => setHistoryKios(k)}>Riwayat</button>
                       <button className="btn-secondary" style={{ fontSize: '11px', padding: '3px 7px' }} onClick={() => onEditKios(k)}>Edit</button>
@@ -269,8 +271,13 @@ export default function MasterDataView({
             </thead>
             <tbody>
               {filteredDrivers.map(d => (
-                <tr key={d.id} style={{ backgroundColor: selectedDriverIds.includes(d.id) ? '#fef2f2' : undefined }}>
-                  <td style={{ textAlign: 'center' }}>
+                <tr 
+                  key={d.id} 
+                  style={{ backgroundColor: selectedDriverIds.includes(d.id) ? '#fef2f2' : undefined, cursor: 'pointer' }}
+                  onClick={() => onEditDriver(d)}
+                  className="table-row-hover"
+                >
+                  <td style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
                     <input 
                       type="checkbox" 
                       checked={selectedDriverIds.includes(d.id)}
@@ -288,7 +295,7 @@ export default function MasterDataView({
                     </span>
                   </td>
                   <td>{d.phone || '-'}</td>
-                  <td>
+                  <td onClick={(e) => e.stopPropagation()}>
                     <div style={{ display: 'flex', gap: '4px' }}>
                       <button className="btn-secondary" style={{ fontSize: '11px', padding: '3px 7px' }} onClick={() => onEditDriver(d)}>Edit</button>
                       <button className="btn-danger" style={{ fontSize: '11px', padding: '3px 7px' }} onClick={() => onDeleteDriver(d.id)}>Hapus</button>
@@ -367,8 +374,13 @@ export default function MasterDataView({
             </thead>
             <tbody>
               {filteredSuppliers.map(s => (
-                <tr key={s.id} style={{ backgroundColor: selectedSupplierIds.includes(s.id) ? '#fef2f2' : undefined }}>
-                  <td style={{ textAlign: 'center' }}>
+                <tr 
+                  key={s.id} 
+                  style={{ backgroundColor: selectedSupplierIds.includes(s.id) ? '#fef2f2' : undefined, cursor: 'pointer' }}
+                  onClick={() => onEditSupplier(s)}
+                  className="table-row-hover"
+                >
+                  <td style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
                     <input 
                       type="checkbox" 
                       checked={selectedSupplierIds.includes(s.id)}
@@ -381,7 +393,7 @@ export default function MasterDataView({
                   <td style={{ fontWeight: 700 }}>{s.name}</td>
                   <td>{s.contact}</td>
                   <td>{s.address}</td>
-                  <td>
+                  <td onClick={(e) => e.stopPropagation()}>
                     <div style={{ display: 'flex', gap: '4px' }}>
                       <button className="btn-secondary" style={{ fontSize: '11px', padding: '3px 7px' }} onClick={() => onEditSupplier(s)}>Edit</button>
                       <button className="btn-danger" style={{ fontSize: '11px', padding: '3px 7px' }} onClick={() => onDeleteSupplier(s.id)}>Hapus</button>
