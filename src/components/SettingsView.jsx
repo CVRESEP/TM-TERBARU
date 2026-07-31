@@ -422,43 +422,105 @@ export default function SettingsView({
               </button>
             </div>
 
-            {/* IMPORT / MUTASI DATA */}
+            {/* IMPORT / MUTASI DATA (JSON & EXCEL) */}
             <div style={{ border: '1px solid #e5e7eb', borderRadius: '6px', padding: '16px', backgroundColor: '#f9fafb' }}>
-              <h4 style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700, color: '#111827' }}>2. Import / Mutasi Data (.JSON)</h4>
+              <h4 style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700, color: '#111827' }}>2. Import / Mutasi Data (.JSON & .XLSX Excel)</h4>
               <p style={{ fontSize: '12px', color: '#6b7280', margin: '0 0 14px 0' }}>
-                Pilih file JSON hasil backup dari web/aplikasi sebelumnya untuk mengimpor seluruh data secara otomatis ke sistem baru.
+                Pilih file <strong>JSON</strong> atau file <strong>Excel (.xlsx / .xls)</strong> hasil backup / olahan data Anda untuk mengimpor seluruh sheet data secara otomatis ke sistem baru.
               </p>
               <input 
                 type="file" 
-                accept=".json" 
+                accept=".json, .xlsx, .xls" 
                 className="form-input" 
                 style={{ marginBottom: '10px' }}
                 onChange={(e) => {
                   const file = e.target.files[0];
                   if (!file) return;
+
+                  const isExcel = file.name.endsWith('.xlsx') || file.name.endsWith('.xls');
                   const reader = new FileReader();
-                  reader.onload = async (event) => {
-                    try {
-                      const parsed = JSON.parse(event.target.result);
-                      setImportStatus('⏳ Membaca file JSON & mengunggah ke Turso Database Cloud...');
-                      if (onImportData) {
-                        const success = onImportData(parsed);
-                        if (success) {
-                          try {
-                            const res = await syncDataToTurso(parsed, { tursoUrl: tursoDbUrl, tursoToken: tursoDbToken });
-                            setImportStatus(`✅ Mutasi & Impor data berhasil! ${res.message || 'Seluruh data telah tersimpan di browser & Turso Cloud Database.'}`);
-                          } catch (tursoErr) {
-                            setImportStatus(`⚠️ Data tersimpan lokal, namun Sync Turso: ${tursoErr.message}`);
+
+                  if (isExcel) {
+                    setImportStatus('⏳ Membaca file Excel (.xlsx)...');
+                    reader.onload = async (event) => {
+                      try {
+                        const XLSX = await import('xlsx');
+                        const data = new Uint8Array(event.target.result);
+                        const workbook = XLSX.read(data, { type: 'array' });
+
+                        const importedData = {};
+                        const sheetMapping = {
+                          'Penebusan': 'penebusanList',
+                          'Pengeluaran DO': 'doList',
+                          'Penyaluran Kios': 'penyaluranList',
+                          'Pembayaran Kios': 'payments',
+                          'Kas Angkutan': 'kasAngkutanList',
+                          'Kas Umum': 'kasUmumList',
+                          'Kios': 'kiosks',
+                          'Pupuk (Fertilizers)': 'fertilizers',
+                          'Products': 'fertilizers',
+                          'Suppliers': 'suppliers',
+                          'Drivers': 'drivers',
+                          'Users': 'usersList',
+                          'Settings': 'settings'
+                        };
+
+                        workbook.SheetNames.forEach(sheetName => {
+                          const targetKey = sheetMapping[sheetName] || sheetName;
+                          const jsonSheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+                          if (targetKey === 'settings') {
+                            const setObj = {};
+                            jsonSheet.forEach(row => { if (row.key) setObj[row.key] = row.value; });
+                            importedData.settings = setObj;
+                          } else {
+                            importedData[targetKey] = jsonSheet;
                           }
-                        } else {
-                          setImportStatus('❌ Gagal mengimpor data. Format file JSON tidak valid.');
+                        });
+
+                        setImportStatus('⏳ Mengolah data Excel & menyinkronkan ke Turso Database Cloud...');
+                        if (onImportData) {
+                          const success = onImportData(importedData);
+                          if (success) {
+                            try {
+                              const res = await syncDataToTurso(importedData, { tursoUrl: tursoDbUrl, tursoToken: tursoDbToken });
+                              setImportStatus(`✅ Import data Excel (.xlsx) berhasil! ${res.message || 'Seluruh data sheet telah disimpan di browser & Turso Cloud Database.'}`);
+                            } catch (tursoErr) {
+                              setImportStatus(`⚠️ Data Excel tersimpan lokal, namun Sync Turso: ${tursoErr.message}`);
+                            }
+                          } else {
+                            setImportStatus('❌ Gagal mengimpor data Excel. Format sheet tidak cocok.');
+                          }
                         }
+                      } catch (err) {
+                        console.error('Excel Import Error:', err);
+                        setImportStatus(`❌ Gagal membaca file Excel: ${err.message}`);
                       }
-                    } catch (err) {
-                      setImportStatus('❌ Gagal membaca file JSON. Pastikan format file benar.');
-                    }
-                  };
-                  reader.readAsText(file);
+                    };
+                    reader.readAsArrayBuffer(file);
+                  } else {
+                    setImportStatus('⏳ Membaca file JSON & mengunggah ke Turso Database Cloud...');
+                    reader.onload = async (event) => {
+                      try {
+                        const parsed = JSON.parse(event.target.result);
+                        if (onImportData) {
+                          const success = onImportData(parsed);
+                          if (success) {
+                            try {
+                              const res = await syncDataToTurso(parsed, { tursoUrl: tursoDbUrl, tursoToken: tursoDbToken });
+                              setImportStatus(`✅ Mutasi & Impor data berhasil! ${res.message || 'Seluruh data telah tersimpan di browser & Turso Cloud Database.'}`);
+                            } catch (tursoErr) {
+                              setImportStatus(`⚠️ Data tersimpan lokal, namun Sync Turso: ${tursoErr.message}`);
+                            }
+                          } else {
+                            setImportStatus('❌ Gagal mengimpor data. Format file JSON tidak valid.');
+                          }
+                        }
+                      } catch (err) {
+                        setImportStatus('❌ Gagal membaca file JSON. Pastikan format file benar.');
+                      }
+                    };
+                    reader.readAsText(file);
+                  }
                 }}
               />
             </div>

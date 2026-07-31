@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+~$*
+Backup_*.json
+Backup_*.xlsx
+

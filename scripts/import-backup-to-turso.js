@@ -11,7 +11,8 @@ const client = createClient({
 });
 
 async function main() {
-  const filePath = path.resolve('Backup_TaniMakmurBaru_2026-07-30.json');
+  const targetFile = process.argv[2] || 'Backup_Firestore_tani-makmur-zf400_2026-07-31.json';
+  const filePath = path.resolve(targetFile);
   if (!fs.existsSync(filePath)) {
     console.error('File backup tidak ditemukan:', filePath);
     process.exit(1);
@@ -62,20 +63,30 @@ async function main() {
     }
 
     console.log(`⏳ Mengunggah ${statements.length} baris ke tabel ${tableName}...`);
-    const chunkSize = 40;
+    const chunkSize = 100;
     let count = 0;
+    const chunks = [];
     for (let j = 0; j < statements.length; j += chunkSize) {
-      const chunk = statements.slice(j, j + chunkSize);
-      try {
-        await client.batch(chunk, 'write');
-      } catch (err) {
-        for (const stmt of chunk) {
-          await client.execute(stmt).catch(() => {});
-        }
-      }
-      count += chunk.length;
+      chunks.push(statements.slice(j, j + chunkSize));
     }
-    console.log(`✅ Tabel ${tableName}: Berhasil mengunggah ${count} baris!`);
+
+    // Process 5 batch requests in parallel
+    const parallelLimit = 5;
+    for (let i = 0; i < chunks.length; i += parallelLimit) {
+      const batchGroup = chunks.slice(i, i + parallelLimit);
+      await Promise.all(batchGroup.map(async (chunk) => {
+        try {
+          await client.batch(chunk, 'write');
+        } catch (err) {
+          for (const stmt of chunk) {
+            await client.execute(stmt).catch(() => {});
+          }
+        }
+      }));
+      count += batchGroup.reduce((sum, c) => sum + c.length, 0);
+      console.log(`   └ Progress ${tableName}: ${count}/${statements.length} baris...`);
+    }
+    console.log(`✅ Tabel ${tableName}: Selesai mengunggah ${count} baris!`);
   };
 
   // Upsert settings
@@ -84,7 +95,15 @@ async function main() {
     await upsertTable('settings', settingItems, ['key', 'value']);
   }
 
-  await upsertTable('users', rawData.usersList, ['id', 'username', 'password', 'name', 'role', 'branch']);
+  const defaultUsers = [
+    { id: 'USR-00', username: 'developer', password: 'dev123', name: 'System Developer', role: 'developer', branch: 'ALL' },
+    { id: 'USR-01', username: 'owner', password: 'owner123', name: 'Pemilik Usaha', role: 'owner', branch: 'ALL' },
+    { id: 'USR-02', username: 'manajer', password: 'manajer123', name: 'Bpk. Manajer Utama', role: 'manajer', branch: 'ALL' },
+    { id: 'USR-03', username: 'admin_magetan', password: 'magetan123', name: 'Admin Cabang Magetan', role: 'admin', branch: 'Magetan' },
+    { id: 'USR-04', username: 'admin_sragen', password: 'sragen123', name: 'Admin Cabang Sragen', role: 'admin', branch: 'Sragen' }
+  ];
+  const usersToImport = (Array.isArray(rawData.usersList) && rawData.usersList.length > 0) ? rawData.usersList : defaultUsers;
+  await upsertTable('users', usersToImport, ['id', 'username', 'password', 'name', 'role', 'branch']);
   await upsertTable('fertilizers', rawData.fertilizers, ['id', 'name', 'priceBuy', 'priceSell', 'stock', 'supplier', 'branch']);
   await upsertTable('suppliers', rawData.suppliers, ['id', 'name', 'phone', 'address']);
   await upsertTable('drivers', rawData.drivers, ['id', 'name', 'phone', 'truckNumber', 'branch']);
