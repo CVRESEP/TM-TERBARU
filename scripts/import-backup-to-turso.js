@@ -1,6 +1,7 @@
 import { createClient } from '@libsql/client';
 import fs from 'fs';
 import path from 'path';
+import { normalizeAllData } from '../src/utils/dataNormalizer.js';
 
 const dbUrl = 'https://tm-baru-cvresep.aws-ap-northeast-1.turso.io';
 const dbToken = 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3ODU0MzY5NzcsImlkIjoiMDE5ZmI0NGYtN2QwMS03MzhiLTk4MWMtMmZkNjYwMjg4NTU4Iiwia2lkIjoiZ1BNTHB5ZDZHREZraVd2T2dhbTNWMC1ISTVjM21UbW15VUVxMkFqb2tZcyIsInJpZCI6Ijg5MjkyM2I1LWM5ODQtNGQxMi05MDBmLThhODUzZjY3MjlmZiJ9.PAr56n8intzw0UkAtsWX38G_iRkb_zRxQ3NtGnbBMjsIaK0xcLQJyVG9nw7nRyPcw5NapcTERjWbK_oTucJBCQ';
@@ -18,8 +19,9 @@ async function main() {
     process.exit(1);
   }
 
-  console.log('📖 Membaca file backup:', filePath);
-  const rawData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+  console.log('📖 Membaca & menormalisasi data backup:', filePath);
+  const rawFile = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+  const rawData = normalizeAllData(rawFile);
 
   console.log('🚀 Membuat struktur tabel di Turso jika belum ada...');
   await client.execute(`CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT);`);

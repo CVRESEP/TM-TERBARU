@@ -121,7 +121,7 @@ export default function KasAngkutanView({
 
       const qty = Number(foundSalur.qtyTon || foundSalur.qty || 0);
       const prodName = (foundSalur.fertilizerName || 'PUPUK').toUpperCase();
-      const autoUraian = `BIAYA ANGKUTAN - ${refNo} - ${prodName} ${bName} - ${kN.toUpperCase()} - ${qty}`;
+      const autoUraian = `BIAYA ANGKUTAN - ${refNo} - ${prodName} - ${kN.toUpperCase()} - ${qty} TON`;
 
       setKabupaten(bName);
       setDoNo(dNo);
@@ -325,14 +325,15 @@ export default function KasAngkutanView({
                   title="Pilih Semua di Halaman Ini"
                 />
               </th>
-              <th {...thProps('kabupaten')} className="sortable-th text-center">Kabupaten <SortIcon colKey="kabupaten" sortKey={sortKey} sortDir={sortDir} /></th>
+              <th {...thProps('kabupaten')} className="sortable-th text-center">Cabang <SortIcon colKey="kabupaten" sortKey={sortKey} sortDir={sortDir} /></th>
               <th {...thProps('date')} className="sortable-th text-center">Tanggal <SortIcon colKey="date" sortKey={sortKey} sortDir={sortDir} /></th>
+              <th {...thProps('type')} className="sortable-th text-center">Tipe <SortIcon colKey="type" sortKey={sortKey} sortDir={sortDir} /></th>
               <th {...thProps('doNo')} className="sortable-th" style={{ backgroundColor: '#dcfce7' }}>No. DO <SortIcon colKey="doNo" sortKey={sortKey} sortDir={sortDir} /></th>
               <th {...thProps('penyaluranNo')} className="sortable-th">No. Penyaluran <SortIcon colKey="penyaluranNo" sortKey={sortKey} sortDir={sortDir} /></th>
               <th {...thProps('kiosName')} className="sortable-th">Nama Kios <SortIcon colKey="kiosName" sortKey={sortKey} sortDir={sortDir} /></th>
+              <th {...thProps('uraian')} className="sortable-th">Uraian <SortIcon colKey="uraian" sortKey={sortKey} sortDir={sortDir} /></th>
+              <th {...thProps('nominal')} className="sortable-th text-right">Nominal <SortIcon colKey="nominal" sortKey={sortKey} sortDir={sortDir} /></th>
               <th {...thProps('driverName')} className="sortable-th">Nama Sopir <SortIcon colKey="driverName" sortKey={sortKey} sortDir={sortDir} /></th>
-              <th {...thProps('uraian')} className="sortable-th">Uraian Transaksi <SortIcon colKey="uraian" sortKey={sortKey} sortDir={sortDir} /></th>
-              <th {...thProps('nominal')} className="sortable-th text-right">Nominal (Total) <SortIcon colKey="nominal" sortKey={sortKey} sortDir={sortDir} /></th>
               <th className="text-center">Aksi</th>
             </tr>
           </thead>
@@ -354,14 +355,23 @@ export default function KasAngkutanView({
                   </span>
                 </td>
                 <td className="text-center">{formatDateDisplay(item.date)}</td>
+                <td className="text-center">
+                  <span style={{
+                    backgroundColor: (item.type || 'PENGELUARAN') === 'PEMASUKAN' ? '#dcfce7' : '#fee2e2',
+                    color: (item.type || 'PENGELUARAN') === 'PEMASUKAN' ? '#15803d' : '#991b1b',
+                    padding: '2px 6px', borderRadius: '4px', fontWeight: 800, fontSize: '11px'
+                  }}>
+                    {item.type || item.transactionType || 'PENGELUARAN'}
+                  </span>
+                </td>
                 <td style={{ fontWeight: 800, color: '#15803d', fontFamily: 'monospace' }}>{item.doNo || '-'}</td>
                 <td style={{ fontWeight: 700, fontFamily: 'monospace' }}>{item.penyaluranNo || '-'}</td>
                 <td style={{ fontWeight: 600 }}>{item.kiosName || '-'}</td>
-                <td>{item.driverName || '-'}</td>
-                <td style={{ fontSize: '12px' }}>{item.uraian || '-'}</td>
+                <td style={{ fontSize: '12px' }}>{item.uraian || item.description || '-'}</td>
                 <td className="text-right" style={{ fontWeight: 800, color: (item.type || 'PENGELUARAN') === 'PEMASUKAN' ? '#15803d' : '#dc2626' }}>
                   {formatRp(item.nominal || item.amount)}
                 </td>
+                <td>{item.driverName || '-'}</td>
                 <td className="text-center">
                   <div style={{ display: 'flex', gap: '4px', justifyContent: 'center' }}>
                     <button className="btn-secondary" style={{ fontSize: '11px', padding: '3px 7px' }} onClick={() => handleOpenModal(item)}>Edit</button>
