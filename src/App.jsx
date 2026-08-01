@@ -599,10 +599,17 @@ export default function App() {
       });
     } 
     else if (type === 'penyaluran') {
-      const targetSalur = sl.find(i => i.id === id);
+      const targetSalur = sl.find(i => i.id === id || i.penyaluranNo === id || i.nomorPenyaluran === id);
       if (!targetSalur) return;
 
-      const linkedPayments = pay.filter(item => item.penyaluranId === id);
+      const targetSalurNo = targetSalur.penyaluranNo || targetSalur.nomorPenyaluran || targetSalur.sjNo || targetSalur.id;
+
+      const linkedPayments = pay.filter(item => 
+        item.penyaluranId === id || 
+        item.penyaluranId === targetSalurNo ||
+        item.nomorPenyaluran === targetSalurNo ||
+        item.penyaluranNo === targetSalurNo
+      );
 
       const confirmMsg = linkedPayments.length > 0
         ? `⚠️ Menghapus data penyaluran kios ini akan menghapus ${linkedPayments.length} log pelunasan terkait. Lanjutkan?`
@@ -614,12 +621,17 @@ export default function App() {
         message: confirmMsg,
         confirmText: 'Ya, Hapus Data',
         onConfirm: () => {
-          sl = sl.filter(i => i.id !== id);
-          pay = pay.filter(i => i.penyaluranId !== id);
+          sl = sl.filter(i => i.id !== id && i.penyaluranNo !== targetSalurNo && i.nomorPenyaluran !== targetSalurNo);
+          pay = pay.filter(i => 
+            i.penyaluranId !== id && 
+            i.penyaluranId !== targetSalurNo &&
+            i.nomorPenyaluran !== targetSalurNo &&
+            i.penyaluranNo !== targetSalurNo
+          );
 
           setPenyaluranList(sl);
           setPayments(pay);
-          saveData(settings, fertilizers, s, k, p, d, sl, pay, deposits, drv);
+          logActionAndSave('HAPUS_PENYALURAN', `Hapus Penyaluran ${targetSalurNo}`, { newSalur: sl, newPay: pay });
           setConfirmConfig(null);
         }
       });

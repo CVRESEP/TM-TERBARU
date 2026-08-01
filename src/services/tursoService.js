@@ -108,19 +108,47 @@ export async function syncDataToTurso(fullData, config = {}) {
       }
     }
 
-    await upsertBatch('users', fullData.usersList, ['id', 'username', 'password', 'name', 'role', 'branch']);
-    await upsertBatch('fertilizers', fullData.fertilizers, ['id', 'name', 'priceBuy', 'priceSell', 'stock', 'supplier', 'branch']);
-    await upsertBatch('suppliers', fullData.suppliers, ['id', 'name', 'phone', 'address']);
-    await upsertBatch('drivers', fullData.drivers, ['id', 'name', 'phone', 'truckNumber', 'branch']);
-    await upsertBatch('kiosks', fullData.kiosks, ['id', 'code', 'name', 'owner', 'address', 'phone', 'branch']);
-    await upsertBatch('penebusan', fullData.penebusanList, ['id', 'doNo', 'spjbNo', 'date', 'supplierId', 'supplierName', 'fertilizerId', 'fertilizerName', 'qtyTon', 'pricePerTon', 'totalAmount', 'status', 'notes', 'branch']);
-    await upsertBatch('do_expenses', fullData.doList, ['id', 'doNo', 'penebusanId', 'date', 'fertilizerId', 'fertilizerName', 'qtyTon', 'driverName', 'vehiclePlate', 'targetWarehouse', 'status', 'notes', 'branch']);
-    await upsertBatch('penyaluran', fullData.penyaluranList, ['id', 'penyaluranNo', 'nomorPenyaluran', 'sjNo', 'doRefId', 'doNo', 'date', 'kiosId', 'kiosName', 'fertilizerId', 'fertilizerName', 'qtyTon', 'pricePerTon', 'totalAmount', 'dpAmount', 'paymentStatus', 'driverName', 'vehiclePlate', 'deliveryStatus', 'notes', 'branch']);
-    await upsertBatch('payments', fullData.payments, ['id', 'penyaluranId', 'doRefId', 'doNo', 'kiosName', 'date', 'amount', 'paymentMethod', 'notes', 'branch']);
-    await upsertBatch('deposits', fullData.deposits, ['id', 'kiosId', 'kiosName', 'date', 'amount', 'notes', 'branch']);
-    await upsertBatch('kas_angkutan', fullData.kasAngkutanList, ['id', 'branch', 'date', 'doNo', 'penyaluranNo', 'kiosName', 'driverName', 'transactionType', 'description', 'amount', 'adminFee', 'mealFee', 'palangFee', 'solarFee', 'driverWage', 'overtimeFee', 'helperFee', 'otherFee', 'notes']);
-    await upsertBatch('kas_umum', fullData.kasUmumList, ['id', 'branch', 'date', 'type', 'category', 'description', 'amount', 'notes']);
-    await upsertBatch('activity_logs', fullData.activityLogs, ['id', 'timestamp', 'user', 'role', 'action', 'details']);
+    const syncTableBatch = async (tableName, items, columns) => {
+      if (!Array.isArray(items)) return;
+      await upsertBatch(tableName, items, columns);
+
+      // Clean up records in Turso DB that were deleted in the local app state
+      const activeIds = items
+        .map(item => String(item.id || item.doNo || item.penyaluranNo || item.nomorPenyaluran || item.kiosId || item.code || item.username || ''))
+        .filter(Boolean);
+
+      if (activeIds.length > 0) {
+        // Process deletion in chunks of 50 to prevent SQL length limits
+        for (let k = 0; k < activeIds.length; k += 50) {
+          const chunkIds = activeIds.slice(k, k + 50);
+          const placeholders = chunkIds.map(() => '?').join(', ');
+          // Only perform cleanup for tables where ID tracking applies
+          if (['penebusan', 'do_expenses', 'penyaluran', 'payments', 'deposits', 'kas_angkutan', 'kas_umum'].includes(tableName)) {
+            // Check if there are items outside activeIds to delete
+            await client.execute({
+              sql: `DELETE FROM ${tableName} WHERE id NOT IN (${placeholders})`,
+              args: chunkIds
+            }).catch(err => console.log(`Turso SQL cleanup in ${tableName}:`, err.message));
+          }
+        }
+      } else if (['penebusan', 'do_expenses', 'penyaluran', 'payments', 'deposits', 'kas_angkutan', 'kas_umum'].includes(tableName)) {
+        await client.execute(`DELETE FROM ${tableName}`).catch(err => console.log(`Turso table clear ${tableName}:`, err.message));
+      }
+    };
+
+    await syncTableBatch('users', fullData.usersList, ['id', 'username', 'password', 'name', 'role', 'branch']);
+    await syncTableBatch('fertilizers', fullData.fertilizers, ['id', 'name', 'priceBuy', 'priceSell', 'stock', 'supplier', 'branch']);
+    await syncTableBatch('suppliers', fullData.suppliers, ['id', 'name', 'phone', 'address']);
+    await syncTableBatch('drivers', fullData.drivers, ['id', 'name', 'phone', 'truckNumber', 'branch']);
+    await syncTableBatch('kiosks', fullData.kiosks, ['id', 'code', 'name', 'owner', 'address', 'phone', 'branch']);
+    await syncTableBatch('penebusan', fullData.penebusanList, ['id', 'doNo', 'spjbNo', 'date', 'supplierId', 'supplierName', 'fertilizerId', 'fertilizerName', 'qtyTon', 'pricePerTon', 'totalAmount', 'status', 'notes', 'branch']);
+    await syncTableBatch('do_expenses', fullData.doList, ['id', 'doNo', 'penebusanId', 'date', 'fertilizerId', 'fertilizerName', 'qtyTon', 'driverName', 'vehiclePlate', 'targetWarehouse', 'status', 'notes', 'branch']);
+    await syncTableBatch('penyaluran', fullData.penyaluranList, ['id', 'penyaluranNo', 'nomorPenyaluran', 'sjNo', 'doRefId', 'doNo', 'date', 'kiosId', 'kiosName', 'fertilizerId', 'fertilizerName', 'qtyTon', 'pricePerTon', 'totalAmount', 'dpAmount', 'paymentStatus', 'driverName', 'vehiclePlate', 'deliveryStatus', 'notes', 'branch']);
+    await syncTableBatch('payments', fullData.payments, ['id', 'penyaluranId', 'doRefId', 'doNo', 'kiosName', 'date', 'amount', 'paymentMethod', 'notes', 'branch']);
+    await syncTableBatch('deposits', fullData.deposits, ['id', 'kiosId', 'kiosName', 'date', 'amount', 'notes', 'branch']);
+    await syncTableBatch('kas_angkutan', fullData.kasAngkutanList, ['id', 'branch', 'date', 'doNo', 'penyaluranNo', 'kiosName', 'driverName', 'transactionType', 'description', 'amount', 'adminFee', 'mealFee', 'palangFee', 'solarFee', 'driverWage', 'overtimeFee', 'helperFee', 'otherFee', 'notes']);
+    await syncTableBatch('kas_umum', fullData.kasUmumList, ['id', 'branch', 'date', 'type', 'category', 'description', 'amount', 'notes']);
+    await syncTableBatch('activity_logs', fullData.activityLogs, ['id', 'timestamp', 'user', 'role', 'action', 'details']);
 
     return { success: true, mode: 'direct', message: 'Data berhasil disinkronkan langsung ke Turso Cloud Database!' };
   } catch (err) {
