@@ -169,6 +169,9 @@ export function normalizePenyaluranList(rawList = []) {
           : (item.paidAmount !== undefined ? Number(item.paidAmount) : undefined)));
     const rawKurangBayar = item.kurangBayar !== undefined ? Number(item.kurangBayar) : (item.remainingAmount !== undefined ? Number(item.remainingAmount) : undefined);
 
+    let paidAmount = 0;
+    let remainingAmount = 0;
+
     if (rawKurangBayar !== undefined) {
       remainingAmount = rawKurangBayar;
       paidAmount = Math.max(0, totalAmount - remainingAmount);
