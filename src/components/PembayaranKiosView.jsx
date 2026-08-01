@@ -5,27 +5,10 @@ import { formatCurrencyInput, parseCurrencyInput, formatDateDisplay } from '../u
 import DateFilterBar, { matchesDateFilter } from './DateFilterBar';
 import { useSortableTable, SortIcon } from '../utils/useSortableTable';
 import { usePagination } from '../utils/usePagination';
-import TablePagination from './TablePagination';
+import { getPenyaluranPaymentStats as getPenyaluranPaymentStatsCentral } from '../utils/paymentStats';
 
-const EXACT_UNPAID_MAP = {
-  // Magetan (6 Transaksi)
-  '3101542068-3': { total: 13566080, terbayar: 0, kurang: 13566080 },
-  '3101537959-2': { total: 13246080, terbayar: 4301440, kurang: 8944640 },
-  '3101533630-2': { total: 13246080, terbayar: 12246080, kurang: 1000000 },
-  '3101520168-2': { total: 991520, terbayar: 0, kurang: 991520 },
-  '3101535139-3': { total: 729456, terbayar: 0, kurang: 729456 },
-  '3101521715-4': { total: 607880, terbayar: 0, kurang: 607880 },
-  // Sragen (9 Transaksi)
-  '3101542067-1': { total: 13566080, terbayar: 0, kurang: 13566080 },
-  '3101540033-1': { total: 13566080, terbayar: 0, kurang: 13566080 },
-  '3820428632-4': { total: 13246080, terbayar: 0, kurang: 13246080 },
-  '3101540033-3': { total: 10174560, terbayar: 0, kurang: 10174560 },
-  '3820427692-3': { total: 9934560, terbayar: 0, kurang: 9934560 },
-  '3820428632-3': { total: 6623040, terbayar: 0, kurang: 6623040 },
-  '3820428632-2': { total: 6623040, terbayar: 0, kurang: 6623040 },
-  '3101436488-8': { total: 4442010, terbayar: 2954730, kurang: 1487280 },
-  '3101537958-1': { total: 5288556, terbayar: 4680676, kurang: 607880 }
-};
+
+
 
 export default function PembayaranKiosView({
   selectedBranch = 'ALL',
@@ -133,30 +116,9 @@ export default function PembayaranKiosView({
     return map;
   }, [payments]);
 
-  // Helper statistik pembayaran persis sesuai aturan web lama
-  const getPenyaluranPaymentStats = (item) => {
-    if (!item) return { totalTagihan: 0, terbayar: 0, sisa: 0, statusDisplay: 'Lunas' };
-    const totalAmt = Number(item.totalAmount || 0);
-    const itemPayments = (payments || []).filter(pm => pm && (pm.penyaluranId === item.id || pm.penyaluranId === item.nomorPenyaluran || (pm.doNo && pm.doNo === item.doNo && pm.kiosId === item.kiosId)));
-    const paidSum = itemPayments.reduce((s, pm) => s + Number(pm.amount || 0), 0);
+  // Helper statistik pembayaran — terpusat dari paymentStats.js
+  const getPenyaluranPaymentStats = (item) => getPenyaluranPaymentStatsCentral(item, payments);
 
-    const pNo = item.penyaluranNo || item.nomorPenyaluran || '';
-    const exactMatch = EXACT_UNPAID_MAP[pNo] || EXACT_UNPAID_MAP[item.id];
-
-    let terbayar = totalAmt;
-    let sisa = 0;
-
-    if (exactMatch) {
-      terbayar = exactMatch.terbayar;
-      sisa = exactMatch.kurang;
-    }
-
-    terbayar = isNaN(terbayar) ? 0 : terbayar;
-    sisa = isNaN(sisa) ? 0 : sisa;
-
-    const statusDisplay = sisa <= 0 && totalAmt > 0 ? 'Lunas' : (terbayar > 0 ? 'Dicicil' : 'Tempo / Utang');
-    return { totalTagihan: totalAmt, terbayar, sisa, statusDisplay };
-  };
 
   // 2. Filter Penyaluran List
   const filteredPenyaluran = useMemo(() => {
@@ -246,14 +208,8 @@ export default function PembayaranKiosView({
     // Net Kekurangan per kios
     let totalNetKekuranganSemua = 0;
     filteredKiosks.forEach(kios => {
-      const list = salurByKios[kios.id] || salurByKios[kios.name] || salurByKios[kios.code] || [];
-      let tagihanTotal = 0;
-      let terbayarTotal = 0;
-      list.forEach(p => {
-        tagihanTotal += Number(p.totalAmount || 0);
-        terbayarTotal += getPenyaluranPaymentStats(p).terbayar;
-      });
-      const kek = Math.max(0, tagihanTotal - terbayarTotal);
+      const list = (penyaluranList || []).filter(p => p && matchKiosObject(p, kios));
+      const kek = list.reduce((s, p) => s + getPenyaluranPaymentStats(p).sisa, 0);
       const dep = getKiosDepositSum(kios.id);
       const isDeduct = isKiosDeductEnabled(kios.id);
       const netK = isDeduct ? Math.max(0, kek - dep) : kek;
@@ -274,23 +230,9 @@ export default function PembayaranKiosView({
   // Sort untuk tab tagihan DO
   const { sorted: sortedTagihan, sortKey: sortKeyTagihan, sortDir: sortDirTagihan, thProps: thTagihan } = useSortableTable(filteredPenyaluran, 'date', 'desc');
 
-  // Log riwayat gabungan (untuk tab 3)
+  // Log riwayat gabungan (untuk tab 3) — murni dari tabel payments & deposits database
   const riwayatLogs = useMemo(() => [
     ...(payments || []).filter(Boolean).map(p => ({ ...p, method: p.method || p.paymentMethod, logCategory: 'Pelunasan' })),
-    ...(penyaluranList || [])
-      .filter(s => s && (s.paymentStatus === 'Lunas' || Number(s.dpAmount || 0) > 0))
-      .map(s => ({
-        id: `BAYAR-TRX-${s.id}`,
-        logCategory: 'Pelunasan (Transaksi Direct)',
-        date: s.date,
-        kiosId: s.kiosId,
-        kiosName: s.kiosName,
-        doNo: s.doNo,
-        amount: s.paymentStatus === 'Lunas' ? Number(s.totalAmount || 0) : Number(s.dpAmount || 0),
-        method: s.paymentStatus === 'Lunas' ? 'Lunas Langsung' : 'DP Transaksi',
-        notes: `Pembayaran langsung saat penyaluran Surat Jalan: ${s.sjNo || s.id}`,
-        isDirectTrx: true
-      })),
     ...(deposits || []).filter(Boolean).map(d => ({ ...d, method: d.method || d.paymentMethod, logCategory: 'Deposit' }))
   ].filter(log => {
     if (!log) return false;
@@ -300,7 +242,7 @@ export default function PembayaranKiosView({
                         (log.kiosName || '').toLowerCase().includes(searchTerm.toLowerCase());
     const matchDate = matchesDateFilter(log.date, filterStateRiwayat);
     return matchBranch && matchKios && matchSearch && matchDate;
-  }), [payments, penyaluranList, deposits, filterStateRiwayat, selectedBranch, selectedKiosId, searchTerm]);
+  }), [payments, deposits, filterStateRiwayat, selectedBranch, selectedKiosId, searchTerm]);
 
   const { sorted: sortedRiwayat, sortKey: sortKeyRiwayat, sortDir: sortDirRiwayat, thProps: thRiwayat } = useSortableTable(riwayatLogs, 'date', 'desc');
 
@@ -613,7 +555,7 @@ export default function PembayaranKiosView({
                 const kiosSalur = (penyaluranList || []).filter(p => matchKiosObject(p, kios) && matchesDateFilter(p.date, filterStateRekap));
                 const tagihanTotal = kiosSalur.reduce((s, p) => s + Number(p?.totalAmount || 0), 0);
                 const terbayarTotal = kiosSalur.reduce((s, p) => s + getPenyaluranPaymentStats(p).terbayar, 0);
-                const kekuranganPembayaran = Math.max(0, tagihanTotal - terbayarTotal);
+                const kekuranganPembayaran = kiosSalur.reduce((s, p) => s + getPenyaluranPaymentStats(p).sisa, 0);
 
                 const depositTotal = getKiosDepositSum(kios.id);
                 const isDeduct = isKiosDeductEnabled(kios.id);

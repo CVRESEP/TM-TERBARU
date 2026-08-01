@@ -44,6 +44,28 @@ function cleanStr(val, fallback = '') {
   return String(val).replace(/^\s+/, '').replace(/\s+$/, '');
 }
 
+export function normalizeProductName(rawName, branch = '') {
+  const s = String(rawName || '').trim().toUpperCase();
+  if (!s || s === 'PUPUK BERSUBSIDI' || s === 'PUPUK') return '';
+
+  const b = String(branch || '').toUpperCase();
+  const isSragen = b.includes('SRAGEN');
+
+  if (s.includes('PETROGANIK') || s.includes('PGANIK') || s.includes('PG BARU')) {
+    return isSragen ? '4. PETROGANIK SRAGEN' : 'PGANIK MAGETAN';
+  }
+  if (s.includes('UREA')) {
+    return isSragen ? '1. UREA 2026 SRAGEN' : 'UREA MAGETAN';
+  }
+  if (s.includes('PHONSKA') || s.includes('NPK')) {
+    return isSragen ? '2. NPK 2026 SRAGEN' : 'PHONSKA MAGETAN';
+  }
+  if (s.includes('ZA')) {
+    return isSragen ? '3. ZA 2026 SRAGEN' : 'ZA MAGETAN';
+  }
+  return rawName ? String(rawName).trim() : '';
+}
+
 export function normalizePenebusanList(rawList = [], rawDoList = [], rawPenyaluranList = []) {
   if (!Array.isArray(rawList)) return [];
 
@@ -113,7 +135,8 @@ export function normalizeDoList(rawList = [], rawPenebusan = []) {
     const linkedPen = penMap[penebusanId] || {};
 
     const qty = Number(item.qtyTon || item.qty || 0);
-    const fertilizerName = cleanStr(item.namaProduk || linkedPen.namaProduk || item.fertilizerName, 'Pupuk Bersubsidi');
+    // Keep the ORIGINAL product name from penebusan — do NOT normalize to master aliases here.
+    const fertilizerName = cleanStr(item.namaProduk || item.fertilizerName || linkedPen.namaProduk || linkedPen.fertilizerName, '');
     const driverName = cleanStr(item.namaSopir || item.driverName || item.sopir, 'Sopir Distributor');
     const truckNumber = cleanStr(item.nopol || item.truckNumber, '-');
     const targetWarehouse = cleanStr(item.gudang || item.targetWarehouse, 'Gudang Utama');
@@ -138,14 +161,23 @@ export function normalizeDoList(rawList = [], rawPenebusan = []) {
   });
 }
 
-export function normalizePenyaluranList(rawList = []) {
+export function normalizePenyaluranList(rawList = [], rawPenebusan = [], rawDoList = []) {
   if (!Array.isArray(rawList)) return [];
+
+  const penMap = {};
+  if (Array.isArray(rawPenebusan)) {
+    rawPenebusan.forEach(p => {
+      const pId = cleanStr(p.id || p.noDo);
+      if (pId) penMap[pId] = p;
+    });
+  }
 
   const doSeqMap = {};
 
   return rawList.map((item, idx) => {
     const id = cleanStr(item.id || item.nomorPenyaluran || item.penyaluranNo || `SLR-${idx + 1}`);
     const doRefId = cleanStr(item.noDo || item.doRefId || item.doNo);
+    const linkedPen = penMap[doRefId] || {};
     
     let penyaluranNo = cleanStr(item.penyaluranNo || item.nomorPenyaluran);
     if (!penyaluranNo || !penyaluranNo.includes('-')) {
@@ -194,7 +226,9 @@ export function normalizePenyaluranList(rawList = []) {
     }
 
     const kiosName = cleanStr(item.namaKios || item.kiosName, 'Kios Tani');
-    const fertilizerName = cleanStr(item.namaProduk || item.fertilizerName, 'Pupuk Bersubsidi');
+    // Keep the ORIGINAL product name from database — do NOT normalize to master aliases here.
+    // Alias normalization (Petroganik/PG BARU -> PGANIK MAGETAN etc.) only happens in Stok & Mutasi.
+    const fertilizerName = cleanStr(item.namaProduk || item.fertilizerName || '', '');
     const branch = item.kabupaten === 'SRAGEN' ? 'Sragen' : 'Magetan';
     const driverName = cleanStr(item.namaSopir || item.driverName, '-');
 
@@ -421,7 +455,7 @@ export function normalizeAllData(importedData = {}) {
     usersList: importedData.usersList || [],
     penebusanList: normalizePenebusanList(rawPen, rawDO, rawSalur),
     doList: normalizeDoList(rawDO, rawPen),
-    penyaluranList: normalizePenyaluranList(rawSalur),
+    penyaluranList: normalizePenyaluranList(rawSalur, rawPen, rawDO),
     kiosks: normalizeKiosks(rawKios),
     suppliers: normalizeSuppliers(rawSup),
     drivers: normalizeDrivers(rawDrv),

@@ -66,8 +66,15 @@ const SESSION_KEY = 'tani_makmur_baru_session';
 
 export default function App() {
   const [currentUser, setCurrentUser] = useState(null);
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeTab, setActiveTab] = useState(() => localStorage.getItem('tani_makmur_last_tab') || 'dashboard');
   const [selectedBranch, setSelectedBranch] = useState('ALL');
+
+  // Persist last opened tab on browser reload
+  useEffect(() => {
+    if (activeTab) {
+      localStorage.setItem('tani_makmur_last_tab', activeTab);
+    }
+  }, [activeTab]);
 
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
   const [usersList, setUsersList] = useState(DEFAULT_USERS);

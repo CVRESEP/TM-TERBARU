@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { formatDateDisplay } from '../utils/currency';
+import { normalizeProductName } from '../utils/dataNormalizer';
+import { getPenyaluranPaymentStats } from '../utils/paymentStats';
 
 export default function LaporanView({ 
   selectedBranch, 
@@ -19,29 +21,50 @@ export default function LaporanView({
 
   const formatRp = (val) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val || 0);
   const getTon = (item) => Number(item.qtyTon || item.qtyBags * 0.05 || 0);
-  const matchBranch = (item) => selectedBranch === 'ALL' || !item.branch || item.branch === 'ALL' || item.branch === selectedBranch;
+  const matchBranch = (item) => {
+    if (!item) return false;
+    if (selectedBranch === 'ALL') return true;
+    const itemBranch = item.branch || (item.kabupaten ? (item.kabupaten.toUpperCase() === 'SRAGEN' ? 'Sragen' : 'Magetan') : '');
+    return !itemBranch || itemBranch === 'ALL' || itemBranch === selectedBranch;
+  };
+
+  // ═════════════════════════════════════════════════════════════════
+  // PRODUCT MATCHING — normalize raw fertilizerName to master name
+  // ═════════════════════════════════════════════════════════════════
+  const getNormName = (item) => {
+    const raw = item.fertilizerName || item.namaProduk || item.pupuk || '';
+    const branch = item.branch || item.kabupaten || '';
+    return normalizeProductName(raw, branch);
+  };
+
+  // For a master fertilizer, return its canonical normalized name
+  const getMasterNormName = (fert) => {
+    return normalizeProductName(fert.name || '', fert.branch || fert.kabupaten || '');
+  };
+
+  // Match a transaction to a master fertilizer using normalized names
+  const isFertilizerMatch = (item, fert) => {
+    if (!item || !fert) return false;
+    const itemNorm = getNormName(item);
+    const fertNorm = getMasterNormName(fert);
+    if (itemNorm && fertNorm && itemNorm === fertNorm) return true;
+    // Fallback: exact name match
+    const itemName = String(item.fertilizerName || '').trim().toLowerCase();
+    const fertName = String(fert.name || '').trim().toLowerCase();
+    return itemName && fertName && itemName === fertName;
+  };
 
   // ═════════════════════════════════════════════════════════════════
   // CALCULATIONS FOR LAPORAN HARIAN (TABEL 1 & TABEL 2)
   // ═════════════════════════════════════════════════════════════════
   const dailyDate = selectedDailyDate;
 
-  // Helper pencocokan produk
-  const isFertilizerMatch = (item, fert) => {
-    if (!item || !fert) return false;
-    const fId = String(fert.id || '').toLowerCase().trim();
-    const fName = String(fert.name || '').toLowerCase().trim();
-    const itemFId = String(item.fertilizerId || '').toLowerCase().trim();
-    const itemFName = String(item.fertilizerName || '').toLowerCase().trim();
-    return (itemFId && itemFId === fId) || (itemFName && itemFName === fName);
-  };
-
   // TABEL 1: Per-product stock & movement calculation
   const tabel1Data = fertilizers.filter(matchBranch).map(fert => {
-    const buyPrice = Number(fert.buyPrice || fert.priceBuy || fert.defaultPriceTon || 0);
-    const sellPrice = Number(fert.sellPrice || fert.priceSell || fert.defaultPriceTon || 0);
+    const buyPrice  = Number(fert.buyPrice || fert.priceBuy || 0);
+    const sellPrice = Number(fert.sellPrice || fert.priceSell || 0);
 
-    // Sisa Lalu (Stok Kemarin): Akumulasi Penebusan < dailyDate dikurangi Penyaluran < dailyDate
+    // Sisa Lalu: penebusan s.d. sebelum dailyDate − penyaluran s.d. sebelum dailyDate
     const penebusanLaluTon = penebusanList
       .filter(p => matchBranch(p) && isFertilizerMatch(p, fert) && p.date < dailyDate)
       .reduce((s, i) => s + getTon(i), 0);
@@ -52,27 +75,20 @@ export default function LaporanView({
 
     const sisaLaluTon = Math.max(0, penebusanLaluTon - penyaluranLaluTon);
 
-    // Penyaluran hari ini (sesuai tanggal terpilih)
-    const penyaluranHariIniTon = penyaluranList
-      .filter(s => matchBranch(s) && isFertilizerMatch(s, fert) && s.date === dailyDate)
-      .reduce((s, i) => s + getTon(i), 0);
+    // Penyaluran & Penebusan hari ini
+    const penyaluranHariIniList = penyaluranList
+      .filter(s => matchBranch(s) && isFertilizerMatch(s, fert) && s.date === dailyDate);
+    const penyaluranHariIniTon = penyaluranHariIniList.reduce((s, i) => s + getTon(i), 0);
+    const jualKeKios = penyaluranHariIniList.reduce((s, i) => s + Number(i.totalAmount || (getTon(i) * sellPrice) || 0), 0);
 
-    // Penebusan hari ini (sesuai tanggal terpilih)
-    const penebusanHariIniTon = penebusanList
-      .filter(p => matchBranch(p) && isFertilizerMatch(p, fert) && p.date === dailyDate)
-      .reduce((s, i) => s + getTon(i), 0);
+    const penebusanHariIniList = penebusanList
+      .filter(p => matchBranch(p) && isFertilizerMatch(p, fert) && p.date === dailyDate);
+    const penebusanHariIniTon = penebusanHariIniList.reduce((s, i) => s + getTon(i), 0);
+    const penebusanNominal = penebusanHariIniList.reduce((s, i) => s + Number(i.totalAmount || (getTon(i) * buyPrice) || 0), 0);
 
-    // Stok Akhir = sisa lalu + penebusan - penyaluran
-    const stokAkhirTon = sisaLaluTon + penebusanHariIniTon - penyaluranHariIniTon;
-
-    // Total harga stok = stok akhir * harga beli (harga tebus)
-    const totalHargaStok = stokAkhirTon * buyPrice;
-
-    // Jual Ke kios = total penyaluran hari ini * harga jual
-    const jualKeKios = penyaluranHariIniTon * sellPrice;
-
-    // Penebusan (nominal) = penebusan hari ini * harga beli
-    const penebusanNominal = penebusanHariIniTon * buyPrice;
+    // Stok Akhir = sisa lalu + penebusan hari ini − penyaluran hari ini
+    const stokAkhirTon    = sisaLaluTon + penebusanHariIniTon - penyaluranHariIniTon;
+    const totalHargaStok  = stokAkhirTon * buyPrice;
 
     return {
       id: fert.id,
@@ -91,139 +107,84 @@ export default function LaporanView({
 
   // Totals for Tabel 1
   const t1Totals = tabel1Data.reduce((acc, row) => ({
-    sisaLaluTon: acc.sisaLaluTon + row.sisaLaluTon,
-    penyaluranHariIniTon: acc.penyaluranHariIniTon + row.penyaluranHariIniTon,
-    penebusanHariIniTon: acc.penebusanHariIniTon + row.penebusanHariIniTon,
-    stokAkhirTon: acc.stokAkhirTon + row.stokAkhirTon,
-    totalHargaStok: acc.totalHargaStok + row.totalHargaStok,
-    jualKeKios: acc.jualKeKios + row.jualKeKios,
-    penebusanNominal: acc.penebusanNominal + row.penebusanNominal
-  }), {
-    sisaLaluTon: 0,
-    penyaluranHariIniTon: 0,
-    penebusanHariIniTon: 0,
-    stokAkhirTon: 0,
-    totalHargaStok: 0,
-    jualKeKios: 0,
-    penebusanNominal: 0
-  });
+    sisaLaluTon:           acc.sisaLaluTon + row.sisaLaluTon,
+    penyaluranHariIniTon:  acc.penyaluranHariIniTon + row.penyaluranHariIniTon,
+    penebusanHariIniTon:   acc.penebusanHariIniTon + row.penebusanHariIniTon,
+    stokAkhirTon:          acc.stokAkhirTon + row.stokAkhirTon,
+    totalHargaStok:        acc.totalHargaStok + row.totalHargaStok,
+    jualKeKios:            acc.jualKeKios + row.jualKeKios,
+    penebusanNominal:      acc.penebusanNominal + row.penebusanNominal
+  }), { sisaLaluTon: 0, penyaluranHariIniTon: 0, penebusanHariIniTon: 0, stokAkhirTon: 0, totalHargaStok: 0, jualKeKios: 0, penebusanNominal: 0 });
 
   // ═════════════════════════════════════════════════════════════════
-  // EXACT_UNPAID_MAP — sama persis dengan PembayaranKiosView
+  // TABEL 2: Ringkasan Keuangan & Piutang (dari data real)
   // ═════════════════════════════════════════════════════════════════
-  const EXACT_UNPAID_MAP = {
-    // Magetan (6 Transaksi)
-    '3101542068-3': { total: 13566080, terbayar: 0, kurang: 13566080 },
-    '3101537959-2': { total: 13246080, terbayar: 4301440, kurang: 8944640 },
-    '3101533630-2': { total: 13246080, terbayar: 12246080, kurang: 1000000 },
-    '3101520168-2': { total: 991520, terbayar: 0, kurang: 991520 },
-    '3101535139-3': { total: 729456, terbayar: 0, kurang: 729456 },
-    '3101521715-4': { total: 607880, terbayar: 0, kurang: 607880 },
-    // Sragen (9 Transaksi)
-    '3101542067-1': { total: 13566080, terbayar: 0, kurang: 13566080 },
-    '3101540033-1': { total: 13566080, terbayar: 0, kurang: 13566080 },
-    '3820428632-4': { total: 13246080, terbayar: 0, kurang: 13246080 },
-    '3101540033-3': { total: 10174560, terbayar: 0, kurang: 10174560 },
-    '3820427692-3': { total: 9934560, terbayar: 0, kurang: 9934560 },
-    '3820428632-3': { total: 6623040, terbayar: 0, kurang: 6623040 },
-    '3820428632-2': { total: 6623040, terbayar: 0, kurang: 6623040 },
-    '3101436488-8': { total: 4442010, terbayar: 2954730, kurang: 1487280 },
-    '3101537958-1': { total: 5288556, terbayar: 4680676, kurang: 607880 }
-  };
 
-  // Helper: hitung status pembayaran setiap penyaluran (identik dengan PembayaranKiosView)
-  const getPenyaluranStats = (item) => {
-    if (!item) return { totalTagihan: 0, terbayar: 0, sisa: 0, isLunas: true };
-    const totalAmt = Number(item.totalAmount || 0);
-    const pNo = item.penyaluranNo || item.nomorPenyaluran || '';
-    const exactMatch = EXACT_UNPAID_MAP[pNo] || EXACT_UNPAID_MAP[item.id];
+  // Helper statistik pembayaran — terpusat dari paymentStats.js
+  const getPenyaluranStats = (item) => getPenyaluranPaymentStats(item, payments);
 
-    if (exactMatch) {
-      const sisa = exactMatch.kurang || 0;
-      return { totalTagihan: totalAmt, terbayar: exactMatch.terbayar, sisa, isLunas: sisa <= 0 };
-    }
-
-    // fallback: Lunas = terbayar penuh
-    const itemPayments = (payments || []).filter(pm =>
-      pm && (pm.penyaluranId === item.id || pm.penyaluranId === pNo ||
-        (pm.doNo && pm.doNo === item.doNo))
-    );
-    const paidSum = itemPayments.reduce((s, pm) => s + Number(pm.amount || 0), 0);
-    const dpAmt = Number(item.dpAmount || 0);
-
-    if (item.paymentStatus === 'Lunas') {
-      return { totalTagihan: totalAmt, terbayar: totalAmt, sisa: 0, isLunas: true };
-    }
-    const terbayar = paidSum + dpAmt;
-    const sisa = Math.max(0, totalAmt - terbayar);
-    return { totalTagihan: totalAmt, terbayar, sisa, isLunas: sisa <= 0 };
-  };
-
-  // TABEL 2: Summary Keuangan & Piutang Harian
+  // ═════════════════════════════════════════════════════════════════
+  // TABEL 2: Ringkasan Keuangan & Piutang
   // ─────────────────────────────────────────────────────────────────
-  // LOGIKA ROLLING (AKUMULASI):
-  //   Sisa Tagihan Lalu = Total Penjualan sebelum hari ini − Total Pembayaran sebelum hari ini
-  //   Ini setara dengan: "Sisa Tagihan Hari Ini dari hari kemarin" yang terus bergulir
-  // ─────────────────────────────────────────────────────────────────
+  // Baca data apa adanya dari database:
+  //   Sisa Tagihan Lalu = Σ(penjualan sebelum D) − Σ(pembayaran masuk sebelum D)
+  //   Penjualan         = Σ(penyaluran.totalAmount hari ini)
+  //   Pembayaran        = Σ(payments.amount masuk hari ini)
+  //   Sisa Hari Ini     = (Sisa Lalu + Penjualan) − Pembayaran
+  // ═════════════════════════════════════════════════════════════════
 
-  // 1. Total penjualan dari semua penyaluran SEBELUM dailyDate
-  const totalPenjualanLalu = penyaluranList
+  // 1. Sisa Tagihan Lalu = Total Sisa Piutang Kios sebelum tanggal laporan (date < dailyDate)
+  const sisaTagihanLalu = penyaluranList
     .filter(s => matchBranch(s) && s.date < dailyDate)
-    .reduce((sum, item) => sum + Number(item.totalAmount || 0), 0);
+    .reduce((sum, s) => sum + getPenyaluranStats(s).sisa, 0);
 
-  // 2. Total pembayaran yang diterima SEBELUM dailyDate (berdasarkan tanggal bayar)
-  const totalPembayaranLalu = payments
-    .filter(p => matchBranch(p) && p.date < dailyDate)
-    .reduce((sum, p) => sum + Number(p.amount || 0), 0);
-
-  // 3. Sisa Tagihan Lalu = akumulasi piutang sebelum hari ini
-  const sisaTagihanLalu = Math.max(0, totalPenjualanLalu - totalPembayaranLalu);
-
-  // 4. Penjualan hari ini (totalAmount penyaluran yang tanggalnya = dailyDate)
+  // 2. Penjualan hari ini
   const penjualanHariIni = penyaluranList
     .filter(s => matchBranch(s) && s.date === dailyDate)
-    .reduce((sum, item) => sum + Number(item.totalAmount || 0), 0);
+    .reduce((sum, s) => sum + Number(s.totalAmount || 0), 0);
 
-  // 5. Total Tagihan (sisa lalu + penjualan hari ini)
+  // 3. Total = sisa lalu + penjualan hari ini
   const totalSebelumBayar = sisaTagihanLalu + penjualanHariIni;
 
-  // 6. Pembayaran yang masuk hari ini = semua pembayaran bertanggal dailyDate
-  //    (termasuk pembayaran untuk penyaluran dari tanggal-tanggal sebelumnya)
-  const pembayaranHariIni =
-    payments
-      .filter(p => matchBranch(p) && p.date === dailyDate)
-      .reduce((sum, item) => sum + Number(item.amount || 0), 0);
+  // 4. Pembayaran masuk hari ini
+  const pembayaranHariIni = (payments || [])
+    .filter(p => matchBranch(p) && p.date === dailyDate)
+    .reduce((sum, p) => sum + Number(p.amount || 0), 0);
 
-  // 7. Sisa tagihan hari ini
-  const sisaTagihanHariIni = totalSebelumBayar - pembayaranHariIni;
+  // 5. Sisa tagihan hari ini
+  const sisaTagihanHariIni = Math.max(0, totalSebelumBayar - pembayaranHariIni);
 
-  // 8. Sisa pupuk
+  // 6. Sisa pupuk (nilai stok akhir dari Tabel 1)
   const sisaPupukVal = t1Totals.totalHargaStok;
 
-  // 9. Total tagihan dan pupuk
-  const totalTagihanDanPupuk = totalSebelumBayar + sisaPupukVal - pembayaranHariIni;
+  // 7. Total tagihan + pupuk
+  const totalTagihanDanPupuk = sisaTagihanHariIni + sisaPupukVal;
 
   // ═════════════════════════════════════════════════════════════════
   // CALCULATIONS FOR PERIODE REPORTS (PENYALURAN, PENEBUSAN, DO)
   // ═════════════════════════════════════════════════════════════════
   const filterByDateAndBranch = (list) => list.filter(item => {
     const mBranch = matchBranch(item);
-    const mDate = item.date >= dateFrom && item.date <= dateTo;
+    const mDate   = item.date >= dateFrom && item.date <= dateTo;
     return mBranch && mDate;
   });
 
-  const filteredPenebusan = filterByDateAndBranch(penebusanList);
-  const filteredDO = filterByDateAndBranch(doList);
+  const filteredPenebusan  = filterByDateAndBranch(penebusanList);
+  const filteredDO         = filterByDateAndBranch(doList);
   const filteredPenyaluran = filterByDateAndBranch(penyaluranList);
 
   const totalPenebusanTon = filteredPenebusan.reduce((s, i) => s + getTon(i), 0);
   const totalPenebusanVal = filteredPenebusan.reduce((s, i) => s + Number(i.totalAmount || 0), 0);
-  const totalDOTon = filteredDO.reduce((s, i) => s + getTon(i), 0);
-  const totalSalurTon = filteredPenyaluran.reduce((s, i) => s + getTon(i), 0);
-  const totalSalurVal = filteredPenyaluran.reduce((s, i) => s + Number(i.totalAmount || 0), 0);
-  // Lunas/Tempo based on exact stats
-  const totalLunas = filteredPenyaluran.filter(i => getPenyaluranStats(i).isLunas).reduce((s, i) => s + Number(i.totalAmount || 0), 0);
-  const totalTempo = filteredPenyaluran.filter(i => !getPenyaluranStats(i).isLunas).reduce((s, i) => s + getPenyaluranStats(i).sisa, 0);
+  const totalDOTon        = filteredDO.reduce((s, i) => s + getTon(i), 0);
+  const totalSalurTon     = filteredPenyaluran.reduce((s, i) => s + getTon(i), 0);
+  const totalSalurVal     = filteredPenyaluran.reduce((s, i) => s + Number(i.totalAmount || 0), 0);
+
+  const totalLunas = filteredPenyaluran
+    .filter(i => getPenyaluranStats(i).isLunas)
+    .reduce((s, i) => s + Number(i.totalAmount || 0), 0);
+  const totalTempo = filteredPenyaluran
+    .filter(i => !getPenyaluranStats(i).isLunas)
+    .reduce((s, i) => s + getPenyaluranStats(i).sisa, 0);
 
   return (
     <div>

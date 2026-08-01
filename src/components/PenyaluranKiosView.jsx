@@ -7,6 +7,8 @@ import { usePagination } from '../utils/usePagination';
 import TablePagination from './TablePagination';
 import ModalDetailTransaksi from './ModalDetailTransaksi';
 
+import { getPenyaluranPaymentStats } from '../utils/paymentStats';
+
 export default function PenyaluranKiosView({ 
   selectedBranch, penyaluranList, kiosks, payments = [], deposits = [], onAddNew, onEdit, onDelete, onDeleteMultiple, onOpenPrint, settings, onNavigate
 }) {
@@ -20,57 +22,15 @@ export default function PenyaluranKiosView({
     year: new Date().getFullYear().toString()
   });
 
-  const EXACT_UNPAID_MAP = {
-    // Magetan (6 Transaksi)
-    '3101542068-3': { total: 13566080, terbayar: 0, kurang: 13566080 },
-    '3101537959-2': { total: 13246080, terbayar: 4301440, kurang: 8944640 },
-    '3101533630-2': { total: 13246080, terbayar: 12246080, kurang: 1000000 },
-    '3101520168-2': { total: 991520, terbayar: 0, kurang: 991520 },
-    '3101535139-3': { total: 729456, terbayar: 0, kurang: 729456 },
-    '3101521715-4': { total: 607880, terbayar: 0, kurang: 607880 },
-    // Sragen (9 Transaksi)
-    '3101542067-1': { total: 13566080, terbayar: 0, kurang: 13566080 },
-    '3101540033-1': { total: 13566080, terbayar: 0, kurang: 13566080 },
-    '3820428632-4': { total: 13246080, terbayar: 0, kurang: 13246080 },
-    '3101540033-3': { total: 10174560, terbayar: 0, kurang: 10174560 },
-    '3820427692-3': { total: 9934560, terbayar: 0, kurang: 9934560 },
-    '3820428632-3': { total: 6623040, terbayar: 0, kurang: 6623040 },
-    '3820428632-2': { total: 6623040, terbayar: 0, kurang: 6623040 },
-    '3101436488-8': { total: 4442010, terbayar: 2954730, kurang: 1487280 },
-    '3101537958-1': { total: 5288556, terbayar: 4680676, kurang: 607880 }
-  };
-
   const filtered = penyaluranList.map(item => {
-    const totalAmt = Number(item.totalAmount || 0);
-    const itemPayments = (payments || []).filter(pm => pm && (pm.penyaluranId === item.id || pm.penyaluranId === item.nomorPenyaluran || (pm.doNo && pm.doNo === item.doNo && pm.kiosId === item.kiosId)));
-    const paidSum = itemPayments.reduce((s, pm) => s + Number(pm.amount || 0), 0);
-    const pNo = item.penyaluranNo || item.nomorPenyaluran || '';
-
-    const exactMatch = EXACT_UNPAID_MAP[pNo] || EXACT_UNPAID_MAP[item.id];
-
-    let terbayar = totalAmt;
-    let kurangBayar = 0;
-    let paymentStatus = 'Lunas';
-
-    let totalBayarTempo = 0;
-    if (exactMatch) {
-      terbayar = exactMatch.terbayar;
-      kurangBayar = exactMatch.kurang;
-      totalBayarTempo = exactMatch.terbayar;
-      paymentStatus = kurangBayar > 0 ? 'Tempo' : 'Lunas';
-    }
-
-    terbayar = isNaN(terbayar) ? 0 : terbayar;
-    kurangBayar = isNaN(kurangBayar) ? 0 : kurangBayar;
-
+    const stats = getPenyaluranPaymentStats(item, payments);
     return { 
       ...item, 
-      calculatedTerbayar: terbayar, 
-      kurangBayar, 
-      remainingAmount: kurangBayar,
-      totalBayarTempo,
-      paymentStatus,
-      keterangan: paymentStatus === 'Tempo' ? 'BELUM LUNAS' : 'LUNAS'
+      calculatedTerbayar: stats.terbayar, 
+      kurangBayar: stats.sisa, 
+      remainingAmount: stats.sisa,
+      paymentStatus: stats.statusDisplay === 'Lunas' ? 'Lunas' : 'Tempo',
+      keterangan: stats.statusDisplay === 'Lunas' ? 'LUNAS' : 'BELUM LUNAS'
     };
   }).filter(item => {
     if (!item) return false;
