@@ -251,7 +251,9 @@ export default function App() {
       overrides.newUsers || usersList,
       updatedLogs,
       overrides.newTab || activeTab,
-      overrides.newBranch || selectedBranch
+      overrides.newBranch || selectedBranch,
+      overrides.newKasAngkut || kasAngkutanList,
+      overrides.newKasUmum || kasUmumList
     );
   };
 
@@ -397,6 +399,8 @@ export default function App() {
 
   const handleSaveItem = (type, item, isEdit = false) => {
     let s = [...suppliers], k = [...kiosks], p = [...penebusanList], d = [...doList], sl = [...penyaluranList], drv = [...drivers];
+    let ka = [...kasAngkutanList];
+    let ku = [...kasUmumList];
 
     if (type === 'penebusan') {
       p = isEdit ? p.map(x => x.id === item.id ? item : x) : [item, ...p];
@@ -414,7 +418,7 @@ export default function App() {
         const qty = Number(item.qtyTon || item.qty || 0);
         const prodName = (item.fertilizerName || 'PUPUK').toUpperCase();
         const kN = (item.kiosName || '').toUpperCase();
-        const drv = item.driverName || '';
+        const drvName = item.driverName || '';
         const dt = item.date || new Date().toISOString().split('T')[0];
 
         const ratesObj = settings?.transportRates?.[bName] || {
@@ -448,26 +452,37 @@ export default function App() {
           id: `KA-${Date.now()}`,
           date: dt,
           type: 'PENGELUARAN',
+          transactionType: 'PENGELUARAN',
           doNo: item.doNo || '',
           penyaluranNo: refNo,
           penyaluranId: item.id,
           kabupaten: bName,
-          branch: item.branch,
+          branch: item.branch || bName,
           kiosName: item.kiosName || '-',
-          driverName: drv || '-',
+          driverName: drvName || '-',
           uraian: `BIAYA ANGKUTAN - ${refNo} - ${prodName} - ${kN} - ${qty} TON`,
+          description: `BIAYA ANGKUTAN - ${refNo} - ${prodName} - ${kN} - ${qty} TON`,
           amount: totalCost,
           admin: adminVal,
+          adminFee: adminVal,
           uangMakan: uangMakanVal,
+          mealFee: uangMakanVal,
           palang: palangVal,
+          palangFee: palangVal,
           solar: solarVal,
+          solarFee: solarVal,
           upahSopir: upahSopirVal,
+          driverWage: upahSopirVal,
           lembur: lemburVal,
+          overtimeFee: lemburVal,
           helper: helperVal,
-          lainLain: 0
+          helperFee: helperVal,
+          lainLain: 0,
+          otherFee: 0
         };
 
-        setKasAngkutanList(prev => [autoKasItem, ...prev]);
+        ka = [autoKasItem, ...ka];
+        setKasAngkutanList(ka);
       }
     } else if (type === 'kios') {
       k = isEdit ? k.map(x => x.id === item.id ? item : x) : [item, ...k];
@@ -480,7 +495,15 @@ export default function App() {
       setDrivers(drv);
     }
 
-    saveData(settings, fertilizers, s, k, p, d, sl, payments, deposits, drv);
+    logActionAndSave(
+      isEdit ? `EDIT_${type.toUpperCase()}` : `TAMBAH_${type.toUpperCase()}`,
+      `Transaksi ${type}: ${item.id || item.doNo}`,
+      {
+        newSet: settings, newFert: fertilizers, newSup: s, newKios: k,
+        newPen: p, newDO: d, newSalur: sl, newPay: payments, newDep: deposits,
+        newDrv: drv, newKasAngkut: ka, newKasUmum: ku
+      }
+    );
   };
 
   const handleDeleteItem = (type, id) => {
