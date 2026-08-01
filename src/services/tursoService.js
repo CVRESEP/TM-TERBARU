@@ -117,22 +117,17 @@ export async function syncDataToTurso(fullData, config = {}) {
         .map(item => String(item.id || item.doNo || item.penyaluranNo || item.nomorPenyaluran || item.kiosId || item.code || item.username || ''))
         .filter(Boolean);
 
-      if (activeIds.length > 0) {
-        // Process deletion in chunks of 50 to prevent SQL length limits
-        for (let k = 0; k < activeIds.length; k += 50) {
-          const chunkIds = activeIds.slice(k, k + 50);
-          const placeholders = chunkIds.map(() => '?').join(', ');
-          // Only perform cleanup for tables where ID tracking applies
-          if (['penebusan', 'do_expenses', 'penyaluran', 'payments', 'deposits', 'kas_angkutan', 'kas_umum'].includes(tableName)) {
-            // Check if there are items outside activeIds to delete
-            await client.execute({
-              sql: `DELETE FROM ${tableName} WHERE id NOT IN (${placeholders})`,
-              args: chunkIds
-            }).catch(err => console.log(`Turso SQL cleanup in ${tableName}:`, err.message));
-          }
+      if (['penebusan', 'do_expenses', 'penyaluran', 'payments', 'deposits', 'kas_angkutan', 'kas_umum'].includes(tableName)) {
+        if (activeIds.length > 0) {
+          const safeActiveIds = activeIds.slice(0, 900);
+          const placeholders = safeActiveIds.map(() => '?').join(', ');
+          await client.execute({
+            sql: `DELETE FROM ${tableName} WHERE id NOT IN (${placeholders})`,
+            args: safeActiveIds
+          }).catch(err => console.log(`Turso SQL cleanup in ${tableName}:`, err.message));
+        } else {
+          await client.execute(`DELETE FROM ${tableName}`).catch(err => console.log(`Turso table clear ${tableName}:`, err.message));
         }
-      } else if (['penebusan', 'do_expenses', 'penyaluran', 'payments', 'deposits', 'kas_angkutan', 'kas_umum'].includes(tableName)) {
-        await client.execute(`DELETE FROM ${tableName}`).catch(err => console.log(`Turso table clear ${tableName}:`, err.message));
       }
     };
 
