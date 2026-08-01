@@ -55,6 +55,8 @@ import {
   DEFAULT_PENEBUSAN,
   DEFAULT_DO_EXPENSES,
   DEFAULT_PENYALURAN_KIOS,
+  DEFAULT_PAYMENTS,
+  DEFAULT_KAS_ANGKUTAN,
   DEFAULT_KAS_UMUM
 } from './data/initialData';
 import { normalizeAllData, normalizeKasUmumList } from './utils/dataNormalizer';
@@ -117,14 +119,14 @@ export default function App() {
           setUsersList(parsed.usersList && parsed.usersList.length > 0 ? parsed.usersList : DEFAULT_USERS);
           setFertilizers(parsed.fertilizers || DEFAULT_FERTILIZERS);
           setSuppliers(parsed.suppliers || DEFAULT_SUPPLIERS);
-          setDrivers(parsed.drivers || DEFAULT_DRIVERS);
-          setKiosks(parsed.kiosks || DEFAULT_KIOSKS);
-          setPenebusanList(parsed.penebusanList || DEFAULT_PENEBUSAN);
-          setDoList(parsed.doList || DEFAULT_DO_EXPENSES);
-          setPenyaluranList(parsed.penyaluranList || DEFAULT_PENYALURAN_KIOS);
-          setPayments(parsed.payments || []);
+          setDrivers(parsed.drivers && parsed.drivers.length > 0 ? parsed.drivers : DEFAULT_DRIVERS);
+          setKiosks(parsed.kiosks && parsed.kiosks.length > 0 ? parsed.kiosks : DEFAULT_KIOSKS);
+          setPenebusanList(parsed.penebusanList && parsed.penebusanList.length > 0 ? parsed.penebusanList : DEFAULT_PENEBUSAN);
+          setDoList(parsed.doList && parsed.doList.length > 0 ? parsed.doList : DEFAULT_DO_EXPENSES);
+          setPenyaluranList(parsed.penyaluranList && parsed.penyaluranList.length > 0 ? parsed.penyaluranList : DEFAULT_PENYALURAN_KIOS);
+          setPayments(parsed.payments && parsed.payments.length > 0 ? parsed.payments : DEFAULT_PAYMENTS);
           setDeposits(parsed.deposits || []);
-          setKasAngkutanList(parsed.kasAngkutanList || []);
+          setKasAngkutanList(parsed.kasAngkutanList && parsed.kasAngkutanList.length > 0 ? parsed.kasAngkutanList : DEFAULT_KAS_ANGKUTAN);
           setKasUmumList(normalizeKasUmumList(parsed.kasUmumList && parsed.kasUmumList.length > 0 ? parsed.kasUmumList : DEFAULT_KAS_UMUM));
           setActivityLogs(parsed.activityLogs || []);
           if (parsed.activeTab) setActiveTab(parsed.activeTab);
@@ -133,7 +135,7 @@ export default function App() {
           loadDefaults();
         }
       } else {
-        setKasUmumList(normalizeKasUmumList(DEFAULT_KAS_UMUM));
+        loadDefaults();
       }
     };
 
@@ -154,23 +156,23 @@ export default function App() {
             if (d.suppliers && d.suppliers.length > 0) setSuppliers(d.suppliers);
             if (d.drivers && d.drivers.length > 0) setDrivers(d.drivers);
             if (d.kiosks && d.kiosks.length > 0) setKiosks(d.kiosks);
-            if (d.penebusanList && d.penebusanList.length > 0) setPenebusanList(d.penebusanList);
-            if (d.doList && d.doList.length > 0) setDoList(d.doList);
-            if (d.penyaluranList && d.penyaluranList.length > 0) setPenyaluranList(d.penyaluranList);
-            if (d.payments && d.payments.length > 0) setPayments(d.payments);
-            if (d.deposits && d.deposits.length > 0) setDeposits(d.deposits);
-            if (d.kasAngkutanList && d.kasAngkutanList.length > 0) setKasAngkutanList(d.kasAngkutanList);
+            setPenebusanList(d.penebusanList && d.penebusanList.length > 0 ? d.penebusanList : DEFAULT_PENEBUSAN);
+            setDoList(d.doList && d.doList.length > 0 ? d.doList : DEFAULT_DO_EXPENSES);
+            setPenyaluranList(d.penyaluranList && d.penyaluranList.length > 0 ? d.penyaluranList : DEFAULT_PENYALURAN_KIOS);
+            setPayments(d.payments && d.payments.length > 0 ? d.payments : DEFAULT_PAYMENTS);
+            setDeposits(d.deposits || []);
+            setKasAngkutanList(d.kasAngkutanList && d.kasAngkutanList.length > 0 ? d.kasAngkutanList : DEFAULT_KAS_ANGKUTAN);
             setKasUmumList(normalizeKasUmumList(d.kasUmumList && d.kasUmumList.length > 0 ? d.kasUmumList : DEFAULT_KAS_UMUM));
             if (d.activityLogs && d.activityLogs.length > 0) setActivityLogs(d.activityLogs);
 
-            console.log('✅ Data berhasil dimuat langsung dari Turso Cloud Database!');
+            console.log('✅ Data berhasil dimuat dari Turso Cloud Database!');
             return;
           }
         }
         loadLocalData();
       })
       .catch((err) => {
-        console.warn('⚠️ Gagal mengambil dari Turso Cloud Database, menggunakan cache lokal:', err.message);
+        console.warn('⚠️ Gagal mengambil dari Turso Cloud Database, menggunakan data awal:', err.message);
         loadLocalData();
       });
 
@@ -267,9 +269,15 @@ export default function App() {
     setPenebusanList(DEFAULT_PENEBUSAN);
     setDoList(DEFAULT_DO_EXPENSES);
     setPenyaluranList(DEFAULT_PENYALURAN_KIOS);
-    setPayments([]);
+    setPayments(DEFAULT_PAYMENTS);
     setDeposits([]);
-    saveData(DEFAULT_SETTINGS, DEFAULT_FERTILIZERS, DEFAULT_SUPPLIERS, DEFAULT_KIOSKS, DEFAULT_PENEBUSAN, DEFAULT_DO_EXPENSES, DEFAULT_PENYALURAN_KIOS, [], [], DEFAULT_DRIVERS, DEFAULT_USERS);
+    setKasAngkutanList(DEFAULT_KAS_ANGKUTAN);
+    setKasUmumList(DEFAULT_KAS_UMUM);
+    saveData(
+      DEFAULT_SETTINGS, DEFAULT_FERTILIZERS, DEFAULT_SUPPLIERS, DEFAULT_KIOSKS, 
+      DEFAULT_PENEBUSAN, DEFAULT_DO_EXPENSES, DEFAULT_PENYALURAN_KIOS, DEFAULT_PAYMENTS, 
+      [], DEFAULT_DRIVERS, DEFAULT_USERS, [], 'dashboard', 'ALL', DEFAULT_KAS_ANGKUTAN, DEFAULT_KAS_UMUM
+    );
   };
 
   const handleSaveUsers = (newUsers) => {
