@@ -141,28 +141,33 @@ export default function PenyaluranKiosView({
                   title="Pilih Semua di Halaman Ini"
                 />
               </th>
-              <th {...thProps('branch')} className="sortable-th text-center" style={{ width: '90px' }}>Cabang <SortIcon colKey="branch" sortKey={sortKey} sortDir={sortDir} /></th>
-              <th {...thProps('doNo')} className="sortable-th" style={{ backgroundColor: '#dcfce7' }}>Nomor DO <SortIcon colKey="doNo" sortKey={sortKey} sortDir={sortDir} /></th>
-              <th {...thProps('penyaluranNo')} className="sortable-th" style={{ backgroundColor: '#eff6ff' }}>No. Penyaluran <SortIcon colKey="penyaluranNo" sortKey={sortKey} sortDir={sortDir} /></th>
-              <th {...thProps('date')} className="sortable-th text-center" style={{ width: '100px' }}>Tanggal <SortIcon colKey="date" sortKey={sortKey} sortDir={sortDir} /></th>
-              <th {...thProps('kiosName')} className="sortable-th" >Kios Tujuan <SortIcon colKey="kiosName" sortKey={sortKey} sortDir={sortDir} /></th>
-              <th {...thProps('fertilizerName')} className="sortable-th" >Jenis Pupuk <SortIcon colKey="fertilizerName" sortKey={sortKey} sortDir={sortDir} /></th>
-              <th {...thProps('qtyTon')} className="sortable-th text-right" >Qty (Ton) <SortIcon colKey="qtyTon" sortKey={sortKey} sortDir={sortDir} /></th>
-              <th {...thProps('pricePerTon')} className="sortable-th text-right" >Harga / Ton <SortIcon colKey="pricePerTon" sortKey={sortKey} sortDir={sortDir} /></th>
-              <th {...thProps('totalAmount')} className="sortable-th text-right" >Total Tagihan <SortIcon colKey="totalAmount" sortKey={sortKey} sortDir={sortDir} /></th>
-              <th {...thProps('calculatedTerbayar')} className="sortable-th text-right">Terbayar <SortIcon colKey="calculatedTerbayar" sortKey={sortKey} sortDir={sortDir} /></th>
-              <th {...thProps('kurangBayar')} className="sortable-th text-right">Kurang Bayar <SortIcon colKey="kurangBayar" sortKey={sortKey} sortDir={sortDir} /></th>
-              <th {...thProps('paymentStatus')} className="sortable-th text-center" >Keterangan <SortIcon colKey="paymentStatus" sortKey={sortKey} sortDir={sortDir} /></th>
-              <th className="text-center" >Aksi</th>
+              <th style={{ width: '40px' }} className="text-center">NO</th>
+              <th {...thProps('doNo')} className="sortable-th" style={{ backgroundColor: '#dcfce7' }}>NO DO <SortIcon colKey="doNo" sortKey={sortKey} sortDir={sortDir} /></th>
+              <th {...thProps('penyaluranNo')} className="sortable-th" style={{ backgroundColor: '#eff6ff' }}>NO PENYALURAN <SortIcon colKey="penyaluranNo" sortKey={sortKey} sortDir={sortDir} /></th>
+              <th {...thProps('date')} className="sortable-th text-center" style={{ width: '100px' }}>TANGGAL <SortIcon colKey="date" sortKey={sortKey} sortDir={sortDir} /></th>
+              <th {...thProps('branch')} className="sortable-th text-center" style={{ width: '90px' }}>KABUPATEN <SortIcon colKey="branch" sortKey={sortKey} sortDir={sortDir} /></th>
+              <th {...thProps('fertilizerName')} className="sortable-th">NAMA PRODUK <SortIcon colKey="fertilizerName" sortKey={sortKey} sortDir={sortDir} /></th>
+              <th {...thProps('kiosName')} className="sortable-th">NAMA KIOS <SortIcon colKey="kiosName" sortKey={sortKey} sortDir={sortDir} /></th>
+              <th {...thProps('driverName')} className="sortable-th">NAMA SOPIR <SortIcon colKey="driverName" sortKey={sortKey} sortDir={sortDir} /></th>
+              <th {...thProps('qtyTon')} className="sortable-th text-right">QTY <SortIcon colKey="qtyTon" sortKey={sortKey} sortDir={sortDir} /></th>
+              <th {...thProps('totalAmount')} className="sortable-th text-right">TOTAL <SortIcon colKey="totalAmount" sortKey={sortKey} sortDir={sortDir} /></th>
+              <th className="text-right">DI BAYAR</th>
+              <th className="text-right">TOTAL BAYAR TEMPO</th>
+              <th {...thProps('kurangBayar')} className="sortable-th text-right">KURANG BAYAR <SortIcon colKey="kurangBayar" sortKey={sortKey} sortDir={sortDir} /></th>
+              <th {...thProps('paymentStatus')} className="sortable-th text-center">KETERANGAN <SortIcon colKey="paymentStatus" sortKey={sortKey} sortDir={sortDir} /></th>
+              <th className="text-center">AKSI</th>
             </tr>
           </thead>
           <tbody>
-            {paginatedData.map((item) => {
+            {paginatedData.map((item, idx) => {
               const totalAmt = Number(item.totalAmount || 0);
               const terbayar = item.calculatedTerbayar !== undefined ? item.calculatedTerbayar : 0;
+              const dpAmount = Number(item.dpAmount || item.diBayar || 0);
+              const bayarTempo = Math.max(0, terbayar - dpAmount);
               const kurangBayar = item.kurangBayar !== undefined ? item.kurangBayar : Math.max(0, totalAmt - terbayar);
-              const isLunas = kurangBayar === 0 && totalAmt > 0;
+              const isLunas = kurangBayar <= 0.01 && totalAmt > 0;
               const pNo = item.penyaluranNo || item.nomorPenyaluran || (item.doNo ? `${item.doNo}-01` : '-');
+              const rowNo = (currentPage - 1) * itemsPerPage + idx + 1;
 
               return (
                 <tr 
@@ -180,10 +185,12 @@ export default function PenyaluranKiosView({
                       }}
                     />
                   </td>
-                  <td className="text-center"><span className={`badge ${item.branch === (settings.branch1Name || 'Magetan') ? 'badge-branch-magetan' : 'badge-branch-sragen'}`}>{item.branch}</span></td>
+                  <td className="text-center" style={{ fontWeight: 600, color: '#64748b' }}>{rowNo}</td>
                   <td style={{ fontWeight: 800, color: '#15803d', fontFamily: 'monospace' }}>{item.doNo || item.doRefId || item.id}</td>
                   <td style={{ fontWeight: 800, color: '#1d4ed8', fontFamily: 'monospace' }}>{pNo}</td>
                   <td className="text-center">{formatDateDisplay(item.date)}</td>
+                  <td className="text-center" style={{ fontWeight: 700 }}>{(item.branch || '').toUpperCase()}</td>
+                  <td style={{ fontWeight: 600 }}>{item.fertilizerName}</td>
                   <td>
                     <span
                       onClick={(e) => {
@@ -202,19 +209,19 @@ export default function PenyaluranKiosView({
                       {item.kiosName}
                     </span>
                   </td>
-                  <td style={{ fontWeight: 600 }}>{item.fertilizerName}</td>
-                  <td className="text-right" style={{ fontWeight: 700 }}>{Number(item.qtyTon || item.qty || 0).toFixed(1)} Ton</td>
-                  <td className="text-right">{formatRp(item.pricePerTon || 0)}</td>
+                  <td style={{ fontWeight: 600 }}>{item.driverName || item.namaSopir || '-'}</td>
+                  <td className="text-right" style={{ fontWeight: 700 }}>{Number(item.qtyTon || item.qty || 0).toFixed(Number.isInteger(Number(item.qtyTon || item.qty || 0)) ? 0 : 2)}</td>
                   <td className="text-right" style={{ fontWeight: 700 }}>{formatRp(totalAmt)}</td>
-                  <td className="text-right" style={{ color: '#15803d', fontWeight: 600 }}>{formatRp(terbayar)}</td>
+                  <td className="text-right" style={{ color: '#15803d' }}>{formatRp(dpAmount)}</td>
+                  <td className="text-right" style={{ color: '#2563eb' }}>{formatRp(bayarTempo)}</td>
                   <td className="text-right" style={{ color: kurangBayar > 0 ? '#dc2626' : '#6b7280', fontWeight: 700 }}>{formatRp(kurangBayar)}</td>
-                  <td>
-                    <span className={`badge ${isLunas ? 'badge-success' : 'badge-warning'}`}>
-                      {isLunas ? 'Lunas' : 'Belum Lunas'}
+                  <td className="text-center">
+                    <span className={`badge ${isLunas ? 'badge-success' : 'badge-danger'}`} style={{ fontWeight: 700 }}>
+                      {isLunas ? 'LUNAS' : 'BELUM LUNAS'}
                     </span>
                   </td>
                   <td onClick={(e) => e.stopPropagation()}>
-                    <div style={{ display: 'flex', gap: '4px' }}>
+                    <div style={{ display: 'flex', gap: '4px', justifyContent: 'center' }}>
                       <button className="btn-secondary" style={{ fontSize: '11px', padding: '3px 7px' }} onClick={() => onEdit('penyaluran', item)}>Edit</button>
                       <button className="btn-secondary" style={{ fontSize: '11px', padding: '3px 7px' }} onClick={() => onOpenPrint(item, 'penyaluran')}>Cetak SJ</button>
                       <button className="btn-danger" style={{ fontSize: '11px', padding: '3px 7px' }} onClick={() => onDelete('penyaluran', item.id)}>Hapus</button>
@@ -224,7 +231,7 @@ export default function PenyaluranKiosView({
               );
             })}
             {filtered.length === 0 && (
-              <tr><td colSpan={14} style={{ textAlign: 'center', padding: '20px', color: '#6b7280' }}>
+              <tr><td colSpan={16} style={{ textAlign: 'center', padding: '20px', color: '#6b7280' }}>
                 Belum ada data penyaluran kios.
               </td></tr>
             )}
@@ -233,16 +240,18 @@ export default function PenyaluranKiosView({
             <tfoot>
               {/* BARIS 1: TOTAL HALAMAN INI */}
               <tr style={{ fontWeight: 800, backgroundColor: '#f8fafc', borderTop: '2px solid #cbd5e1' }}>
-                <td colSpan={7} style={{ textAlign: 'right', padding: '8px 14px', color: '#475569' }}>TOTAL HALAMAN INI:</td>
+                <td colSpan={9} style={{ textAlign: 'right', padding: '8px 14px', color: '#475569' }}>TOTAL HALAMAN INI:</td>
                 <td className="text-right" style={{ color: '#0284c7' }}>
-                  {paginatedData.reduce((s, i) => s + Number(i.qtyTon || i.qty || 0), 0).toFixed(1)} Ton
+                  {paginatedData.reduce((s, i) => s + Number(i.qtyTon || i.qty || 0), 0).toFixed(2)}
                 </td>
-                <td></td>
                 <td className="text-right" style={{ color: '#166534' }}>
                   {formatRp(paginatedData.reduce((s, i) => s + Number(i.totalAmount || 0), 0))}
                 </td>
                 <td className="text-right" style={{ color: '#15803d' }}>
-                  {formatRp(paginatedData.reduce((sum, item) => sum + Number(item.calculatedTerbayar || 0), 0))}
+                  {formatRp(paginatedData.reduce((s, i) => s + Number(i.dpAmount || i.diBayar || 0), 0))}
+                </td>
+                <td className="text-right" style={{ color: '#2563eb' }}>
+                  {formatRp(paginatedData.reduce((s, i) => s + Math.max(0, (i.calculatedTerbayar || 0) - Number(i.dpAmount || i.diBayar || 0)), 0))}
                 </td>
                 <td className="text-right" style={{ color: '#dc2626' }}>
                   {formatRp(paginatedData.reduce((sum, item) => sum + Number(item.kurangBayar || 0), 0))}
@@ -251,16 +260,18 @@ export default function PenyaluranKiosView({
               </tr>
               {/* BARIS 2: TOTAL KESELURUHAN */}
               <tr style={{ fontWeight: 900, backgroundColor: '#f1f5f9', borderTop: '1px solid #cbd5e1' }}>
-                <td colSpan={7} style={{ textAlign: 'right', padding: '8px 14px', color: '#0f172a' }}>TOTAL KESELURUHAN:</td>
+                <td colSpan={9} style={{ textAlign: 'right', padding: '8px 14px', color: '#0f172a' }}>TOTAL KESELURUHAN:</td>
                 <td className="text-right" style={{ color: '#0369a1' }}>
-                  {filtered.reduce((s, i) => s + Number(i.qtyTon || i.qty || 0), 0).toFixed(1)} Ton
+                  {filtered.reduce((s, i) => s + Number(i.qtyTon || i.qty || 0), 0).toFixed(2)}
                 </td>
-                <td></td>
                 <td className="text-right" style={{ color: '#14532d' }}>
                   {formatRp(filtered.reduce((s, i) => s + Number(i.totalAmount || 0), 0))}
                 </td>
-                <td className="text-right" style={{ color: '#166534' }}>
-                  {formatRp(filtered.reduce((sum, item) => sum + Number(item.calculatedTerbayar || 0), 0))}
+                <td className="text-right" style={{ color: '#15803d' }}>
+                  {formatRp(filtered.reduce((s, i) => s + Number(i.dpAmount || i.diBayar || 0), 0))}
+                </td>
+                <td className="text-right" style={{ color: '#2563eb' }}>
+                  {formatRp(filtered.reduce((s, i) => s + Math.max(0, (i.calculatedTerbayar || 0) - Number(i.dpAmount || i.diBayar || 0)), 0))}
                 </td>
                 <td className="text-right" style={{ color: '#991b1b' }}>
                   {formatRp(filtered.reduce((sum, item) => sum + Number(item.kurangBayar || 0), 0))}
