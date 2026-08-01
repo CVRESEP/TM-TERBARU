@@ -113,20 +113,31 @@ export async function syncDataToTurso(fullData, config = {}) {
       await upsertBatch(tableName, items, columns);
 
       // Clean up records in Turso DB that were deleted in the local app state
-      const activeIds = items
-        .map(item => String(item.id || item.doNo || item.penyaluranNo || item.nomorPenyaluran || item.kiosId || item.code || item.username || ''))
-        .filter(Boolean);
-
       if (['penebusan', 'do_expenses', 'penyaluran', 'payments', 'deposits', 'kas_angkutan', 'kas_umum'].includes(tableName)) {
-        if (activeIds.length > 0) {
-          const safeActiveIds = activeIds.slice(0, 900);
-          const placeholders = safeActiveIds.map(() => '?').join(', ');
-          await client.execute({
-            sql: `DELETE FROM ${tableName} WHERE id NOT IN (${placeholders})`,
-            args: safeActiveIds
-          }).catch(err => console.log(`Turso SQL cleanup in ${tableName}:`, err.message));
-        } else {
-          await client.execute(`DELETE FROM ${tableName}`).catch(err => console.log(`Turso table clear ${tableName}:`, err.message));
+        try {
+          const res = await client.execute(`SELECT id FROM ${tableName}`);
+          if (res && Array.isArray(res.rows)) {
+            const dbIds = res.rows.map(r => String(r.id || ''));
+            const activeSet = new Set(
+              items
+                .map(item => String(item.id || item.doNo || item.penyaluranNo || item.nomorPenyaluran || item.kiosId || item.code || item.username || ''))
+                .filter(Boolean)
+            );
+            const idsToDelete = dbIds.filter(id => id && !activeSet.has(id));
+
+            if (idsToDelete.length > 0) {
+              for (let k = 0; k < idsToDelete.length; k += 50) {
+                const chunk = idsToDelete.slice(k, k + 50);
+                const placeholders = chunk.map(() => '?').join(', ');
+                await client.execute({
+                  sql: `DELETE FROM ${tableName} WHERE id IN (${placeholders})`,
+                  args: chunk
+                }).catch(err => console.log(`Delete cleanup error in ${tableName}:`, err.message));
+              }
+            }
+          }
+        } catch (err) {
+          console.log(`Failed fetching DB IDs for ${tableName} cleanup:`, err.message);
         }
       }
     };
