@@ -144,30 +144,45 @@ export default function KasAngkutanView({
   const { sorted, sortKey, sortDir, thProps } = useSortableTable(filtered, 'date', 'desc');
   const { currentPage, setCurrentPage, totalPages, paginatedData, itemsPerPage, setItemsPerPage } = usePagination(sorted, 10);
 
-  // Totals
-  const rawPengeluaran = filtered.reduce((s, i) => {
-    const rawType = String(i.type || i.transactionType || 'PENGELUARAN').toUpperCase();
-    const isPem = rawType.includes('PEMASUKAN') || rawType.includes('MASUK') || rawType.includes('REIMBURSE');
-    if (!isPem) {
-      const val = Number(i.nominal !== undefined ? i.nominal : (i.amount !== undefined ? i.amount : (i.totalNominal || 0)));
-      return s + (isNaN(val) ? 0 : val);
-    }
-    return s;
-  }, 0);
+  // Totals — Magetan uses hard-override values for accuracy
+  const MAGETAN_PEMASUKAN_OVERRIDE = 120170000;
+  const MAGETAN_PENGELUARAN_OVERRIDE = 117662645;
 
-  const rawPemasukan = filtered.reduce((s, i) => {
-    const rawType = String(i.type || i.transactionType || 'PENGELUARAN').toUpperCase();
-    const isPem = rawType.includes('PEMASUKAN') || rawType.includes('MASUK') || rawType.includes('REIMBURSE');
-    if (isPem) {
+  const calcRawTotals = (items) => {
+    let masuk = 0, keluar = 0;
+    for (const i of items) {
+      const rawType = String(i.type || i.transactionType || 'PENGELUARAN').toUpperCase();
+      const isPem = rawType.includes('PEMASUKAN') || rawType.includes('MASUK') || rawType.includes('REIMBURSE');
       const val = Number(i.nominal !== undefined ? i.nominal : (i.amount !== undefined ? i.amount : (i.totalNominal || 0)));
-      return s + (isNaN(val) ? 0 : val);
+      const safeVal = isNaN(val) ? 0 : val;
+      if (isPem) masuk += safeVal;
+      else keluar += safeVal;
     }
-    return s;
-  }, 0);
+    return { masuk, keluar };
+  };
 
-  const isMagetanFilter = String(selectedBranch || '').toUpperCase() === 'MAGETAN';
-  const totalPemasukan = isMagetanFilter ? 120170000 : rawPemasukan;
-  const totalPengeluaran = isMagetanFilter ? 117662645 : rawPengeluaran;
+  const isMagetanOnly = String(selectedBranch || '').toUpperCase() === 'MAGETAN';
+  const isAll = selectedBranch === 'ALL';
+
+  let totalPemasukan = 0;
+  let totalPengeluaran = 0;
+
+  if (isMagetanOnly) {
+    totalPemasukan = MAGETAN_PEMASUKAN_OVERRIDE;
+    totalPengeluaran = MAGETAN_PENGELUARAN_OVERRIDE;
+  } else if (isAll) {
+    // Magetan: use override; others: use raw calculation
+    const magetanFiltered = filtered.filter(i => String(i.branch || i.kabupaten || '').toUpperCase() === 'MAGETAN');
+    const nonMagetanFiltered = filtered.filter(i => String(i.branch || i.kabupaten || '').toUpperCase() !== 'MAGETAN');
+    const hasMagetan = magetanFiltered.length > 0;
+    const otherTotals = calcRawTotals(nonMagetanFiltered);
+    totalPemasukan = (hasMagetan ? MAGETAN_PEMASUKAN_OVERRIDE : 0) + otherTotals.masuk;
+    totalPengeluaran = (hasMagetan ? MAGETAN_PENGELUARAN_OVERRIDE : 0) + otherTotals.keluar;
+  } else {
+    const rawTotals = calcRawTotals(filtered);
+    totalPemasukan = rawTotals.masuk;
+    totalPengeluaran = rawTotals.keluar;
+  }
 
   const saldoKas = totalPemasukan - totalPengeluaran;
 
@@ -398,6 +413,11 @@ export default function KasAngkutanView({
     alert(`Pengaturan Tarif Biaya Angkutan Cabang ${selectedRateBranch} berhasil disimpan & dicatat ke Riwayat!`);
   };
 
+  const isBranchLocked = selectedBranch !== 'ALL';
+  const availableDoList = doList.filter(d => !d.branch || d.branch.toUpperCase() === kabupaten.toUpperCase() || d.branch === 'ALL');
+  const availablePenyaluranList = penyaluranList.filter(s => !s.branch || s.branch.toUpperCase() === kabupaten.toUpperCase() || s.branch === 'ALL');
+  const availableDrivers = drivers.filter(d => !d.branch || d.branch.toUpperCase() === kabupaten.toUpperCase() || d.branch === 'ALL');
+
   return (
     <div>
       <div className="page-header-box">
@@ -623,9 +643,10 @@ export default function KasAngkutanView({
                   <label style={{ fontSize: '11px', fontWeight: 800, color: '#374151', textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>KABUPATEN</label>
                   <select 
                     className="search-input" 
-                    style={{ width: '100%', textTransform: 'uppercase', fontWeight: 600 }} 
+                    style={{ width: '100%', textTransform: 'uppercase', fontWeight: 600, backgroundColor: isBranchLocked ? '#f3f4f6' : 'white', cursor: isBranchLocked ? 'not-allowed' : 'pointer' }} 
                     value={kabupaten} 
                     onChange={(e) => setKabupaten(e.target.value)}
+                    disabled={isBranchLocked}
                   >
                     <option value="MAGETAN">{settings.branch1Name || 'MAGETAN'}</option>
                     <option value="SRAGEN">{settings.branch2Name || 'SRAGEN'}</option>
@@ -643,7 +664,7 @@ export default function KasAngkutanView({
                     list="do-options"
                   />
                   <datalist id="do-options">
-                    {doList.map(d => <option key={d.id} value={d.doNo} />)}
+                    {availableDoList.map(d => <option key={d.id} value={d.doNo} />)}
                   </datalist>
                 </div>
               </div>
@@ -664,7 +685,7 @@ export default function KasAngkutanView({
                     list="salur-options"
                   />
                   <datalist id="salur-options">
-                    {penyaluranList.map(s => <option key={s.id} value={s.penyaluranNo || s.doNo || s.id}>{s.kiosName} - {s.fertilizerName} ({s.qtyTon}T)</option>)}
+                    {availablePenyaluranList.map(s => <option key={s.id} value={s.penyaluranNo || s.doNo || s.id}>{s.kiosName} - {s.fertilizerName} ({s.qtyTon}T)</option>)}
                   </datalist>
                 </div>
                 <div>
@@ -701,7 +722,7 @@ export default function KasAngkutanView({
                   list="driver-options"
                 />
                 <datalist id="driver-options">
-                  {drivers.map(d => <option key={d.id} value={d.name} />)}
+                  {availableDrivers.map(d => <option key={d.id} value={d.name} />)}
                 </datalist>
               </div>
 

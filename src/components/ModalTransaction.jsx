@@ -62,6 +62,29 @@ export default function ModalTransaction({
   const availableDoList = doList.filter(d => d.branch === branch);
   const availableKiosks = kiosks.filter(k => k.branch === branch);
   const availableDrivers = drivers.filter(d => d.branch === branch || d.branch === 'ALL');
+  const availableFertilizers = fertilizers.filter(f => !f.branch || f.branch === 'ALL' || f.branch.toLowerCase() === branch.toLowerCase());
+
+  // Filter only items with available quota (sisa > 0)
+  const selectablePenebusan = availablePenebusan.filter(p => {
+    const taken = doList.filter(d => (d.penebusanId === p.id || (p.doNo && d.doNo === p.doNo)) && d.id !== editData?.id).reduce((s, i) => s + Number(i.qtyTon || 0), 0);
+    const sisa = Number(p.qtyTon || 0) - taken;
+    return sisa > 0.0001 || p.id === editData?.penebusanId;
+  });
+
+  const selectableDoList = availableDoList.filter(d => {
+    const salur = penyaluranList.filter(s => (s.doRefId === d.id || (d.doNo && s.doNo === d.doNo)) && s.id !== editData?.id).reduce((s, i) => s + Number(i.qtyTon || 0), 0);
+    const stok = Number(d.qtyTon || 0) - salur;
+    return stok > 0.0001 || d.id === editData?.doRefId;
+  });
+
+  useEffect(() => {
+    if (!editData && availableFertilizers.length > 0) {
+      const exists = availableFertilizers.some(f => f.id === fertilizerId);
+      if (!exists) {
+        setFertilizerId(availableFertilizers[0].id);
+      }
+    }
+  }, [branch, availableFertilizers, editData]);
 
   // Auto-fill from selected Penebusan if not editing
   const selectedPenebusan = penebusanList.find(p => p.id === penebusanId);
@@ -95,16 +118,16 @@ export default function ModalTransaction({
 
   // Default auto-select first available options if empty
   useEffect(() => {
-    if (formType === 'do' && !penebusanId && availablePenebusan.length > 0 && !editData) {
-      setPenebusanId(availablePenebusan[0].id);
+    if (formType === 'do' && !penebusanId && selectablePenebusan.length > 0 && !editData) {
+      setPenebusanId(selectablePenebusan[0].id);
     }
-  }, [formType, availablePenebusan, penebusanId, editData]);
+  }, [formType, selectablePenebusan, penebusanId, editData]);
 
   useEffect(() => {
-    if (formType === 'penyaluran' && !doRefId && availableDoList.length > 0 && !editData) {
-      setDoRefId(availableDoList[0].id);
+    if (formType === 'penyaluran' && !doRefId && selectableDoList.length > 0 && !editData) {
+      setDoRefId(selectableDoList[0].id);
     }
-  }, [formType, availableDoList, doRefId, editData]);
+  }, [formType, selectableDoList, doRefId, editData]);
 
   useEffect(() => {
     if (formType === 'penyaluran' && !kiosId && availableKiosks.length > 0 && !editData) {
@@ -164,26 +187,48 @@ export default function ModalTransaction({
     }
   }, [formType, branch, editData, initialPenebusanId, initialDoRefId]);
 
-  // Auto price from fertilizer if not editing
+  // Auto price & supplier from fertilizer master data if not editing
   useEffect(() => {
     if (!editData) {
-      const f = fertilizers.find(x => x.id === fertilizerId);
+      const targetFertId = fertilizerId || availableFertilizers[0]?.id || fertilizers[0]?.id;
+      const f = fertilizers.find(x => x.id === targetFertId);
       if (f) {
         if (formType === 'penebusan') {
-          setPricePerTon(f.buyPrice || f.defaultPriceTon || 2100000);
+          const buyP = f.buyPrice ?? f.priceBuy ?? f.defaultPriceTon ?? 2100000;
+          setPricePerTon(buyP);
+
+          // Auto select matching supplier from product data
+          const fertSupplier = f.supplier || f.supplierId || f.supplierName;
+          if (fertSupplier) {
+            const sQuery = String(fertSupplier).trim().toLowerCase();
+            const matchedSup = suppliers.find(s => 
+              s.id.toLowerCase() === sQuery || 
+              s.name.toLowerCase() === sQuery ||
+              s.name.toLowerCase().includes(sQuery) ||
+              sQuery.includes(s.name.toLowerCase())
+            );
+            if (matchedSup) {
+              setSupplierId(matchedSup.id);
+            } else {
+              setSupplierId(fertSupplier);
+            }
+          } else if (suppliers.length > 0) {
+            setSupplierId(suppliers[0].id);
+          }
         } else if (formType === 'penyaluran') {
-          setPricePerTon(f.sellPrice || f.defaultPriceTon || 2250000);
+          const sellP = f.sellPrice ?? f.priceSell ?? f.defaultPriceTon ?? 2250000;
+          setPricePerTon(sellP);
         } else {
           setPricePerTon(f.defaultPriceTon || 2250000);
         }
       }
     }
-  }, [fertilizerId, formType, editData]);
+  }, [fertilizerId, formType, editData, branch, fertilizers, availableFertilizers, suppliers]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const selectedFert = fertilizers.find(f => f.id === fertilizerId) || fertilizers[0];
-    const selectedSup = suppliers.find(s => s.id === supplierId) || suppliers[0];
+    const selectedSup = suppliers.find(s => s.id === supplierId || s.name.toLowerCase() === String(supplierId).toLowerCase()) || (supplierId ? { id: supplierId, name: supplierId } : suppliers[0]);
     const selectedKios = kiosks.find(k => k.id === kiosId) || availableKiosks[0];
 
     if (formType === 'penebusan') {
@@ -363,7 +408,15 @@ export default function ModalTransaction({
                 <div className="form-group">
                   <label className="form-label">Supplier / Produsen:</label>
                   <select className="form-select" value={supplierId} onChange={(e) => setSupplierId(e.target.value)}>
-                    {suppliers.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                    {(() => {
+                      const selectedFertObj = fertilizers.find(f => f.id === fertilizerId);
+                      const prodSupplier = selectedFertObj?.supplier || selectedFertObj?.supplierId || selectedFertObj?.supplierName;
+                      let displaySuppliers = [...suppliers];
+                      if (prodSupplier && !displaySuppliers.some(s => s.id === prodSupplier || s.name.toLowerCase() === String(prodSupplier).toLowerCase())) {
+                        displaySuppliers = [{ id: prodSupplier, name: prodSupplier }, ...displaySuppliers];
+                      }
+                      return displaySuppliers.map(s => <option key={s.id} value={s.id}>{s.name}</option>);
+                    })()}
                   </select>
                 </div>
               </div>
@@ -372,7 +425,7 @@ export default function ModalTransaction({
                 <div className="form-group">
                   <label className="form-label">Jenis Pupuk:</label>
                   <select className="form-select" value={fertilizerId} onChange={(e) => setFertilizerId(e.target.value)}>
-                    {fertilizers.map(f => <option key={f.id} value={f.id}>{f.name}</option>)}
+                    {availableFertilizers.map(f => <option key={f.id} value={f.id}>{f.name}</option>)}
                   </select>
                 </div>
                 <div className="form-group">
@@ -404,8 +457,8 @@ export default function ModalTransaction({
               <div className="form-group">
                 <label className="form-label">Pilih No. DO Penebusan (Kunci Transaksi):</label>
                 <select className="form-select" value={penebusanId} onChange={(e) => setPenebusanId(e.target.value)} required>
-                  {availablePenebusan.length === 0 && <option value="">Belum ada Penebusan di cabang ini</option>}
-                  {availablePenebusan.map(p => {
+                  {selectablePenebusan.length === 0 && <option value="">Tidak ada kuota Penebusan tersisa di cabang ini</option>}
+                  {selectablePenebusan.map(p => {
                     const taken = doList.filter(d => d.penebusanId === p.id && d.id !== editData?.id).reduce((s, i) => s + Number(i.qtyTon || 0), 0);
                     const sisa = Math.max(0, (p.qtyTon || 0) - taken);
                     return (
@@ -455,8 +508,8 @@ export default function ModalTransaction({
               <div className="form-group">
                 <label className="form-label">Pilih No. DO (Stok di Gudang — Kunci Transaksi):</label>
                 <select className="form-select" value={doRefId} onChange={(e) => setDoRefId(e.target.value)} required>
-                  {availableDoList.length === 0 && <option value="">Belum ada DO masuk di cabang ini</option>}
-                  {availableDoList.map(d => {
+                  {selectableDoList.length === 0 && <option value="">Tidak ada stok DO Gudang tersisa di cabang ini</option>}
+                  {selectableDoList.map(d => {
                     const salurDariDO = penyaluranList.filter(s => (s.doRefId === d.id || (d.doNo && s.doNo === d.doNo)) && s.id !== editData?.id).reduce((s, i) => s + Number(i.qtyTon || 0), 0);
                     const stok = Math.max(0, Number(d.qtyTon || 0) - salurDariDO);
                     return (

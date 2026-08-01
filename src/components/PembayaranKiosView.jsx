@@ -868,6 +868,33 @@ export default function PembayaranKiosView({
       {activeTabSection === 'riwayat' && (
         <div className="table-container">
           <DateFilterBar filterState={filterStateRiwayat} setFilterState={setFilterStateRiwayat} />
+
+          {/* SUMMARY TOTAL PENERIMAAN SESUAI FILTER */}
+          {(() => {
+            const totalPelunasan = riwayatLogs.filter(l => l.logCategory === 'Pelunasan').reduce((s, l) => s + Number(l.amount || 0), 0);
+            const totalDeposit   = riwayatLogs.filter(l => l.logCategory === 'Deposit').reduce((s, l) => s + Number(l.amount || 0), 0);
+            const totalMasuk     = riwayatLogs.reduce((s, l) => s + Number(l.amount || 0), 0);
+            return (
+              <div style={{ display: 'flex', gap: '10px', marginBottom: '12px', flexWrap: 'wrap' }}>
+                <div className="card" style={{ padding: '10px 16px', borderLeft: '4px solid #15803d', flex: 1, minWidth: '150px' }}>
+                  <div style={{ fontSize: '11px', color: '#15803d', fontWeight: 700 }}>TOTAL PELUNASAN</div>
+                  <div style={{ fontSize: '18px', fontWeight: 800, color: '#15803d' }}>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(totalPelunasan)}</div>
+                  <div style={{ fontSize: '11px', color: '#9ca3af' }}>{riwayatLogs.filter(l => l.logCategory === 'Pelunasan').length} transaksi</div>
+                </div>
+                <div className="card" style={{ padding: '10px 16px', borderLeft: '4px solid #1d4ed8', flex: 1, minWidth: '150px' }}>
+                  <div style={{ fontSize: '11px', color: '#1d4ed8', fontWeight: 700 }}>TOTAL DEPOSIT</div>
+                  <div style={{ fontSize: '18px', fontWeight: 800, color: '#1d4ed8' }}>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(totalDeposit)}</div>
+                  <div style={{ fontSize: '11px', color: '#9ca3af' }}>{riwayatLogs.filter(l => l.logCategory === 'Deposit').length} transaksi</div>
+                </div>
+                <div className="card" style={{ padding: '10px 16px', borderLeft: '4px solid #7c3aed', flex: 1, minWidth: '150px' }}>
+                  <div style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 700 }}>TOTAL UANG MASUK</div>
+                  <div style={{ fontSize: '18px', fontWeight: 800, color: '#7c3aed' }}>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(totalMasuk)}</div>
+                  <div style={{ fontSize: '11px', color: '#9ca3af' }}>Sesuai filter tanggal aktif</div>
+                </div>
+              </div>
+            );
+          })()}
+
           
           {/* BAR PENGHAPUSAN TERPILIH */}
           {selectedLogIds.length > 0 && (

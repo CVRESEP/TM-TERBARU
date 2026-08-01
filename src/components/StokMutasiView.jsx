@@ -13,6 +13,8 @@ export default function StokMutasiView({
   const currentDO = doList.filter(filterByBranch);
   const currentPenyaluran = penyaluranList.filter(filterByBranch);
 
+  const filteredFertilizers = fertilizers.filter(f => selectedBranch === 'ALL' || !f.branch || f.branch === selectedBranch);
+
   return (
     <div>
       <div className="page-header-box">
@@ -38,7 +40,7 @@ export default function StokMutasiView({
             </tr>
           </thead>
           <tbody>
-            {fertilizers.map((fert) => {
+            {filteredFertilizers.map((fert) => {
               const fertNameClean = (fert.name || '').trim().toLowerCase();
 
               const matchesFert = (item) => {

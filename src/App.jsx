@@ -407,6 +407,68 @@ export default function App() {
     } else if (type === 'penyaluran') {
       sl = isEdit ? sl.map(x => x.id === item.id ? item : x) : [item, ...sl];
       setPenyaluranList(sl);
+
+      if (!isEdit && item) {
+        const bName = (item.branch || 'MAGETAN').toUpperCase();
+        const refNo = item.penyaluranNo || item.nomorPenyaluran || item.doNo || item.id;
+        const qty = Number(item.qtyTon || item.qty || 0);
+        const prodName = (item.fertilizerName || 'PUPUK').toUpperCase();
+        const kN = (item.kiosName || '').toUpperCase();
+        const drv = item.driverName || '';
+        const dt = item.date || new Date().toISOString().split('T')[0];
+
+        const ratesObj = settings?.transportRates?.[bName] || {
+          admin: { rate: 2000, calcType: 'perTon', tripCapacityTon: 8 },
+          uangMakan: { rate: 40000, calcType: 'perDriverDay', tripCapacityTon: 8 },
+          palang: { rate: 0, calcType: 'perTon', tripCapacityTon: 8 },
+          solar: { rate: bName.includes('SRAGEN') ? 5000 : 4166.625, calcType: 'perTon', tripCapacityTon: 8 },
+          upahSopir: { rate: 3500, calcType: 'perTon', tripCapacityTon: 8 },
+          lembur: { rate: 0, calcType: 'perTon', tripCapacityTon: 8 },
+          helper: { rate: 0, calcType: 'perTon', tripCapacityTon: 8 }
+        };
+
+        const calcC = (itemKey) => {
+          const cfg = ratesObj[itemKey] || {};
+          const r = Number(cfg.rate || 0);
+          const t = cfg.calcType || 'perTon';
+          if (t === 'perTon') return Math.round(r * qty);
+          return Math.round(r);
+        };
+
+        const adminVal = calcC('admin');
+        const uangMakanVal = calcC('uangMakan');
+        const palangVal = calcC('palang');
+        const solarVal = calcC('solar');
+        const upahSopirVal = calcC('upahSopir');
+        const lemburVal = calcC('lembur');
+        const helperVal = calcC('helper');
+        const totalCost = adminVal + uangMakanVal + palangVal + solarVal + upahSopirVal + lemburVal + helperVal;
+
+        const autoKasItem = {
+          id: `KA-${Date.now()}`,
+          date: dt,
+          type: 'PENGELUARAN',
+          doNo: item.doNo || '',
+          penyaluranNo: refNo,
+          penyaluranId: item.id,
+          kabupaten: bName,
+          branch: item.branch,
+          kiosName: item.kiosName || '-',
+          driverName: drv || '-',
+          uraian: `BIAYA ANGKUTAN - ${refNo} - ${prodName} - ${kN} - ${qty} TON`,
+          amount: totalCost,
+          admin: adminVal,
+          uangMakan: uangMakanVal,
+          palang: palangVal,
+          solar: solarVal,
+          upahSopir: upahSopirVal,
+          lembur: lemburVal,
+          helper: helperVal,
+          lainLain: 0
+        };
+
+        setKasAngkutanList(prev => [autoKasItem, ...prev]);
+      }
     } else if (type === 'kios') {
       k = isEdit ? k.map(x => x.id === item.id ? item : x) : [item, ...k];
       setKiosks(k);

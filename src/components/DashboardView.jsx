@@ -21,6 +21,8 @@ export default function DashboardView({
 
   const formatRp = (v) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(v);
 
+  const filteredFertilizers = fertilizers.filter(f => selectedBranch === 'ALL' || !f.branch || f.branch === selectedBranch);
+
   return (
     <div>
       {/* Header */}
@@ -166,7 +168,7 @@ export default function DashboardView({
             </tr>
           </thead>
           <tbody>
-            {fertilizers.map((fert) => {
+            {filteredFertilizers.map((fert) => {
               const fertNameClean = (fert.name || '').trim().toLowerCase();
 
               const matchesFert = (item) => {

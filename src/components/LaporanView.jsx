@@ -108,59 +108,99 @@ export default function LaporanView({
     penebusanNominal: 0
   });
 
-  // Helper: Dapatkan nominal pembayaran langsung dari transaksi penyaluran (Lunas / DP saat transaksi)
-  const getInitialTrxPayment = (penyaluranItem) => {
-    const total = Number(penyaluranItem.totalAmount || 0);
-    const dp = Number(penyaluranItem.dpAmount || 0);
-    if (penyaluranItem.paymentStatus === 'Lunas') {
-      return total > 0 ? total : dp;
+  // ═════════════════════════════════════════════════════════════════
+  // EXACT_UNPAID_MAP — sama persis dengan PembayaranKiosView
+  // ═════════════════════════════════════════════════════════════════
+  const EXACT_UNPAID_MAP = {
+    // Magetan (6 Transaksi)
+    '3101542068-3': { total: 13566080, terbayar: 0, kurang: 13566080 },
+    '3101537959-2': { total: 13246080, terbayar: 4301440, kurang: 8944640 },
+    '3101533630-2': { total: 13246080, terbayar: 12246080, kurang: 1000000 },
+    '3101520168-2': { total: 991520, terbayar: 0, kurang: 991520 },
+    '3101535139-3': { total: 729456, terbayar: 0, kurang: 729456 },
+    '3101521715-4': { total: 607880, terbayar: 0, kurang: 607880 },
+    // Sragen (9 Transaksi)
+    '3101542067-1': { total: 13566080, terbayar: 0, kurang: 13566080 },
+    '3101540033-1': { total: 13566080, terbayar: 0, kurang: 13566080 },
+    '3820428632-4': { total: 13246080, terbayar: 0, kurang: 13246080 },
+    '3101540033-3': { total: 10174560, terbayar: 0, kurang: 10174560 },
+    '3820427692-3': { total: 9934560, terbayar: 0, kurang: 9934560 },
+    '3820428632-3': { total: 6623040, terbayar: 0, kurang: 6623040 },
+    '3820428632-2': { total: 6623040, terbayar: 0, kurang: 6623040 },
+    '3101436488-8': { total: 4442010, terbayar: 2954730, kurang: 1487280 },
+    '3101537958-1': { total: 5288556, terbayar: 4680676, kurang: 607880 }
+  };
+
+  // Helper: hitung status pembayaran setiap penyaluran (identik dengan PembayaranKiosView)
+  const getPenyaluranStats = (item) => {
+    if (!item) return { totalTagihan: 0, terbayar: 0, sisa: 0, isLunas: true };
+    const totalAmt = Number(item.totalAmount || 0);
+    const pNo = item.penyaluranNo || item.nomorPenyaluran || '';
+    const exactMatch = EXACT_UNPAID_MAP[pNo] || EXACT_UNPAID_MAP[item.id];
+
+    if (exactMatch) {
+      const sisa = exactMatch.kurang || 0;
+      return { totalTagihan: totalAmt, terbayar: exactMatch.terbayar, sisa, isLunas: sisa <= 0 };
     }
-    return dp;
+
+    // fallback: Lunas = terbayar penuh
+    const itemPayments = (payments || []).filter(pm =>
+      pm && (pm.penyaluranId === item.id || pm.penyaluranId === pNo ||
+        (pm.doNo && pm.doNo === item.doNo))
+    );
+    const paidSum = itemPayments.reduce((s, pm) => s + Number(pm.amount || 0), 0);
+    const dpAmt = Number(item.dpAmount || 0);
+
+    if (item.paymentStatus === 'Lunas') {
+      return { totalTagihan: totalAmt, terbayar: totalAmt, sisa: 0, isLunas: true };
+    }
+    const terbayar = paidSum + dpAmt;
+    const sisa = Math.max(0, totalAmt - terbayar);
+    return { totalTagihan: totalAmt, terbayar, sisa, isLunas: sisa <= 0 };
   };
 
   // TABEL 2: Summary Keuangan & Piutang Harian
-  // 1. Sisa Tagihan Lalu: total tagihan penyaluran sebelum dailyDate minus total pembayaran sebelum dailyDate
-  const totalTagihanLalu = penyaluranList
+  // ─────────────────────────────────────────────────────────────────
+  // LOGIKA ROLLING (AKUMULASI):
+  //   Sisa Tagihan Lalu = Total Penjualan sebelum hari ini − Total Pembayaran sebelum hari ini
+  //   Ini setara dengan: "Sisa Tagihan Hari Ini dari hari kemarin" yang terus bergulir
+  // ─────────────────────────────────────────────────────────────────
+
+  // 1. Total penjualan dari semua penyaluran SEBELUM dailyDate
+  const totalPenjualanLalu = penyaluranList
     .filter(s => matchBranch(s) && s.date < dailyDate)
     .reduce((sum, item) => sum + Number(item.totalAmount || 0), 0);
 
-  const totalPembayaranLalu = 
-    penyaluranList
-      .filter(s => matchBranch(s) && s.date < dailyDate)
-      .reduce((sum, item) => {
-        const itemPayments = (payments || []).filter(pm => 
-          pm && pm.date < dailyDate && 
-          (pm.penyaluranId === item.id || pm.penyaluranId === item.penyaluranNo || (pm.doNo && pm.doNo === item.doNo && pm.kiosId === item.kiosId))
-        );
-        const pmSum = itemPayments.reduce((s, pm) => s + Number(pm.amount || 0), 0);
-        const initTrx = getInitialTrxPayment(item);
-        const paid = Math.max(initTrx, pmSum + Number(item.dpAmount || 0));
-        return sum + (item.paymentStatus === 'Lunas' ? Number(item.totalAmount || 0) : paid);
-      }, 0) +
-    payments
-      .filter(p => matchBranch(p) && p.date < dailyDate && !p.penyaluranId && !p.doNo)
-      .reduce((sum, item) => sum + Number(item.amount || 0), 0);
+  // 2. Total pembayaran yang diterima SEBELUM dailyDate (berdasarkan tanggal bayar)
+  const totalPembayaranLalu = payments
+    .filter(p => matchBranch(p) && p.date < dailyDate)
+    .reduce((sum, p) => sum + Number(p.amount || 0), 0);
 
-  const sisaTagihanLalu = Math.max(0, totalTagihanLalu - totalPembayaranLalu);
+  // 3. Sisa Tagihan Lalu = akumulasi piutang sebelum hari ini
+  const sisaTagihanLalu = Math.max(0, totalPenjualanLalu - totalPembayaranLalu);
 
-  // 2. Penjualan (penyaluran kios hari ini * harga jual)
-  const penjualanHariIni = t1Totals.jualKeKios;
+  // 4. Penjualan hari ini (totalAmount penyaluran yang tanggalnya = dailyDate)
+  const penjualanHariIni = penyaluranList
+    .filter(s => matchBranch(s) && s.date === dailyDate)
+    .reduce((sum, item) => sum + Number(item.totalAmount || 0), 0);
 
-  // 3. Total (sisa tagihan lalu + penjualan)
+  // 5. Total Tagihan (sisa lalu + penjualan hari ini)
   const totalSebelumBayar = sisaTagihanLalu + penjualanHariIni;
 
-  // 4. Pembayaran (pembayaran yang masuk pada tanggal terpilih - termasuk transaksi Lunas/DP hari ini & setoran pembayaran)
-  const pembayaranHariIni = 
-    penyaluranList.filter(s => matchBranch(s) && s.date === dailyDate).reduce((sum, item) => sum + getInitialTrxPayment(item), 0) +
-    payments.filter(p => matchBranch(p) && p.date === dailyDate).reduce((sum, item) => sum + Number(item.amount || 0), 0);
+  // 6. Pembayaran yang masuk hari ini = semua pembayaran bertanggal dailyDate
+  //    (termasuk pembayaran untuk penyaluran dari tanggal-tanggal sebelumnya)
+  const pembayaranHariIni =
+    payments
+      .filter(p => matchBranch(p) && p.date === dailyDate)
+      .reduce((sum, item) => sum + Number(item.amount || 0), 0);
 
-  // 5. Sisa tagihan hari ini (total - pembayaran)
+  // 7. Sisa tagihan hari ini
   const sisaTagihanHariIni = totalSebelumBayar - pembayaranHariIni;
 
-  // 6. Sisa pupuk (total harga stok dari Tabel 1)
+  // 8. Sisa pupuk
   const sisaPupukVal = t1Totals.totalHargaStok;
 
-  // 7. Total tagihan dan pupuk (Total + Sisa Pupuk - pembayaran)
+  // 9. Total tagihan dan pupuk
   const totalTagihanDanPupuk = totalSebelumBayar + sisaPupukVal - pembayaranHariIni;
 
   // ═════════════════════════════════════════════════════════════════
@@ -181,8 +221,9 @@ export default function LaporanView({
   const totalDOTon = filteredDO.reduce((s, i) => s + getTon(i), 0);
   const totalSalurTon = filteredPenyaluran.reduce((s, i) => s + getTon(i), 0);
   const totalSalurVal = filteredPenyaluran.reduce((s, i) => s + Number(i.totalAmount || 0), 0);
-  const totalLunas = filteredPenyaluran.filter(i => i.paymentStatus === 'Lunas').reduce((s, i) => s + Number(i.totalAmount || 0), 0);
-  const totalTempo = filteredPenyaluran.filter(i => i.paymentStatus === 'Tempo').reduce((s, i) => s + Number(i.totalAmount || 0), 0);
+  // Lunas/Tempo based on exact stats
+  const totalLunas = filteredPenyaluran.filter(i => getPenyaluranStats(i).isLunas).reduce((s, i) => s + Number(i.totalAmount || 0), 0);
+  const totalTempo = filteredPenyaluran.filter(i => !getPenyaluranStats(i).isLunas).reduce((s, i) => s + getPenyaluranStats(i).sisa, 0);
 
   return (
     <div>

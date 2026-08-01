@@ -36,35 +36,16 @@ export default function KasUmumView({
 
   const getItemAmount = (item) => {
     if (!item) return 0;
-    const candidates = [
-      item.amount, item.nominal, item.total, item.jumlah, item.nilai, 
-      item.totalCost, item.totalAmount, item.harga, item.biaya,
-      item.keluar, item.masuk, item.kredit, item.debet, item.pengeluaran, item.pemasukan
-    ];
-    for (const val of candidates) {
-      if (val !== undefined && val !== null && val !== '') {
-        const num = typeof val === 'number' ? val : Number(String(val).replace(/[^0-9.-]/g, ''));
-        if (!isNaN(num) && num > 0) return num;
-      }
-    }
-    // Dynamic fallback: scan all numeric-like values in the object
-    for (const key in item) {
-      if (['id', 'branch', 'date', 'type', 'tipe', 'category', 'kategori'].includes(key)) continue;
-      const val = item[key];
-      if (val !== undefined && val !== null && val !== '') {
-        const num = typeof val === 'number' ? val : Number(String(val).replace(/[^0-9.-]/g, ''));
-        if (!isNaN(num) && num > 0) return num;
-      }
-    }
-    return 0;
+    const num = Number(item.amount);
+    return (!isNaN(num) && num > 0) ? num : 0;
   };
 
   const filtered = kasUmumList.filter(item => {
-    const itemBranch = (item.branch || item.kabupaten || '').toLowerCase();
+    const itemBranch = (item.branch || '').toLowerCase();
     const matchBranch = selectedBranch === 'ALL' || itemBranch === selectedBranch.toLowerCase();
-    const matchSearch = (item.category || item.kategori || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                        (item.recipient || item.penerima || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                        (item.description || item.uraian || item.notes || '').toLowerCase().includes(searchTerm.toLowerCase());
+    const matchSearch = (item.category || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        (item.recipient || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        (item.description || item.notes || '').toLowerCase().includes(searchTerm.toLowerCase());
     const matchDate = matchesDateFilter(item.date, filterState);
     return matchBranch && matchSearch && matchDate;
   });
@@ -72,22 +53,14 @@ export default function KasUmumView({
   const { sorted, sortKey, sortDir, thProps } = useSortableTable(filtered, 'date', 'desc');
   const { currentPage, setCurrentPage, totalPages, paginatedData, itemsPerPage, setItemsPerPage } = usePagination(sorted, 10);
 
-  // Calculations (Support Pemasukan/Masuk vs Pengeluaran/Keluar)
-  const totalMasuk = filtered.reduce((s, i) => {
-    const rawType = String(i.type || i.tipe || '').toLowerCase();
-    if (rawType.includes('masuk') || rawType.includes('in') || rawType.includes('pemasukan')) {
-      return s + getItemAmount(i);
-    }
-    return s;
-  }, 0);
+  // Calculations — type already normalized to 'Pemasukan' or 'Pengeluaran' by normalizeKasUmumList
+  const totalMasuk = filtered
+    .filter(i => i.type === 'Pemasukan')
+    .reduce((s, i) => s + getItemAmount(i), 0);
 
-  const totalKeluar = filtered.reduce((s, i) => {
-    const rawType = String(i.type || i.tipe || '').toLowerCase();
-    if (!rawType.includes('masuk') && !rawType.includes('in') && !rawType.includes('pemasukan')) {
-      return s + getItemAmount(i);
-    }
-    return s;
-  }, 0);
+  const totalKeluar = filtered
+    .filter(i => i.type !== 'Pemasukan')
+    .reduce((s, i) => s + getItemAmount(i), 0);
 
   const saldoAkhir = totalMasuk - totalKeluar;
 
@@ -136,6 +109,8 @@ export default function KasUmumView({
     onAddKasUmum(payload, Boolean(editingItem));
     setIsModalOpen(false);
   };
+
+  const isBranchLocked = selectedBranch !== 'ALL';
 
   return (
     <div>
@@ -254,12 +229,12 @@ export default function KasUmumView({
                 <td className="text-center">{formatDateDisplay(item.date)}</td>
                 <td style={{ fontWeight: 600 }}>{item.category}</td>
                 <td className="text-center">
-                  <span className={`badge ${String(item.type || item.tipe || '').toLowerCase().includes('masuk') ? 'badge-success' : 'badge-danger'}`}>
-                    {String(item.type || item.tipe || '').toLowerCase().includes('masuk') ? 'Pemasukan' : 'Pengeluaran'}
+                  <span className={`badge ${item.type === 'Pemasukan' ? 'badge-success' : 'badge-danger'}`}>
+                    {item.type === 'Pemasukan' ? 'Pemasukan' : 'Pengeluaran'}
                   </span>
                 </td>
                 <td>{item.recipient || item.penerima || '-'}</td>
-                <td className="text-right" style={{ fontWeight: 800, color: String(item.type || item.tipe || '').toLowerCase().includes('masuk') ? '#15803d' : '#dc2626' }}>
+                <td className="text-right" style={{ fontWeight: 800, color: item.type === 'Pemasukan' ? '#15803d' : '#dc2626' }}>
                   {formatRp(getItemAmount(item))}
                 </td>
                 <td style={{ fontSize: '12px' }}>{item.uraian || item.notes || item.description || item.catatan || '-'}</td>
@@ -316,7 +291,13 @@ export default function KasUmumView({
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                 <div>
                   <label style={{ fontSize: '12px', fontWeight: 700, display: 'block', marginBottom: '4px' }}>Cabang</label>
-                  <select className="search-input" style={{ width: '100%' }} value={branch} onChange={(e) => setBranch(e.target.value)}>
+                  <select 
+                    className="search-input" 
+                    style={{ width: '100%', backgroundColor: isBranchLocked ? '#f3f4f6' : 'white', cursor: isBranchLocked ? 'not-allowed' : 'pointer' }} 
+                    value={branch} 
+                    onChange={(e) => setBranch(e.target.value)}
+                    disabled={isBranchLocked}
+                  >
                     <option value="Magetan">{settings.branch1Name || 'Magetan'}</option>
                     <option value="Sragen">{settings.branch2Name || 'Sragen'}</option>
                   </select>
