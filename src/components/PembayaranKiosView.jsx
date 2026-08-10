@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import ModalKiosHistory from './ModalKiosHistory';
 import ModalDetailTransaksi from './ModalDetailTransaksi';
 import TablePagination from './TablePagination';
+import SearchableSelect from './SearchableSelect';
 import { formatCurrencyInput, parseCurrencyInput, formatDateDisplay } from '../utils/currency';
 import DateFilterBar, { matchesDateFilter } from './DateFilterBar';
 import { useSortableTable, SortIcon } from '../utils/useSortableTable';
@@ -516,15 +517,21 @@ export default function PembayaranKiosView({
           </div>
 
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-            <select
-              className="filter-select"
-              value={selectedKiosId}
-              onChange={(e) => setSelectedKiosId(e.target.value)}
-              style={{ fontSize: '12px' }}
-            >
-              <option value="ALL">-- Semua Kios ({filteredKiosks.length}) --</option>
-              {filteredKiosks.map(k => <option key={k.id} value={k.id}>{k.name} ({k.owner})</option>)}
-            </select>
+            <div style={{ width: '220px' }}>
+              <SearchableSelect
+                value={selectedKiosId}
+                onChange={(e) => setSelectedKiosId(e.target.value)}
+                placeholder="-- Semua Kios --"
+                allowEmpty
+                emptyLabel={`-- Semua Kios (${filteredKiosks.length}) --`}
+                emptyValue="ALL"
+                options={filteredKiosks.map(k => ({
+                  value: k.id,
+                  label: `${k.name} (${k.owner || '-'})`,
+                  sublabel: `Kec: ${k.district || '-'}, Kab: ${k.regency || k.branch || '-'}`
+                }))}
+              />
+            </div>
 
             <input
               type="text"
@@ -1015,37 +1022,49 @@ export default function PembayaranKiosView({
               <div className="modal-body">
                 <div className="form-group">
                   <label className="form-label">Pilih Kios Pengecer:</label>
-                  <select className="form-select" value={payKiosId} onChange={(e) => {
-                    const newKId = e.target.value;
-                    setPayKiosId(newKId);
-                    setPayPenyaluranId('');
-                    setUseDepositForPayment(isKiosDeductEnabled(newKId));
-                  }} required>
-                    <option value="">-- Pilih Kios --</option>
-                    {filteredKiosks.map(k => <option key={k.id} value={k.id}>{k.name} ({k.owner})</option>)}
-                  </select>
+                  <SearchableSelect
+                    value={payKiosId}
+                    onChange={(e) => {
+                      const newKId = e.target.value;
+                      setPayKiosId(newKId);
+                      setPayPenyaluranId('');
+                      setUseDepositForPayment(isKiosDeductEnabled(newKId));
+                    }}
+                    placeholder="-- Ketik atau Pilih Kios --"
+                    required
+                    options={filteredKiosks.map(k => ({
+                      value: k.id,
+                      label: `${k.name} (${k.owner || '-'})`,
+                      sublabel: `Kec: ${k.district || '-'}, Kab: ${k.regency || k.branch || '-'}`
+                    }))}
+                  />
                 </div>
 
                 <div className="form-group">
                   <label className="form-label">Pilih Tagihan / Nomor DO (Tempo):</label>
-                  <select className="form-select" value={payPenyaluranId} onChange={(e) => {
-                    setPayPenyaluranId(e.target.value);
-                    const p = (penyaluranList || []).find(x => x && x.id === e.target.value);
-                    if (p) {
+                  <SearchableSelect
+                    value={payPenyaluranId}
+                    onChange={(e) => {
+                      setPayPenyaluranId(e.target.value);
+                      const p = (penyaluranList || []).find(x => x && x.id === e.target.value);
+                      if (p) {
+                        const stats = getPenyaluranPaymentStats(p);
+                        setPayAmount(stats.sisa > 0 ? stats.sisa : stats.totalTagihan);
+                      }
+                    }}
+                    placeholder="-- Bebas / Pelunasan Umum --"
+                    allowEmpty
+                    emptyLabel="-- Bebas / Pelunasan Umum --"
+                    emptyValue=""
+                    options={(penyaluranList || []).filter(p => p && p.kiosId === payKiosId).map(p => {
                       const stats = getPenyaluranPaymentStats(p);
-                      setPayAmount(stats.sisa > 0 ? stats.sisa : stats.totalTagihan);
-                    }
-                  }}>
-                    <option value="">-- Bebas / Pelunasan Umum --</option>
-                    {(penyaluranList || []).filter(p => p && p.kiosId === payKiosId).map(p => {
-                      const stats = getPenyaluranPaymentStats(p);
-                      return (
-                        <option key={p.id} value={p.id}>
-                          {p.doNo} — {p.fertilizerName} ({p.qtyTon} Ton) | Kekurangan: {formatRp(stats.sisa)}
-                        </option>
-                      );
+                      return {
+                        value: p.id,
+                        label: `${p.doNo || p.id} — ${p.fertilizerName} (${p.qtyTon} Ton)`,
+                        sublabel: `Kekurangan: ${formatRp(stats.sisa)} | Total Tagihan: ${formatRp(stats.totalTagihan)}`
+                      };
                     })}
-                  </select>
+                  />
                 </div>
 
                 {/* Info Saldo Deposit Kios */}
@@ -1139,10 +1158,17 @@ export default function PembayaranKiosView({
               <div className="modal-body">
                 <div className="form-group">
                   <label className="form-label">Pilih Kios Pengecer:</label>
-                  <select className="form-select" value={depKiosId} onChange={(e) => setDepKiosId(e.target.value)} required>
-                    <option value="">-- Pilih Kios --</option>
-                    {filteredKiosks.map(k => <option key={k.id} value={k.id}>{k.name} ({k.owner})</option>)}
-                  </select>
+                  <SearchableSelect
+                    value={depKiosId}
+                    onChange={(e) => setDepKiosId(e.target.value)}
+                    placeholder="-- Ketik atau Pilih Kios --"
+                    required
+                    options={filteredKiosks.map(k => ({
+                      value: k.id,
+                      label: `${k.name} (${k.owner || '-'})`,
+                      sublabel: `Kec: ${k.district || '-'}, Kab: ${k.regency || k.branch || '-'}`
+                    }))}
+                  />
                 </div>
 
                 <div className="form-group">

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ModalNotification from './ModalNotification';
+import SearchableSelect from './SearchableSelect';
 import { formatCurrencyInput, parseCurrencyInput } from '../utils/currency';
 
 export default function ModalTransaction({ 
@@ -466,18 +467,21 @@ export default function ModalTransaction({
             {formType === 'do' && (<>
               <div className="form-group">
                 <label className="form-label">Pilih No. DO Penebusan (Kunci Transaksi):</label>
-                <select className="form-select" value={penebusanId} onChange={(e) => setPenebusanId(e.target.value)} required>
-                  {selectablePenebusan.length === 0 && <option value="">Tidak ada kuota Penebusan tersisa di cabang ini</option>}
-                  {selectablePenebusan.map(p => {
-                    const taken = doList.filter(d => d.penebusanId === p.id && d.id !== editData?.id).reduce((s, i) => s + Number(i.qtyTon || 0), 0);
-                    const sisa = Math.max(0, (p.qtyTon || 0) - taken);
-                    return (
-                      <option key={p.id} value={p.id}>
-                        {p.doNo} — {p.fertilizerName} (Sisa: {sisa.toFixed(1)} Ton)
-                      </option>
-                    );
+                <SearchableSelect
+                  value={penebusanId}
+                  onChange={(e) => setPenebusanId(e.target.value)}
+                  placeholder="-- Ketik atau Pilih No. DO Penebusan --"
+                  required
+                  options={selectablePenebusan.map(p => {
+                    const taken = doList.filter(d => (d.penebusanId === p.id || (p.doNo && d.doNo === p.doNo)) && d.id !== editData?.id).reduce((s, i) => s + Number(i.qtyTon || 0), 0);
+                    const sisa = Math.max(0, Number(p.qtyTon || 0) - taken);
+                    return {
+                      value: p.id,
+                      label: `${p.doNo || p.id} — ${p.fertilizerName}`,
+                      sublabel: `Sisa Kuota: ${sisa.toFixed(1)} Ton | Supplier: ${p.supplierName || '-'}`
+                    };
                   })}
-                </select>
+                />
               </div>
 
               {selectedPenebusan && (() => {
@@ -517,18 +521,21 @@ export default function ModalTransaction({
             {formType === 'penyaluran' && (<>
               <div className="form-group">
                 <label className="form-label">Pilih No. DO (Stok di Gudang — Kunci Transaksi):</label>
-                <select className="form-select" value={doRefId} onChange={(e) => setDoRefId(e.target.value)} required>
-                  {selectableDoList.length === 0 && <option value="">Tidak ada stok DO Gudang tersisa di cabang ini</option>}
-                  {selectableDoList.map(d => {
+                <SearchableSelect
+                  value={doRefId}
+                  onChange={(e) => setDoRefId(e.target.value)}
+                  placeholder="-- Ketik atau Pilih No. DO Gudang --"
+                  required
+                  options={selectableDoList.map(d => {
                     const salurDariDO = penyaluranList.filter(s => (s.doRefId === d.id || (d.doNo && s.doNo === d.doNo)) && s.id !== editData?.id).reduce((s, i) => s + Number(i.qtyTon || 0), 0);
                     const stok = Math.max(0, Number(d.qtyTon || 0) - salurDariDO);
-                    return (
-                      <option key={d.id} value={d.id}>
-                        {d.doNo} — {d.fertilizerName} (Sisa Kuota: {stok.toFixed(1)} Ton)
-                      </option>
-                    );
+                    return {
+                      value: d.id,
+                      label: `${d.doNo || d.id} — ${d.fertilizerName}`,
+                      sublabel: `Sisa Kuota Salur: ${stok.toFixed(1)} Ton | Gudang: ${d.targetWarehouse || '-'}`
+                    };
                   })}
-                </select>
+                />
               </div>
 
               <div className="form-group" style={{ border: '2px solid #3b82f6', borderRadius: '4px', padding: '10px', backgroundColor: '#eff6ff' }}>
@@ -575,10 +582,17 @@ export default function ModalTransaction({
                 </div>
                 <div className="form-group">
                   <label className="form-label">Kios Tujuan ({branch}):</label>
-                  <select className="form-select" value={kiosId} onChange={(e) => setKiosId(e.target.value)}>
-                    {availableKiosks.length === 0 && <option value="">Belum ada Kios di cabang ini</option>}
-                    {availableKiosks.map(k => <option key={k.id} value={k.id}>{k.name} ({k.owner})</option>)}
-                  </select>
+                  <SearchableSelect
+                    value={kiosId}
+                    onChange={(e) => setKiosId(e.target.value)}
+                    placeholder="-- Ketik atau Pilih Kios --"
+                    required
+                    options={availableKiosks.map(k => ({
+                      value: k.id,
+                      label: `${k.name} (${k.owner || '-'})`,
+                      sublabel: `Kec: ${k.district || '-'}, Kab: ${k.regency || k.branch || '-'}`
+                    }))}
+                  />
                 </div>
               </div>
               <div className="form-row">
