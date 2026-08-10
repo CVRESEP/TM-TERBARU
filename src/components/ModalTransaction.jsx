@@ -93,8 +93,18 @@ export default function ModalTransaction({
       setDoNo(selectedPenebusan.doNo || '');
       setFertilizerId(selectedPenebusan.fertilizerId || fertilizerId);
       setTargetWarehouse(`Gudang Utama ${branch}`);
+      if (formType === 'do') {
+        const pQty = Number(selectedPenebusan.qtyTon || selectedPenebusan.qty || 0);
+        if (pQty > 0) {
+          const taken = doList
+            .filter(d => (d.penebusanId === selectedPenebusan.id || (selectedPenebusan.doNo && d.doNo === selectedPenebusan.doNo)) && d.id !== editData?.id)
+            .reduce((s, i) => s + Number(i.qtyTon || 0), 0);
+          const sisa = Math.max(0, pQty - taken);
+          setQtyTon(sisa > 0 ? sisa : pQty);
+        }
+      }
     }
-  }, [penebusanId, editData]);
+  }, [penebusanId, editData, formType]);
 
   // Auto-fill from selected DO for Penyaluran if not editing
   const selectedDO = doList.find(d => d.id === doRefId);

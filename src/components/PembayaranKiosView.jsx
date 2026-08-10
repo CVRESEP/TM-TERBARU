@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import ModalKiosHistory from './ModalKiosHistory';
 import ModalDetailTransaksi from './ModalDetailTransaksi';
+import TablePagination from './TablePagination';
 import { formatCurrencyInput, parseCurrencyInput, formatDateDisplay } from '../utils/currency';
 import DateFilterBar, { matchesDateFilter } from './DateFilterBar';
 import { useSortableTable, SortIcon } from '../utils/useSortableTable';
@@ -53,6 +54,15 @@ export default function PembayaranKiosView({
 
   // Kios History Modal State
   const [historyKios, setHistoryKios] = useState(null);
+
+  const handleOpenKiosHistoryByKiosId = (kiosId, fallbackName = '') => {
+    const foundKios = (kiosks || []).find(k => k && k.id === kiosId);
+    if (foundKios) {
+      setHistoryKios(foundKios);
+    } else {
+      setHistoryKios({ id: kiosId, name: fallbackName || 'Kios', owner: '-', branch: selectedBranch, address: '-', phone: '-' });
+    }
+  };
 
   const isKiosDeductEnabled = (kiosId) => {
     return kiosDeductMap[kiosId] !== undefined ? kiosDeductMap[kiosId] : true;
