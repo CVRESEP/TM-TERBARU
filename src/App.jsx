@@ -1753,12 +1753,17 @@ export default function App() {
     return <LoginPage usersList={usersList} onLogin={handleLogin} />;
   }
 
+  const filterByBranch = (list) => {
+    if (selectedBranch === 'ALL') return list;
+    return list.filter(item => !item.branch || item.branch === 'ALL' || item.branch.toUpperCase() === selectedBranch.toUpperCase());
+  };
+
   const counts = {
-    penebusan: penebusanList.length,
-    do: doList.length,
-    penyaluran: penyaluranList.length,
-    kios: kiosks.length,
-    fertilizers: fertilizers.length,
+    penebusan: filterByBranch(penebusanList).length,
+    do: filterByBranch(doList).length,
+    penyaluran: filterByBranch(penyaluranList).length,
+    kios: filterByBranch(kiosks).length,
+    fertilizers: filterByBranch(fertilizers).length,
   };
 
   return (
