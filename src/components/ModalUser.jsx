@@ -60,8 +60,8 @@ export default function ModalUser({ isOpen, onClose, onSave, editUser = null, ex
   };
 
   return (
-    <div className="modal-overlay btn-print-hide">
-      <div className="modal-content" style={{ maxWidth: '500px' }}>
+    <div className="modal-overlay btn-print-hide" onClick={onClose}>
+      <div className="modal-content" style={{ maxWidth: '500px' }} onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <div>{editUser ? 'Edit Akun Pengguna' : 'Tambah Akun Pengguna Baru'}</div>
           <button className="btn-secondary" style={{ padding: '2px 8px' }} onClick={onClose}>✕</button>

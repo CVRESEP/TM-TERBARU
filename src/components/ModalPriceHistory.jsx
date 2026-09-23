@@ -16,8 +16,8 @@ export default function ModalPriceHistory({
   const currentMargin = currentSell - currentBuy;
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content" style={{ maxWidth: '780px', width: '92%' }}>
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" style={{ maxWidth: '780px', width: '92%' }} onClick={(e) => e.stopPropagation()}>
         {/* MODAL HEADER */}
         <div className="modal-header" style={{ borderBottom: '2px solid #e2e8f0', paddingBottom: '12px' }}>
           <div>

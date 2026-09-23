@@ -100,13 +100,14 @@ import { normalizeAllData } from '../utils/dataNormalizer';
 
 const normalizedBackup = normalizeAllData(firestoreBackup || {});
 
-export const DEFAULT_PENEBUSAN = (normalizedBackup.penebusanList && normalizedBackup.penebusanList.length > 0) ? normalizedBackup.penebusanList : [];
-export const DEFAULT_DO_EXPENSES = (normalizedBackup.doList && normalizedBackup.doList.length > 0) ? normalizedBackup.doList : [];
-export const DEFAULT_PENYALURAN_KIOS = (normalizedBackup.penyaluranList && normalizedBackup.penyaluranList.length > 0) ? normalizedBackup.penyaluranList : [];
-export const DEFAULT_PAYMENTS = (normalizedBackup.payments && normalizedBackup.payments.length > 0) ? normalizedBackup.payments : [];
-export const DEFAULT_KAS_ANGKUTAN = (normalizedBackup.kasAngkutanList && normalizedBackup.kasAngkutanList.length > 0) ? normalizedBackup.kasAngkutanList : [];
-export const DEFAULT_KAS_UMUM = (normalizedBackup.kasUmumList && normalizedBackup.kasUmumList.length > 0) ? normalizedBackup.kasUmumList : [];
-export const DEFAULT_KIOSKS = (normalizedBackup.kiosks && normalizedBackup.kiosks.length > 0) ? normalizedBackup.kiosks : [
+export const DEFAULT_PENEBUSAN = [];
+export const DEFAULT_DO_EXPENSES = [];
+export const DEFAULT_PENYALURAN_KIOS = [];
+export const DEFAULT_PAYMENTS = [];
+export const DEFAULT_DEPOSITS = [];
+export const DEFAULT_KAS_ANGKUTAN = [];
+export const DEFAULT_KAS_UMUM = [];
+export const DEFAULT_KIOSKS = [
   { id: 'KS-MGT-01', name: 'Kios Tani Subur', owner: 'Sugeng', branch: 'Magetan', address: 'Maospati, Magetan', phone: '0852-1111-2222', code: 'Kios-352001' },
   { id: 'KS-MGT-02', name: 'Kios Makmur Jaya', owner: 'Slamet', branch: 'Magetan', address: 'Sukomoro, Magetan', phone: '0852-3333-4444', code: 'Kios-352002' },
   { id: 'KS-SRG-01', name: 'Kios Tani Mandiri', owner: 'Bambang', branch: 'Sragen', address: 'Sidoharjo, Sragen', phone: '0813-7777-8888', code: 'Kios-331401' },

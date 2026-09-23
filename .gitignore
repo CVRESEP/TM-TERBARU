@@ -25,4 +25,5 @@ dist-ssr
 ~$*
 Backup_*.json
 Backup_*.xlsx
-
+data firestore/
+implementation_plan.md

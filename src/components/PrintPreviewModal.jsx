@@ -8,8 +8,8 @@ export default function PrintPreviewModal({ isOpen, onClose, printData, printTyp
   const qtyTon = Number(printData.qtyTon || printData.qtyBags * 0.05 || 0);
 
   return (
-    <div className="modal-overlay print-modal-overlay">
-      <div className="modal-content print-modal-content" style={{ maxWidth: '750px' }}>
+    <div className="modal-overlay print-modal-overlay" onClick={onClose}>
+      <div className="modal-content print-modal-content" style={{ maxWidth: '750px' }} onClick={(e) => e.stopPropagation()}>
         <div className="modal-header btn-print-hide">
           <div>Pratinjau Dokumen Cetak ({printType === 'penyaluran' ? 'Surat Jalan Kios' : printType === 'penebusan' ? 'Faktur Penebusan' : 'DO Pengeluaran'})</div>
           <div style={{ display: 'flex', gap: '8px' }}>

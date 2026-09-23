@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import ModalKiosHistory from './ModalKiosHistory';
+import ImportModuleButton from './ImportModuleButton';
 
 export default function MasterDataView({ 
   selectedBranch,
@@ -17,7 +18,9 @@ export default function MasterDataView({
   onEditDriver, 
   onDeleteKios, 
   onDeleteSupplier,
-  onDeleteDriver
+  onDeleteDriver,
+  onImportModuleData,
+  onSyncData
 }) {
   const [activeSection, setActiveSection] = useState('kios');
   const [searchKios, setSearchKios] = useState('');
@@ -54,10 +57,35 @@ export default function MasterDataView({
           <h2 className="page-title">Data Master Kios, Supir & Supplier</h2>
           <p className="page-desc">Kelola direktori kios pengecer, data supir & armada pengiriman, serta supplier pupuk.</p>
         </div>
-        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-          <button className="btn-primary" onClick={onAddKios}>+ Tambah Kios</button>
-          <button className="btn-secondary" onClick={onAddDriver}>+ Tambah Supir</button>
-          <button className="btn-secondary" onClick={onAddSupplier}>+ Tambah Supplier</button>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'flex-end' }}>
+          {/* Main Action Buttons */}
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            <button className="btn-primary" style={{ padding: '8px 16px', fontSize: '14px', fontWeight: 'bold' }} onClick={onAddKios}>+ Tambah Kios</button>
+            <button className="btn-secondary" style={{ padding: '8px 16px', fontSize: '14px', fontWeight: 'bold' }} onClick={onAddDriver}>+ Tambah Supir</button>
+            <button className="btn-secondary" style={{ padding: '8px 16px', fontSize: '14px', fontWeight: 'bold' }} onClick={onAddSupplier}>+ Tambah Supplier</button>
+          </div>
+
+          {/* Secondary Buttons Row */}
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
+            {onSyncData && (
+              <button 
+                type="button"
+                className="btn-secondary" 
+                style={{ backgroundColor: '#f0fdf4', color: '#15803d', borderColor: '#bbf7d0', fontWeight: 700 }}
+                onClick={() => onSyncData('Sinkronisasi Data Master')}
+                title="Sinkronkan data kios, supir, dan supplier dengan database Turso"
+              >
+                🔄 Sinkronkan Data
+              </button>
+            )}
+            {onImportModuleData && (
+              <ImportModuleButton 
+                moduleName={activeSection === 'kios' ? 'kiosks' : activeSection === 'driver' ? 'drivers' : 'suppliers'} 
+                onImport={onImportModuleData} 
+                label={activeSection === 'kios' ? '📥 Import Kios' : activeSection === 'driver' ? '📥 Import Supir' : '📥 Import Supplier'} 
+              />
+            )}
+          </div>
         </div>
       </div>
 

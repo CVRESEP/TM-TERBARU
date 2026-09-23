@@ -4,7 +4,7 @@ import ModalNotification from './ModalNotification';
 import ModalUser from './ModalUser';
 import { syncDataToTurso, fetchDataFromTurso } from '../services/tursoService';
 
-const SECTIONS = ['profil', 'menu', 'header1', 'header2', 'header3', 'akun', 'backup', 'turso'];
+const SECTIONS = ['profil', 'menu', 'header1', 'header2', 'header3', 'akun', 'migrasi', 'backup', 'turso'];
 
 const sectionLabels = {
   profil:  '1. Profil Usaha & Cabang',
@@ -13,8 +13,9 @@ const sectionLabels = {
   header2: '4. Header Tabel: Pengeluaran DO',
   header3: '5. Header Tabel: Penyaluran Kios',
   akun:    '6. Pengelolaan Akun Pengguna',
-  backup:  '7. Backup & Mutasi Data',
-  turso:   '8. Turso DB & Cloudflare Cloud',
+  migrasi: '7. Mode Migrasi Data',
+  backup:  '8. Backup & Mutasi Data',
+  turso:   '9. Turso DB & Cloud',
 };
 
 // Reusable field row
@@ -243,6 +244,37 @@ export default function SettingsView({
         </div>
       )}
 
+      {/* ─── SECTION 6: MODE MIGRASI ─── */}
+      {activeSection === 'migrasi' && (
+        <div className="card">
+          <div className="card-title">Mode Migrasi Data (Import Per Modul)</div>
+          <div style={{ fontSize: '13px', color: '#4b5563', marginBottom: '16px', lineHeight: '1.5' }}>
+            Aktifkan mode ini jika Anda sedang dalam proses memigrasi/memasukkan data lama ke dalam sistem. 
+            Saat aktif, akan muncul tombol <strong>Import Excel</strong> di setiap halaman tabel utama (seperti Penebusan, Pengeluaran DO, Penyaluran).
+            Anda juga dapat melonggarkan validasi relasi tabel.
+          </div>
+          
+          <div className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <input 
+              type="checkbox" 
+              id="migrationModeToggle"
+              style={{ width: '18px', height: '18px' }}
+              checked={formData.migrationMode || false}
+              onChange={(e) => handleChange('migrationMode', e.target.checked)}
+            />
+            <label htmlFor="migrationModeToggle" style={{ fontSize: '14px', fontWeight: 600, color: '#111827', cursor: 'pointer' }}>
+              Aktifkan Mode Migrasi Data
+            </label>
+          </div>
+          
+          {formData.migrationMode && (
+            <div style={{ backgroundColor: '#fffbeb', border: '1px solid #fde68a', borderRadius: '4px', padding: '12px', marginTop: '12px', fontSize: '12px', color: '#92400e' }}>
+              <strong>⚠️ Peringatan:</strong> Selama Mode Migrasi aktif, penginputan/import data tidak akan divalidasi dengan ketat terhadap ketersediaan data di tabel lain. Pastikan Anda menonaktifkan mode ini kembali setelah selesai melakukan migrasi.
+            </div>
+          )}
+        </div>
+      )}
+
       {/* ─── SECTION 5: HEADER PENYALURAN ─── */}
       {activeSection === 'header3' && (
         <div className="card">
@@ -424,24 +456,24 @@ export default function SettingsView({
 
             {/* IMPORT / MUTASI DATA (JSON & EXCEL) */}
             <div style={{ border: '1px solid #e5e7eb', borderRadius: '6px', padding: '16px', backgroundColor: '#f9fafb' }}>
-              <h4 style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700, color: '#111827' }}>2. Import / Mutasi Data (.JSON & .XLSX Excel)</h4>
+              <h4 style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700, color: '#111827' }}>2. Import / Mutasi Data (.JSON, .XLSX Excel, .CSV)</h4>
               <p style={{ fontSize: '12px', color: '#6b7280', margin: '0 0 14px 0' }}>
-                Pilih file <strong>JSON</strong> atau file <strong>Excel (.xlsx / .xls)</strong> hasil backup / olahan data Anda untuk mengimpor seluruh sheet data secara otomatis ke sistem baru.
+                Pilih file <strong>JSON</strong>, <strong>Excel (.xlsx / .xls)</strong>, atau <strong>CSV (.csv)</strong> hasil backup / olahan data Anda untuk mengimpor seluruh sheet data secara otomatis ke sistem baru.
               </p>
               <input 
                 type="file" 
-                accept=".json, .xlsx, .xls" 
+                accept=".json, .xlsx, .xls, .csv" 
                 className="form-input" 
                 style={{ marginBottom: '10px' }}
                 onChange={(e) => {
                   const file = e.target.files[0];
                   if (!file) return;
 
-                  const isExcel = file.name.endsWith('.xlsx') || file.name.endsWith('.xls');
+                  const isExcelOrCSV = file.name.endsWith('.xlsx') || file.name.endsWith('.xls') || file.name.endsWith('.csv');
                   const reader = new FileReader();
 
-                  if (isExcel) {
-                    setImportStatus('⏳ Membaca file Excel (.xlsx)...');
+                  if (isExcelOrCSV) {
+                    setImportStatus('⏳ Membaca file Excel/CSV...');
                     reader.onload = async (event) => {
                       try {
                         const XLSX = await import('xlsx');
@@ -483,17 +515,17 @@ export default function SettingsView({
                           if (success) {
                             try {
                               const res = await syncDataToTurso(importedData, { tursoUrl: tursoDbUrl, tursoToken: tursoDbToken });
-                              setImportStatus(`✅ Import data Excel (.xlsx) berhasil! ${res.message || 'Seluruh data sheet telah disimpan di browser & Turso Cloud Database.'}`);
+                              setImportStatus(`✅ Import data Excel/CSV berhasil! ${res.message || 'Seluruh data sheet telah disimpan di browser & Turso Cloud Database.'}`);
                             } catch (tursoErr) {
-                              setImportStatus(`⚠️ Data Excel tersimpan lokal, namun Sync Turso: ${tursoErr.message}`);
+                              setImportStatus(`⚠️ Data tersimpan lokal, namun Sync Turso: ${tursoErr.message}`);
                             }
                           } else {
-                            setImportStatus('❌ Gagal mengimpor data Excel. Format sheet tidak cocok.');
+                            setImportStatus('❌ Gagal mengimpor data. Format sheet tidak cocok.');
                           }
                         }
                       } catch (err) {
-                        console.error('Excel Import Error:', err);
-                        setImportStatus(`❌ Gagal membaca file Excel: ${err.message}`);
+                        console.error('Import Error:', err);
+                        setImportStatus(`❌ Gagal membaca file Excel/CSV: ${err.message}`);
                       }
                     };
                     reader.readAsArrayBuffer(file);

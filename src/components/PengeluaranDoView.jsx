@@ -5,9 +5,10 @@ import { useSortableTable, SortIcon } from '../utils/useSortableTable';
 import { usePagination } from '../utils/usePagination';
 import TablePagination from './TablePagination';
 import ModalDetailTransaksi from './ModalDetailTransaksi';
+import ImportModuleButton from './ImportModuleButton';
 
 export default function PengeluaranDoView({ 
-  selectedBranch, doList, penebusanList, penyaluranList = [], onAddNew, onEdit, onOpenNextStage, onDelete, onDeleteMultiple, onOpenPrint, settings, onNavigate
+  selectedBranch, doList, penebusanList, penyaluranList = [], onAddNew, onEdit, onOpenNextStage, onDelete, onDeleteMultiple, onOpenPrint, settings, onNavigate, onImportModuleData, onSyncData
 }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedIds, setSelectedIds] = useState([]);
@@ -35,21 +36,46 @@ export default function PengeluaranDoView({
           <h2 className="page-title">{settings.stage2Name || '2. Pengeluaran DO Gudang'}</h2>
           <p className="page-desc">Pengambilan pupuk dari Gudang Supplier ke Gudang Distributor menggunakan <strong>Nomor DO</strong> yang sama dengan Penebusan.</p>
         </div>
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
-          {onNavigate && (
-            <>
-              <button className="btn-secondary" onClick={() => onNavigate('penebusan')}>
-                ← Ke Penebusan
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'flex-end' }}>
+          {/* Main Action Button */}
+          <button 
+            className="btn-primary" 
+            style={{ padding: '10px 20px', fontSize: '15px', fontWeight: 'bold' }} 
+            onClick={() => onAddNew('do')}
+          >
+            + Input Pengeluaran DO
+          </button>
+
+          {/* Secondary Buttons Row */}
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+            {onNavigate && (
+              <>
+                <button className="btn-secondary" onClick={() => onNavigate('penebusan')}>
+                  ← Ke Penebusan
+                </button>
+                <button className="btn-secondary" onClick={() => onNavigate('dashboard')}>
+                  Dashboard
+                </button>
+                <button className="btn-primary" style={{ backgroundColor: '#15803d' }} onClick={() => onNavigate('penyaluran_kios')}>
+                  Lanjut ke Penyaluran Kios →
+                </button>
+              </>
+            )}
+            {onSyncData && (
+              <button 
+                type="button"
+                className="btn-secondary" 
+                style={{ backgroundColor: '#f0fdf4', color: '#15803d', borderColor: '#bbf7d0', fontWeight: 700 }}
+                onClick={() => onSyncData('Sinkronisasi Pengeluaran DO')}
+                title="Sinkronkan data pengeluaran DO dengan database Turso"
+              >
+                🔄 Sinkronkan Data
               </button>
-              <button className="btn-secondary" onClick={() => onNavigate('dashboard')}>
-                Dashboard
-              </button>
-              <button className="btn-primary" style={{ backgroundColor: '#15803d' }} onClick={() => onNavigate('penyaluran_kios')}>
-                Lanjut ke Penyaluran Kios →
-              </button>
-            </>
-          )}
-          <button className="btn-primary" onClick={() => onAddNew('do')}>+ Input Pengeluaran DO</button>
+            )}
+            {onImportModuleData && (
+              <ImportModuleButton moduleName="pengeluaran_do" onImport={onImportModuleData} label="📥 Import DO" />
+            )}
+          </div>
         </div>
       </div>
 

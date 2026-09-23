@@ -8,9 +8,7 @@ import DateFilterBar, { matchesDateFilter } from './DateFilterBar';
 import { useSortableTable, SortIcon } from '../utils/useSortableTable';
 import { usePagination } from '../utils/usePagination';
 import { getPenyaluranPaymentStats as getPenyaluranPaymentStatsCentral } from '../utils/paymentStats';
-
-
-
+import ImportModuleButton from './ImportModuleButton';
 
 export default function PembayaranKiosView({
   selectedBranch = 'ALL',
@@ -22,9 +20,13 @@ export default function PembayaranKiosView({
   onAddDeposit,
   onDeletePayment,
   onDeleteDeposit,
+  onEditPayment,
+  onEditDeposit,
   onDeleteMultiple,
   settings = {},
-  onNavigate
+  onNavigate,
+  onImportModuleData,
+  onSyncPaymentStatus
 }) {
   const [activeTabSection, setActiveTabSection] = useState('tagihan_do'); // 'tagihan_do' | 'rekap_kios' | 'riwayat'
   const [searchTerm, setSearchTerm] = useState('');
@@ -104,6 +106,40 @@ export default function PembayaranKiosView({
   const [depDate, setDepDate] = useState(new Date().toISOString().split('T')[0]);
   const [depNotes, setDepNotes] = useState('');
 
+  // Modal Edit Log State
+  const [editingLog, setEditingLog] = useState(null);
+  const [editLogAmount, setEditLogAmount] = useState('');
+  const [editLogDate, setEditLogDate] = useState('');
+  const [editLogMethod, setEditLogMethod] = useState('Transfer Bank');
+  const [editLogNotes, setEditLogNotes] = useState('');
+
+  const handleOpenEditLog = (log) => {
+    setEditingLog(log);
+    setEditLogAmount(log.amount || 0);
+    setEditLogDate(log.date || new Date().toISOString().split('T')[0]);
+    setEditLogMethod(log.method || log.paymentMethod || 'Transfer Bank');
+    setEditLogNotes(log.notes || '');
+  };
+
+  const handleSaveEditLog = (e) => {
+    e.preventDefault();
+    if (!editingLog) return;
+    const updated = {
+      ...editingLog,
+      amount: Number(editLogAmount),
+      date: editLogDate,
+      method: editLogMethod,
+      paymentMethod: editLogMethod,
+      notes: editLogNotes
+    };
+    if (editingLog.logCategory === 'Deposit') {
+      if (onEditDeposit) onEditDeposit(updated);
+    } else {
+      if (onEditPayment) onEditPayment(updated);
+    }
+    setEditingLog(null);
+  };
+
   const formatRp = (val) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val || 0);
 
   // 1. Filter Kiosks
@@ -130,9 +166,26 @@ export default function PembayaranKiosView({
   // Helper statistik pembayaran — terpusat dari paymentStats.js
   const getPenyaluranPaymentStats = (item) => getPenyaluranPaymentStatsCentral(item, payments);
 
+  // Fast Kios Matcher Helper
+  const matchKiosObject = (item, kiosObj) => {
+    if (!item || !kiosObj) return false;
+    const itemKId = String(item.kiosId || '').toLowerCase().trim();
+    const itemKName = String(item.kiosName || '').toLowerCase().trim();
+    const kId = String(kiosObj.id || '').toLowerCase().trim();
+    const kName = String(kiosObj.name || '').toLowerCase().trim();
+    const kCode = String(kiosObj.code || '').toLowerCase().trim();
+    return (
+      (itemKId && itemKId === kId) ||
+      (itemKName && itemKName === kName) ||
+      (itemKId && itemKId === kName) ||
+      (itemKId && itemKId === kCode) ||
+      (itemKName && itemKName === kId)
+    );
+  };
 
   // 2. Filter Penyaluran List
   const filteredPenyaluran = useMemo(() => {
+    const selectedKiosObj = selectedKiosId !== 'ALL' ? (kiosks || []).find(k => k && k.id === selectedKiosId) : null;
     return (penyaluranList || []).map(item => {
       if (!item) return null;
       const stats = getPenyaluranPaymentStats(item);
@@ -140,7 +193,7 @@ export default function PembayaranKiosView({
     }).filter(item => {
       if (!item) return false;
       const matchBranch = selectedBranch === 'ALL' || item.branch === selectedBranch;
-      const matchKios = selectedKiosId === 'ALL' || item.kiosId === selectedKiosId;
+      const matchKios = selectedKiosId === 'ALL' || item.kiosId === selectedKiosId || (selectedKiosObj && matchKiosObject(item, selectedKiosObj));
       const matchSearch = !searchTerm || (item.doNo || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
                           (item.penyaluranNo || item.nomorPenyaluran || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
                           (item.kiosName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -148,7 +201,7 @@ export default function PembayaranKiosView({
       const matchDate = matchesDateFilter(item.date, filterStateTagihan);
       return matchBranch && matchKios && matchSearch && matchDate;
     });
-  }, [penyaluranList, selectedBranch, selectedKiosId, searchTerm, filterStateTagihan, payments]);
+  }, [penyaluranList, selectedBranch, selectedKiosId, searchTerm, filterStateTagihan, payments, kiosks]);
 
   // 4. Fast Lookup Map for Deposits per Kios
   const kiosDepositMap = useMemo(() => {
@@ -167,34 +220,17 @@ export default function PembayaranKiosView({
     return kiosDepositMap[kiosId] || 0;
   };
 
-  // Fast Kios Matcher Helper
-  const matchKiosObject = (item, kiosObj) => {
-    if (!item || !kiosObj) return false;
-    const itemKId = String(item.kiosId || '').toLowerCase().trim();
-    const itemKName = String(item.kiosName || '').toLowerCase().trim();
-    const kId = String(kiosObj.id || '').toLowerCase().trim();
-    const kName = String(kiosObj.name || '').toLowerCase().trim();
-    const kCode = String(kiosObj.code || '').toLowerCase().trim();
-    return (
-      (itemKId && itemKId === kId) ||
-      (itemKName && itemKName === kName) ||
-      (itemKId && itemKId === kName) ||
-      (itemKId && itemKId === kCode) ||
-      (itemKName && itemKName === kId)
-    );
-  };
-
-  // 5. High-Performance Recap Calculation using useMemo
+  // 5. High-Performance Recap Calculation using useMemo (Optimized O(N))
   const recapStats = useMemo(() => {
     let totalTagihanSemua = 0;
     let totalTerbayarSemua = 0;
     let totalPiutangTempoSemua = 0;
 
     filteredPenyaluran.forEach(p => {
-      const stats = getPenyaluranPaymentStats(p);
+      if (!p) return;
       totalTagihanSemua += Number(p.totalAmount || 0);
-      totalTerbayarSemua += stats.terbayar;
-      totalPiutangTempoSemua += stats.sisa;
+      totalTerbayarSemua += Number(p.terbayar || 0);
+      totalPiutangTempoSemua += Number(p.kurangBayar || 0);
     });
 
     // Total Deposits
@@ -205,22 +241,23 @@ export default function PembayaranKiosView({
     });
     const totalDepositSemua = filteredDeposits.reduce((s, d) => s + Number(d?.amount || 0), 0);
 
-    // Group Penyaluran by Kios for instant loop
-    const salurByKios = {};
+    // Group Kekurangan per Kios in a single O(N) pass
+    const kiosKekuranganMap = new Map();
     (penyaluranList || []).forEach(p => {
       if (!p) return;
-      const kKey = p.kiosId || p.kiosName;
-      if (kKey) {
-        if (!salurByKios[kKey]) salurByKios[kKey] = [];
-        salurByKios[kKey].push(p);
-      }
+      const sisa = p.kurangBayar !== undefined ? Number(p.kurangBayar) : getPenyaluranPaymentStats(p).sisa;
+      const kId = String(p.kiosId || '').trim();
+      const kName = String(p.kiosName || '').trim().toLowerCase();
+      if (kId) kiosKekuranganMap.set(kId, (kiosKekuranganMap.get(kId) || 0) + sisa);
+      if (kName && kName !== kId) kiosKekuranganMap.set(kName, (kiosKekuranganMap.get(kName) || 0) + sisa);
     });
 
     // Net Kekurangan per kios
     let totalNetKekuranganSemua = 0;
     filteredKiosks.forEach(kios => {
-      const list = (penyaluranList || []).filter(p => p && matchKiosObject(p, kios));
-      const kek = list.reduce((s, p) => s + getPenyaluranPaymentStats(p).sisa, 0);
+      const kId = String(kios.id || '').trim();
+      const kName = String(kios.name || '').trim().toLowerCase();
+      const kek = kiosKekuranganMap.get(kId) || (kName ? kiosKekuranganMap.get(kName) : 0) || 0;
       const dep = getKiosDepositSum(kios.id);
       const isDeduct = isKiosDeductEnabled(kios.id);
       const netK = isDeduct ? Math.max(0, kek - dep) : kek;
@@ -234,26 +271,46 @@ export default function PembayaranKiosView({
       totalDepositSemua,
       totalNetKekuranganSemua
     };
-  }, [filteredPenyaluran, filteredKiosks, penyaluranList, deposits, penyaluranPaymentsMap, kiosDepositMap, kiosDeductMap, selectedKiosId]);
+  }, [filteredPenyaluran, filteredKiosks, penyaluranList, deposits, kiosDepositMap, kiosDeductMap, selectedKiosId]);
 
   const { totalTagihanSemua, totalTerbayarSemua, totalPiutangTempoSemua, totalDepositSemua, totalNetKekuranganSemua } = recapStats;
 
   // Sort untuk tab tagihan DO
   const { sorted: sortedTagihan, sortKey: sortKeyTagihan, sortDir: sortDirTagihan, thProps: thTagihan } = useSortableTable(filteredPenyaluran, 'date', 'desc');
 
-  // Log riwayat gabungan (untuk tab 3) — murni dari tabel payments & deposits database
-  const riwayatLogs = useMemo(() => [
-    ...(payments || []).filter(Boolean).map(p => ({ ...p, method: p.method || p.paymentMethod, logCategory: 'Pelunasan' })),
-    ...(deposits || []).filter(Boolean).map(d => ({ ...d, method: d.method || d.paymentMethod, logCategory: 'Deposit' }))
-  ].filter(log => {
-    if (!log) return false;
-    const matchBranch = selectedBranch === 'ALL' || log.branch === selectedBranch;
-    const matchKios = selectedKiosId === 'ALL' || log.kiosId === selectedKiosId || log.kiosName === selectedKiosId;
-    const matchSearch = !searchTerm || (log.doNo || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                        (log.kiosName || '').toLowerCase().includes(searchTerm.toLowerCase());
-    const matchDate = matchesDateFilter(log.date, filterStateRiwayat);
-    return matchBranch && matchKios && matchSearch && matchDate;
-  }), [payments, deposits, filterStateRiwayat, selectedBranch, selectedKiosId, searchTerm]);
+  // Log riwayat gabungan (untuk tab 3) — termasuk Pelunasan, Deposit, dan DP Penyaluran
+  const riwayatLogs = useMemo(() => {
+    const dpLogs = (penyaluranList || [])
+      .filter(p => p && Number(p.dpAmount || p.diBayar || 0) > 0)
+      .map(p => ({
+        id: `DP-${p.id}`,
+        branch: p.branch,
+        date: p.date,
+        kiosId: p.kiosId,
+        kiosName: p.kiosName,
+        doNo: p.doNo || p.id,
+        amount: Number(p.dpAmount || p.diBayar || 0),
+        method: 'Tunai (DP Penyaluran)',
+        notes: `Pembayaran Awal (DP) saat Penyaluran: ${p.fertilizerName || ''} (${Number(p.qtyTon || p.qty || 0)} Ton)`,
+        logCategory: 'DP Penyaluran',
+        isDirectTrx: true,
+        penyaluranId: p.id
+      }));
+
+    return [
+      ...(payments || []).filter(Boolean).map(p => ({ ...p, method: p.method || p.paymentMethod, logCategory: 'Pelunasan' })),
+      ...(deposits || []).filter(Boolean).map(d => ({ ...d, method: d.method || d.paymentMethod, logCategory: 'Deposit' })),
+      ...dpLogs
+    ].filter(log => {
+      if (!log) return false;
+      const matchBranch = selectedBranch === 'ALL' || log.branch === selectedBranch;
+      const matchKios = selectedKiosId === 'ALL' || log.kiosId === selectedKiosId || log.kiosName === selectedKiosId;
+      const matchSearch = !searchTerm || (log.doNo || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          (log.kiosName || '').toLowerCase().includes(searchTerm.toLowerCase());
+      const matchDate = matchesDateFilter(log.date, filterStateRiwayat);
+      return matchBranch && matchKios && matchSearch && matchDate;
+    });
+  }, [payments, deposits, penyaluranList, filterStateRiwayat, selectedBranch, selectedKiosId, searchTerm]);
 
   const { sorted: sortedRiwayat, sortKey: sortKeyRiwayat, sortDir: sortDirRiwayat, thProps: thRiwayat } = useSortableTable(riwayatLogs, 'date', 'desc');
 
@@ -266,9 +323,9 @@ export default function PembayaranKiosView({
 
   // Open Modal Pelunasan
   const handleOpenPayment = (kiosIdParam = '', penyaluranParam = null) => {
-    const kId = kiosIdParam || (filteredKiosks[0]?.id || '');
+    const kId = kiosIdParam || '';
     setPayKiosId(kId);
-    setUseDepositForPayment(isKiosDeductEnabled(kId));
+    setUseDepositForPayment(kId ? isKiosDeductEnabled(kId) : false);
 
     if (penyaluranParam) {
       setPayPenyaluranId(penyaluranParam.id);
@@ -284,7 +341,7 @@ export default function PembayaranKiosView({
 
   // Open Modal Deposit
   const handleOpenDeposit = (kiosIdParam = '', doNoParam = '') => {
-    setDepKiosId(kiosIdParam || (filteredKiosks[0]?.id || ''));
+    setDepKiosId(kiosIdParam || '');
     setDepDoNo(doNoParam || '');
     setDepAmount('');
     setDepNotes('');
@@ -295,9 +352,10 @@ export default function PembayaranKiosView({
   const handleSubmitPayment = (e) => {
     e.preventDefault();
     const selectedKios = (kiosks || []).find(k => k && k.id === payKiosId);
-    const selectedPenyaluran = (penyaluranList || []).find(p => p && p.id === payPenyaluranId);
+    const selectedPenyaluran = (penyaluranList || []).find(p => p && (p.id === payPenyaluranId || p.penyaluranNo === payPenyaluranId));
 
     const totalEnteredAmount = Number(payAmount || 0);
+    const paymentBranch = selectedPenyaluran?.branch || selectedKios?.branch || (selectedBranch !== 'ALL' ? selectedBranch : 'Magetan');
 
     if (useDepositForPayment && availablePayKiosDeposit > 0) {
       const depositDeducted = Math.min(availablePayKiosDeposit, totalEnteredAmount);
@@ -308,9 +366,10 @@ export default function PembayaranKiosView({
         onAddPayment({
           id: `PAY-DEP-${Date.now()}`,
           date: payDate,
+          branch: paymentBranch,
           kiosId: payKiosId,
-          kiosName: selectedKios?.name || '-',
-          penyaluranId: payPenyaluranId || null,
+          kiosName: selectedKios?.name || selectedPenyaluran?.kiosName || '-',
+          penyaluranId: selectedPenyaluran?.id || payPenyaluranId || null,
           doNo: selectedPenyaluran?.doNo || '-',
           amount: depositDeducted,
           method: 'Potong Deposit',
@@ -321,8 +380,9 @@ export default function PembayaranKiosView({
         onAddDeposit({
           id: `DEP-USE-${Date.now()}`,
           date: payDate,
+          branch: paymentBranch,
           kiosId: payKiosId,
-          kiosName: selectedKios?.name || '-',
+          kiosName: selectedKios?.name || selectedPenyaluran?.kiosName || '-',
           doNo: selectedPenyaluran?.doNo || '-',
           amount: -depositDeducted,
           notes: `Potong saldo deposit untuk pelunasan DO ${selectedPenyaluran?.doNo || '-'}`,
@@ -334,9 +394,10 @@ export default function PembayaranKiosView({
         onAddPayment({
           id: `PAY-${Date.now()}`,
           date: payDate,
+          branch: paymentBranch,
           kiosId: payKiosId,
-          kiosName: selectedKios?.name || '-',
-          penyaluranId: payPenyaluranId || null,
+          kiosName: selectedKios?.name || selectedPenyaluran?.kiosName || '-',
+          penyaluranId: selectedPenyaluran?.id || payPenyaluranId || null,
           doNo: selectedPenyaluran?.doNo || '-',
           amount: cashRemaining,
           method: payMethod,
@@ -348,9 +409,10 @@ export default function PembayaranKiosView({
       const paymentRecord = {
         id: `PAY-${Date.now()}`,
         date: payDate,
+        branch: paymentBranch,
         kiosId: payKiosId,
-        kiosName: selectedKios?.name || '-',
-        penyaluranId: payPenyaluranId || null,
+        kiosName: selectedKios?.name || selectedPenyaluran?.kiosName || '-',
+        penyaluranId: selectedPenyaluran?.id || payPenyaluranId || null,
         doNo: selectedPenyaluran?.doNo || '-',
         amount: totalEnteredAmount,
         method: payMethod,
@@ -366,10 +428,12 @@ export default function PembayaranKiosView({
   const handleSubmitDeposit = (e) => {
     e.preventDefault();
     const selectedKios = (kiosks || []).find(k => k && k.id === depKiosId);
+    const depositBranch = selectedKios?.branch || (selectedBranch !== 'ALL' ? selectedBranch : 'Magetan');
 
     const depositRecord = {
       id: `DEP-${Date.now()}`,
       date: depDate,
+      branch: depositBranch,
       kiosId: depKiosId,
       kiosName: selectedKios?.name || '-',
       doNo: depDoNo || '-',
@@ -389,26 +453,54 @@ export default function PembayaranKiosView({
           <h2 className="page-title">Pencatatan & Rekap Pembayaran Kios</h2>
           <p className="page-desc">Monitoring otomatis Kekurangan Pembayaran, Pelunasan Tagihan, dan Aksi Deposit <strong>Per Kios</strong>.</p>
         </div>
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
-          {onNavigate && (
-            <>
-              <button className="btn-secondary" onClick={() => onNavigate('penyaluran_kios')}>
-                ← Ke Penyaluran Kios
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'flex-end' }}>
+          {/* Main Action Buttons */}
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            <button 
+              className="btn-primary" 
+              style={{ backgroundColor: '#15803d', padding: '10px 20px', fontSize: '15px', fontWeight: 'bold' }} 
+              onClick={() => handleOpenPayment()}
+            >
+              + Terima Pelunasan
+            </button>
+            <button 
+              className="btn-primary" 
+              style={{ backgroundColor: '#1d4ed8', padding: '10px 20px', fontSize: '15px', fontWeight: 'bold' }} 
+              onClick={() => handleOpenDeposit()}
+            >
+              + Catat Deposit Kios
+            </button>
+          </div>
+
+          {/* Secondary Buttons Row */}
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+            {onNavigate && (
+              <>
+                <button className="btn-secondary" onClick={() => onNavigate('penyaluran_kios')}>
+                  ← Ke Penyaluran Kios
+                </button>
+                <button className="btn-secondary" onClick={() => onNavigate('dashboard')}>
+                  Dashboard
+                </button>
+                <button className="btn-primary" style={{ backgroundColor: '#475569' }} onClick={() => onNavigate('laporan')}>
+                  Lanjut ke Laporan & Cetak →
+                </button>
+              </>
+            )}
+            {onImportModuleData && (
+              <ImportModuleButton moduleName="payments" onImport={onImportModuleData} label="📥 Import Pembayaran" />
+            )}
+            {onSyncPaymentStatus && (
+              <button 
+                className="btn-secondary" 
+                style={{ backgroundColor: '#0284c7', color: '#fff', border: 'none', fontWeight: 600 }}
+                onClick={() => onSyncPaymentStatus()}
+                title="Sinkronkan kalkulasi pembayaran seluruh penyaluran ke database Turso"
+              >
+                🔄 Sinkronkan Pembayaran
               </button>
-              <button className="btn-secondary" onClick={() => onNavigate('dashboard')}>
-                Dashboard
-              </button>
-              <button className="btn-primary" style={{ backgroundColor: '#475569' }} onClick={() => onNavigate('laporan')}>
-                Lanjut ke Laporan & Cetak →
-              </button>
-            </>
-          )}
-          <button className="btn-primary" style={{ backgroundColor: '#15803d' }} onClick={() => handleOpenPayment()}>
-            + Terima Pelunasan
-          </button>
-          <button className="btn-primary" style={{ backgroundColor: '#1d4ed8' }} onClick={() => handleOpenDeposit()}>
-            + Catat Deposit Kios
-          </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -831,23 +923,29 @@ export default function PembayaranKiosView({
           {/* SUMMARY TOTAL PENERIMAAN SESUAI FILTER */}
           {(() => {
             const totalPelunasan = riwayatLogs.filter(l => l.logCategory === 'Pelunasan').reduce((s, l) => s + Number(l.amount || 0), 0);
+            const totalDp        = riwayatLogs.filter(l => l.logCategory === 'DP Penyaluran').reduce((s, l) => s + Number(l.amount || 0), 0);
             const totalDeposit   = riwayatLogs.filter(l => l.logCategory === 'Deposit').reduce((s, l) => s + Number(l.amount || 0), 0);
             const totalMasuk     = riwayatLogs.reduce((s, l) => s + Number(l.amount || 0), 0);
             return (
               <div style={{ display: 'flex', gap: '10px', marginBottom: '12px', flexWrap: 'wrap' }}>
-                <div className="card" style={{ padding: '10px 16px', borderLeft: '4px solid #15803d', flex: 1, minWidth: '150px' }}>
+                <div className="card" style={{ padding: '10px 16px', borderLeft: '4px solid #15803d', flex: 1, minWidth: '140px' }}>
                   <div style={{ fontSize: '11px', color: '#15803d', fontWeight: 700 }}>TOTAL PELUNASAN</div>
-                  <div style={{ fontSize: '18px', fontWeight: 800, color: '#15803d' }}>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(totalPelunasan)}</div>
+                  <div style={{ fontSize: '17px', fontWeight: 800, color: '#15803d' }}>{formatRp(totalPelunasan)}</div>
                   <div style={{ fontSize: '11px', color: '#9ca3af' }}>{riwayatLogs.filter(l => l.logCategory === 'Pelunasan').length} transaksi</div>
                 </div>
-                <div className="card" style={{ padding: '10px 16px', borderLeft: '4px solid #1d4ed8', flex: 1, minWidth: '150px' }}>
+                <div className="card" style={{ padding: '10px 16px', borderLeft: '4px solid #b45309', flex: 1, minWidth: '140px' }}>
+                  <div style={{ fontSize: '11px', color: '#b45309', fontWeight: 700 }}>TOTAL DP PENYALURAN</div>
+                  <div style={{ fontSize: '17px', fontWeight: 800, color: '#b45309' }}>{formatRp(totalDp)}</div>
+                  <div style={{ fontSize: '11px', color: '#9ca3af' }}>{riwayatLogs.filter(l => l.logCategory === 'DP Penyaluran').length} transaksi</div>
+                </div>
+                <div className="card" style={{ padding: '10px 16px', borderLeft: '4px solid #1d4ed8', flex: 1, minWidth: '140px' }}>
                   <div style={{ fontSize: '11px', color: '#1d4ed8', fontWeight: 700 }}>TOTAL DEPOSIT</div>
-                  <div style={{ fontSize: '18px', fontWeight: 800, color: '#1d4ed8' }}>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(totalDeposit)}</div>
+                  <div style={{ fontSize: '17px', fontWeight: 800, color: '#1d4ed8' }}>{formatRp(totalDeposit)}</div>
                   <div style={{ fontSize: '11px', color: '#9ca3af' }}>{riwayatLogs.filter(l => l.logCategory === 'Deposit').length} transaksi</div>
                 </div>
-                <div className="card" style={{ padding: '10px 16px', borderLeft: '4px solid #7c3aed', flex: 1, minWidth: '150px' }}>
+                <div className="card" style={{ padding: '10px 16px', borderLeft: '4px solid #7c3aed', flex: 1, minWidth: '140px' }}>
                   <div style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 700 }}>TOTAL UANG MASUK</div>
-                  <div style={{ fontSize: '18px', fontWeight: 800, color: '#7c3aed' }}>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(totalMasuk)}</div>
+                  <div style={{ fontSize: '17px', fontWeight: 800, color: '#7c3aed' }}>{formatRp(totalMasuk)}</div>
                   <div style={{ fontSize: '11px', color: '#9ca3af' }}>Sesuai filter tanggal aktif</div>
                 </div>
               </div>
@@ -924,7 +1022,7 @@ export default function PembayaranKiosView({
                   </td>
                   <td style={{ fontFamily: 'monospace', fontWeight: 700 }}>{log.id}</td>
                   <td>
-                    <span className={`badge ${log.logCategory?.includes('Pelunasan') ? 'badge-success' : 'badge-info'}`}>
+                    <span className={`badge ${log.logCategory === 'Pelunasan' ? 'badge-success' : (log.logCategory === 'DP Penyaluran' ? 'badge-warning' : 'badge-info')}`}>
                       {log.logCategory || 'Log'}
                     </span>
                   </td>
@@ -945,21 +1043,31 @@ export default function PembayaranKiosView({
                     </span>
                   </td>
                   <td style={{ fontWeight: 800, color: '#15803d', fontFamily: 'monospace' }}>{log.doNo || '-'}</td>
-                  <td style={{ fontWeight: 800, color: log.logCategory?.includes('Pelunasan') ? '#15803d' : '#1d4ed8' }}>
+                  <td style={{ fontWeight: 800, color: log.logCategory === 'Pelunasan' ? '#15803d' : (log.logCategory === 'DP Penyaluran' ? '#b45309' : '#1d4ed8') }}>
                     {formatRp(log.amount)}
                   </td>
                   <td style={{ fontSize: '12px' }}>
                     {log.method ? `[${log.method}] ` : ''}{log.notes || '-'}
                   </td>
-                  <td>
+                  <td onClick={(e) => e.stopPropagation()}>
                     {!log.isDirectTrx && (
-                      <button
-                        className="btn-danger"
-                        style={{ fontSize: '11px', padding: '3px 7px' }}
-                        onClick={() => log.logCategory === 'Pelunasan' ? onDeletePayment(log.id) : onDeleteDeposit(log.id)}
-                      >
-                        Hapus
-                      </button>
+                      <div style={{ display: 'flex', gap: '4px' }}>
+                        <button
+                          className="btn-secondary"
+                          style={{ fontSize: '11px', padding: '3px 7px', backgroundColor: '#f1f5f9', color: '#0f172a', fontWeight: 600 }}
+                          onClick={() => handleOpenEditLog(log)}
+                          title="Edit Catatan Pembayaran Ini"
+                        >
+                          ✏️ Edit
+                        </button>
+                        <button
+                          className="btn-danger"
+                          style={{ fontSize: '11px', padding: '3px 7px' }}
+                          onClick={() => log.logCategory === 'Pelunasan' ? onDeletePayment(log.id) : onDeleteDeposit(log.id)}
+                        >
+                          Hapus
+                        </button>
+                      </div>
                     )}
                     {log.isDirectTrx && (
                       <span style={{ fontSize: '11px', color: '#6b7280' }}>Terikat SJ</span>
@@ -1012,8 +1120,8 @@ export default function PembayaranKiosView({
           MODAL 1: FORM TERIMA PELUNASAN
          ══════════════════════════════════════ */}
       {isPaymentModalOpen && (
-        <div className="modal-overlay">
-          <div className="modal-content" style={{ maxWidth: '540px' }}>
+        <div className="modal-overlay" onClick={() => setIsPaymentModalOpen(false)}>
+          <div className="modal-content" style={{ maxWidth: '540px' }} onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <div>Catat Pelunasan / Kekurangan Pembayaran Kios</div>
               <button className="btn-secondary" onClick={() => setIsPaymentModalOpen(false)}>Tutup</button>
@@ -1148,8 +1256,8 @@ export default function PembayaranKiosView({
           MODAL 2: FORM CATAT DEPOSIT KIOS
          ══════════════════════════════════════ */}
       {isDepositModalOpen && (
-        <div className="modal-overlay">
-          <div className="modal-content" style={{ maxWidth: '520px' }}>
+        <div className="modal-overlay" onClick={() => setIsDepositModalOpen(false)}>
+          <div className="modal-content" style={{ maxWidth: '520px' }} onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <div>Catat Deposit Kios Baru</div>
               <button className="btn-secondary" onClick={() => setIsDepositModalOpen(false)}>Tutup</button>
@@ -1210,6 +1318,79 @@ export default function PembayaranKiosView({
               <div className="modal-footer">
                 <button type="button" className="btn-secondary" onClick={() => setIsDepositModalOpen(false)}>Batal</button>
                 <button type="submit" className="btn-primary" style={{ backgroundColor: '#1d4ed8' }}>Simpan Deposit</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL EDIT PEMBAYARAN / DEPOSIT */}
+      {editingLog && (
+        <div className="modal-overlay" style={{ zIndex: 9999 }} onClick={() => setEditingLog(null)}>
+          <div className="modal-content" style={{ maxWidth: '520px', borderRadius: '14px', overflow: 'hidden' }} onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <div>Edit {editingLog.logCategory || 'Pembayaran'}: {editingLog.kiosName}</div>
+              <button className="btn-secondary" onClick={() => setEditingLog(null)}>Tutup</button>
+            </div>
+            <form onSubmit={handleSaveEditLog}>
+              <div className="modal-body">
+                <div className="form-group">
+                  <label className="form-label">Nama Kios:</label>
+                  <input type="text" className="form-input" value={editingLog.kiosName || '-'} disabled />
+                </div>
+                {editingLog.doNo && (
+                  <div className="form-group">
+                    <label className="form-label">Terkait Nomor DO:</label>
+                    <input type="text" className="form-input" value={editingLog.doNo} disabled />
+                  </div>
+                )}
+                <div className="form-row">
+                  <div className="form-group">
+                    <label className="form-label">Tanggal:</label>
+                    <input 
+                      type="date" 
+                      className="form-input" 
+                      value={editLogDate} 
+                      onChange={(e) => setEditLogDate(e.target.value)} 
+                      required 
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Nominal Pembayaran (Rp):</label>
+                    <input 
+                      type="text" 
+                      className="form-input" 
+                      value={editLogAmount ? formatCurrencyInput(editLogAmount) : ''} 
+                      onChange={(e) => setEditLogAmount(parseCurrencyInput(e.target.value))} 
+                      required 
+                    />
+                  </div>
+                </div>
+                {editingLog.logCategory !== 'Deposit' && (
+                  <div className="form-group">
+                    <label className="form-label">Metode Pembayaran:</label>
+                    <select className="form-input" value={editLogMethod} onChange={(e) => setEditLogMethod(e.target.value)}>
+                      <option value="Transfer Bank">Transfer Bank</option>
+                      <option value="Tunai">Tunai</option>
+                      <option value="Potong Deposit">Potong Deposit</option>
+                      <option value="Giro / Cek">Giro / Cek</option>
+                    </select>
+                  </div>
+                )}
+                <div className="form-group">
+                  <label className="form-label">Catatan / Keterangan:</label>
+                  <input 
+                    type="text" 
+                    className="form-input" 
+                    placeholder="Catatan pelunasan..." 
+                    value={editLogNotes} 
+                    onChange={(e) => setEditLogNotes(e.target.value)} 
+                  />
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn-secondary" onClick={() => setEditingLog(null)}>Batal</button>
+                <button type="submit" className="btn-primary" style={{ backgroundColor: '#15803d' }}>Simpan Perubahan</button>
               </div>
             </form>
           </div>

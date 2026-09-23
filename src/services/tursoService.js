@@ -7,7 +7,7 @@ import { createClient } from '@libsql/client/web';
 const DEFAULT_TURSO_URL = 'libsql://tm-baru-cvresep.aws-ap-northeast-1.turso.io';
 const DEFAULT_TURSO_TOKEN = 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3ODU0MzY5NzcsImlkIjoiMDE5ZmI0NGYtN2QwMS03MzhiLTk4MWMtMmZkNjYwMjg4NTU4Iiwia2lkIjoiZ1BNTHB5ZDZHREZraVd2T2dhbTNWMC1ISTVjM21UbW15VUVxMkFqb2tZcyIsInJpZCI6Ijg5MjkyM2I1LWM5ODQtNGQxMi05MDBmLThhODUzZjY3MjlmZiJ9.PAr56n8intzw0UkAtsWX38G_iRkb_zRxQ3NtGnbBMjsIaK0xcLQJyVG9nw7nRyPcw5NapcTERjWbK_oTucJBCQ';
 
-export async function syncDataToTurso(fullData, config = {}) {
+export async function syncDataToTurso(fullData, config = {}, changedTables = null) {
 
   function formatTursoUrl(url) {
     if (!url) return '';
@@ -87,8 +87,10 @@ export async function syncDataToTurso(fullData, config = {}) {
       }
     };
 
+    const syncAll = !changedTables || changedTables.length === 0;
+
     // Sync settings key-values
-    if (fullData.settings && typeof fullData.settings === 'object') {
+    if ((syncAll || changedTables.includes('settings')) && fullData.settings && typeof fullData.settings === 'object') {
       const settingStatements = [];
       for (const [key, value] of Object.entries(fullData.settings)) {
         const valStr = typeof value === 'object' ? JSON.stringify(value) : String(value);
@@ -142,25 +144,179 @@ export async function syncDataToTurso(fullData, config = {}) {
       }
     };
 
-    await syncTableBatch('users', fullData.usersList, ['id', 'username', 'password', 'name', 'role', 'branch']);
-    await syncTableBatch('fertilizers', fullData.fertilizers, ['id', 'name', 'priceBuy', 'priceSell', 'stock', 'supplier', 'branch']);
-    await syncTableBatch('suppliers', fullData.suppliers, ['id', 'name', 'phone', 'address']);
-    await syncTableBatch('drivers', fullData.drivers, ['id', 'name', 'phone', 'truckNumber', 'branch']);
-    await syncTableBatch('kiosks', fullData.kiosks, ['id', 'code', 'name', 'owner', 'address', 'phone', 'branch']);
-    await syncTableBatch('penebusan', fullData.penebusanList, ['id', 'doNo', 'spjbNo', 'date', 'supplierId', 'supplierName', 'fertilizerId', 'fertilizerName', 'qtyTon', 'pricePerTon', 'totalAmount', 'status', 'notes', 'branch']);
-    await syncTableBatch('do_expenses', fullData.doList, ['id', 'doNo', 'penebusanId', 'date', 'fertilizerId', 'fertilizerName', 'qtyTon', 'driverName', 'vehiclePlate', 'targetWarehouse', 'status', 'notes', 'branch']);
-    await syncTableBatch('penyaluran', fullData.penyaluranList, ['id', 'penyaluranNo', 'nomorPenyaluran', 'sjNo', 'doRefId', 'doNo', 'date', 'kiosId', 'kiosName', 'fertilizerId', 'fertilizerName', 'qtyTon', 'pricePerTon', 'totalAmount', 'dpAmount', 'paymentStatus', 'driverName', 'vehiclePlate', 'deliveryStatus', 'notes', 'branch']);
-    await syncTableBatch('payments', fullData.payments, ['id', 'penyaluranId', 'doRefId', 'doNo', 'kiosName', 'date', 'amount', 'paymentMethod', 'notes', 'branch']);
-    await syncTableBatch('deposits', fullData.deposits, ['id', 'kiosId', 'kiosName', 'date', 'amount', 'notes', 'branch']);
-    await syncTableBatch('kas_angkutan', fullData.kasAngkutanList, ['id', 'branch', 'date', 'doNo', 'penyaluranNo', 'kiosName', 'driverName', 'transactionType', 'description', 'amount', 'adminFee', 'mealFee', 'palangFee', 'solarFee', 'driverWage', 'overtimeFee', 'helperFee', 'otherFee', 'notes']);
-    await syncTableBatch('kas_umum', fullData.kasUmumList, ['id', 'branch', 'date', 'type', 'category', 'description', 'amount', 'notes']);
-    await syncTableBatch('activity_logs', fullData.activityLogs, ['id', 'timestamp', 'user', 'role', 'action', 'details']);
+    if (syncAll || changedTables.includes('users')) await syncTableBatch('users', fullData.usersList, ['id', 'username', 'password', 'name', 'role', 'branch']);
+    if (syncAll || changedTables.includes('fertilizers')) await syncTableBatch('fertilizers', fullData.fertilizers, ['id', 'name', 'priceBuy', 'priceSell', 'stock', 'supplier', 'branch']);
+    if (syncAll || changedTables.includes('suppliers')) await syncTableBatch('suppliers', fullData.suppliers, ['id', 'name', 'phone', 'address']);
+    if (syncAll || changedTables.includes('drivers')) await syncTableBatch('drivers', fullData.drivers, ['id', 'name', 'phone', 'truckNumber', 'branch']);
+    if (syncAll || changedTables.includes('kiosks')) await syncTableBatch('kiosks', fullData.kiosks, ['id', 'code', 'name', 'owner', 'address', 'phone', 'branch']);
+    if (syncAll || changedTables.includes('penebusan')) await syncTableBatch('penebusan', fullData.penebusanList, ['id', 'doNo', 'spjbNo', 'date', 'supplierId', 'supplierName', 'fertilizerId', 'fertilizerName', 'qtyTon', 'pricePerTon', 'totalAmount', 'status', 'notes', 'branch']);
+    if (syncAll || changedTables.includes('do_expenses')) await syncTableBatch('do_expenses', fullData.doList, ['id', 'doNo', 'penebusanId', 'date', 'fertilizerId', 'fertilizerName', 'qtyTon', 'driverName', 'vehiclePlate', 'targetWarehouse', 'status', 'notes', 'branch']);
+    if (syncAll || changedTables.includes('penyaluran')) await syncTableBatch('penyaluran', fullData.penyaluranList, ['id', 'penyaluranNo', 'nomorPenyaluran', 'sjNo', 'doRefId', 'doNo', 'date', 'kiosId', 'kiosName', 'fertilizerId', 'fertilizerName', 'qtyTon', 'pricePerTon', 'totalAmount', 'dpAmount', 'paymentStatus', 'driverName', 'vehiclePlate', 'deliveryStatus', 'notes', 'branch']);
+    if (syncAll || changedTables.includes('payments')) await syncTableBatch('payments', fullData.payments, ['id', 'penyaluranId', 'doRefId', 'doNo', 'kiosName', 'date', 'amount', 'paymentMethod', 'notes', 'branch']);
+    if (syncAll || changedTables.includes('deposits')) await syncTableBatch('deposits', fullData.deposits, ['id', 'kiosId', 'kiosName', 'date', 'amount', 'notes', 'branch']);
+    if (syncAll || changedTables.includes('kas_angkutan')) await syncTableBatch('kas_angkutan', fullData.kasAngkutanList, ['id', 'branch', 'date', 'doNo', 'penyaluranNo', 'kiosName', 'driverName', 'transactionType', 'description', 'amount', 'adminFee', 'mealFee', 'palangFee', 'solarFee', 'driverWage', 'overtimeFee', 'helperFee', 'otherFee', 'notes']);
+    if (syncAll || changedTables.includes('kas_umum')) await syncTableBatch('kas_umum', fullData.kasUmumList, ['id', 'branch', 'date', 'type', 'category', 'description', 'amount', 'notes']);
+    if (syncAll || changedTables.includes('activity_logs')) await syncTableBatch('activity_logs', fullData.activityLogs, ['id', 'timestamp', 'user', 'role', 'action', 'details']);
 
     return { success: true, mode: 'direct', message: 'Data berhasil disinkronkan langsung ke Turso Cloud Database!' };
   } catch (err) {
     throw err;
   }
 }
+
+export async function syncPartialDataToTurso(tableName, items, mode = 'append', config = {}, onProgress = null) {
+  function formatTursoUrl(url) {
+    if (!url) return '';
+    let formatted = String(url).trim();
+    if (formatted.startsWith('libsql://')) {
+      formatted = formatted.replace('libsql://', 'https://');
+    }
+    return formatted;
+  }
+
+  const getLocal = (key) => (typeof localStorage !== 'undefined' ? localStorage.getItem(key) : null);
+  const dbUrl = formatTursoUrl(config.tursoUrl || getLocal('TURSO_DATABASE_URL') || DEFAULT_TURSO_URL);
+  const dbToken = config.tursoToken || getLocal('TURSO_AUTH_TOKEN') || DEFAULT_TURSO_TOKEN;
+
+  if (!dbUrl) throw new Error('TURSO_DATABASE_URL belum dikonfigurasi.');
+
+  const client = createClient({
+    url: dbUrl,
+    authToken: dbToken || undefined
+  });
+
+  try {
+    const tableColumnsMap = {
+      'penebusan': ['id', 'doNo', 'spjbNo', 'date', 'supplierId', 'supplierName', 'fertilizerId', 'fertilizerName', 'qtyTon', 'pricePerTon', 'totalAmount', 'status', 'notes', 'branch'],
+      'do_expenses': ['id', 'doNo', 'penebusanId', 'date', 'fertilizerId', 'fertilizerName', 'qtyTon', 'driverName', 'vehiclePlate', 'targetWarehouse', 'status', 'notes', 'branch'],
+      'penyaluran': ['id', 'penyaluranNo', 'nomorPenyaluran', 'sjNo', 'doRefId', 'doNo', 'date', 'kiosId', 'kiosName', 'fertilizerId', 'fertilizerName', 'qtyTon', 'pricePerTon', 'totalAmount', 'dpAmount', 'paymentStatus', 'driverName', 'vehiclePlate', 'deliveryStatus', 'notes', 'branch'],
+      'payments': ['id', 'penyaluranId', 'doRefId', 'doNo', 'kiosName', 'date', 'amount', 'paymentMethod', 'notes', 'branch'],
+      'deposits': ['id', 'kiosId', 'kiosName', 'date', 'amount', 'notes', 'branch'],
+      'kas_angkutan': ['id', 'branch', 'date', 'doNo', 'penyaluranNo', 'kiosName', 'driverName', 'transactionType', 'description', 'amount', 'adminFee', 'mealFee', 'palangFee', 'solarFee', 'driverWage', 'overtimeFee', 'helperFee', 'otherFee', 'notes'],
+      'kas_umum': ['id', 'branch', 'date', 'type', 'category', 'description', 'amount', 'notes'],
+      'kiosks': ['id', 'code', 'name', 'owner', 'address', 'phone', 'branch'],
+      'fertilizers': ['id', 'name', 'priceBuy', 'priceSell', 'stock', 'supplier', 'branch'],
+      'suppliers': ['id', 'name', 'phone', 'address'],
+      'drivers': ['id', 'name', 'phone', 'truckNumber', 'branch']
+    };
+
+    const columns = tableColumnsMap[tableName];
+    if (!columns) throw new Error(`Table ${tableName} tidak didukung untuk partial sync.`);
+
+    if (onProgress) {
+      onProgress({
+        stage: 'prepare',
+        percent: 15,
+        message: `Mempersiapkan struktur data tabel ${tableName}...`,
+        batchInfo: `0 / ${items.length} baris`
+      });
+    }
+
+    // If replace mode, delete all existing data in that table first
+    if (mode === 'replace') {
+      if (onProgress) {
+        onProgress({
+          stage: 'clearing',
+          percent: 25,
+          message: `Mengosongkan data lama di tabel ${tableName} (Mode Replace)...`,
+          batchInfo: `Membersihkan tabel...`
+        });
+      }
+      await client.execute(`DELETE FROM ${tableName}`);
+    }
+
+    // Upsert batch
+    if (!Array.isArray(items) || items.length === 0) return { success: true, message: 'Tidak ada data untuk diimport.' };
+    
+    const placeholders = columns.map(() => '?').join(', ');
+    const setClause = columns.filter(c => c !== 'id').map(c => `${c}=excluded.${c}`).join(', ');
+    const sql = `INSERT INTO ${tableName} (${columns.join(', ')}) VALUES (${placeholders}) ON CONFLICT(id) DO UPDATE SET ${setClause}`;
+
+    const statements = [];
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+      if (!item || typeof item !== 'object') continue;
+      const rawId = String(item.id || item.doNo || item.penyaluranNo || item.nomorPenyaluran || item.kiosId || item.code || item.username || `${tableName.toUpperCase()}-${Date.now()}-${i}`).trim();
+      const itemId = rawId;
+      const normalizedItem = { ...item, id: itemId };
+
+      // Ensure key constraints
+      if (!normalizedItem.doNo) normalizedItem.doNo = itemId;
+      if (!normalizedItem.spjbNo) normalizedItem.spjbNo = normalizedItem.doNo || itemId;
+      if (!normalizedItem.branch) normalizedItem.branch = 'Magetan';
+
+      const args = columns.map(col => {
+        const val = normalizedItem[col];
+        if (val === undefined || val === null) return (col === 'id' ? itemId : null);
+        if (typeof val === 'object') return JSON.stringify(val);
+        return val;
+      });
+      statements.push({ sql, args });
+    }
+
+    const totalBatches = Math.ceil(statements.length / 40);
+
+    for (let j = 0; j < statements.length; j += 40) {
+      const chunk = statements.slice(j, j + 40);
+      const batchNum = Math.floor(j / 40) + 1;
+      const processedCount = Math.min(j + chunk.length, statements.length);
+      const percentVal = Math.round(30 + (processedCount / statements.length) * 60);
+
+      if (onProgress) {
+        onProgress({
+          stage: 'uploading',
+          percent: percentVal,
+          currentBatch: batchNum,
+          totalBatches,
+          processedItems: processedCount,
+          totalItems: statements.length,
+          message: `Mengunggah batch ${batchNum} dari ${totalBatches} (${processedCount}/${statements.length} baris)...`,
+          batchInfo: `Batch ${batchNum}/${totalBatches} • ${processedCount} / ${statements.length} baris terkirim`
+        });
+      }
+
+      try {
+        if (client.batch) {
+          await client.batch(chunk, 'write');
+        } else {
+          for (const stmt of chunk) {
+            await client.execute(stmt);
+          }
+        }
+      } catch (err) {
+        console.warn('Batch chunk failed, trying sequentially:', err.message);
+        let firstErr = null;
+        let failCount = 0;
+        for (const stmt of chunk) {
+          try {
+            await client.execute(stmt);
+          } catch (e) {
+            console.error('Sequential execution failed on SQL:', stmt.sql, 'error:', e.message);
+            if (!firstErr) firstErr = e;
+            failCount++;
+          }
+        }
+        if (failCount === chunk.length && firstErr) {
+          throw new Error(`Gagal import ke tabel ${tableName}: ${firstErr.message}`);
+        }
+      }
+    }
+
+    if (onProgress) {
+      onProgress({
+        stage: 'syncing',
+        percent: 95,
+        message: 'Menyinkronkan data ke tampilan realtime aplikasi...',
+        batchInfo: `Menyelesaikan ${statements.length} baris`
+      });
+    }
+
+    return { success: true, message: `Berhasil import ${items.length} baris data ke tabel ${tableName} Turso.` };
+  } catch (err) {
+    throw err;
+  }
+}
+
 
 export async function fetchDataFromTurso(config = {}) {
 

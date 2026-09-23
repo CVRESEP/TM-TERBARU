@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { formatDateDisplay } from '../utils/currency';
+import { getPenyaluranPaymentStats } from '../utils/paymentStats';
 
 export default function ModalKiosHistory({
   kios,
@@ -43,37 +44,35 @@ export default function ModalKiosHistory({
   // Financial calculations
   const totalTagihan = kiosSalur.reduce((s, p) => s + Number(p?.totalAmount || 0), 0);
   
-  const getPenyaluranPaymentStats = (pItem) => {
-    if (!pItem) return { total: 0, terbayar: 0, sisa: 0 };
-    const itemPayments = (payments || []).filter(pm => {
-      if (!pm) return false;
-      const matchDirect = pm.penyaluranId && (pm.penyaluranId === pItem.id || pm.penyaluranId === pItem.penyaluranNo || pm.penyaluranId === pItem.nomorPenyaluran);
-      const matchDoKios = pm.doNo && pItem.doNo && pm.doNo === pItem.doNo && matchKios(pm);
-      return matchDirect || matchDoKios;
-    });
-    const paidSum = itemPayments.reduce((s, pm) => s + Number(pm?.amount || 0), 0);
-    const initialDp = Number(pItem.dpAmount || 0);
-    const total = Number(pItem.totalAmount || 0);
-    let terbayar = paidSum + initialDp;
-    if (pItem.paymentStatus === 'Lunas' && itemPayments.length === 0) terbayar = total;
-    else if (pItem.paymentStatus === 'Lunas') terbayar = Math.max(total, terbayar);
-    const sisa = Math.max(0, total - terbayar);
-    return { total, terbayar, sisa };
-  };
+  const getStats = (pItem) => getPenyaluranPaymentStats(pItem, payments);
 
-  const totalTerbayar = kiosSalur.reduce((s, p) => s + getPenyaluranPaymentStats(p).terbayar, 0);
+  const totalTerbayar = kiosSalur.reduce((s, p) => s + getStats(p).terbayar, 0);
   const kekuranganPembayaran = Math.max(0, totalTagihan - totalTerbayar);
   const depositTotal = kiosDeposits.reduce((s, d) => s + Number(d?.amount || 0), 0);
 
-  // Combine payments & deposits for audit trail
+  // DP payments directly made at Penyaluran time
+  const kiosDpLogs = kiosSalur
+    .filter(p => Number(p?.dpAmount || p?.diBayar || 0) > 0)
+    .map(p => ({
+      id: `DP-${p.id}`,
+      date: p.date,
+      doNo: p.doNo || p.id,
+      amount: Number(p.dpAmount || p.diBayar || 0),
+      logType: 'DP Penyaluran',
+      method: 'Tunai (DP Awal)',
+      notes: `Pembayaran Awal (DP) saat Penyaluran: ${p.fertilizerName || ''} (${Number(p.qtyTon || p.qty || 0)} Ton)`
+    }));
+
+  // Combine payments & deposits & DP for complete audit trail
   const combinedHistory = [
     ...kiosPayments.map(p => ({ ...p, logType: 'Pelunasan', method: p.method || p.paymentMethod })),
-    ...kiosDeposits.map(d => ({ ...d, logType: 'Deposit', method: d.method || d.paymentMethod }))
+    ...kiosDeposits.map(d => ({ ...d, logType: 'Deposit', method: d.method || d.paymentMethod })),
+    ...kiosDpLogs
   ].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content" style={{ maxWidth: '850px', width: '92%' }}>
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" style={{ maxWidth: '850px', width: '92%' }} onClick={(e) => e.stopPropagation()}>
         {/* MODAL HEADER */}
         <div className="modal-header" style={{ borderBottom: '2px solid #e2e8f0', paddingBottom: '12px' }}>
           <div>
@@ -158,7 +157,7 @@ export default function ModalKiosHistory({
                 </thead>
                 <tbody>
                   {kiosSalur.map(p => {
-                    const stats = getPenyaluranPaymentStats(p);
+                    const stats = getStats(p);
                     return (
                       <tr key={p.id}>
                         <td>{formatDateDisplay(p.date)}</td>
@@ -202,12 +201,12 @@ export default function ModalKiosHistory({
                     <tr key={log.id}>
                       <td>{formatDateDisplay(log.date)}</td>
                       <td>
-                        <span className={`badge ${log.logType === 'Pelunasan' ? 'badge-success' : 'badge-info'}`}>
-                          {log.logType === 'Pelunasan' ? 'Pelunasan' : 'Deposit'}
+                        <span className={`badge ${log.logType === 'Pelunasan' ? 'badge-success' : (log.logType === 'DP Penyaluran' ? 'badge-warning' : 'badge-info')}`}>
+                          {log.logType}
                         </span>
                       </td>
                       <td style={{ fontWeight: 700, fontFamily: 'monospace', color: '#15803d' }}>{log.doNo || '-'}</td>
-                      <td style={{ fontWeight: 800, color: log.logType === 'Pelunasan' ? '#15803d' : '#1d4ed8' }}>
+                      <td style={{ fontWeight: 800, color: log.logType === 'Pelunasan' ? '#15803d' : (log.logType === 'DP Penyaluran' ? '#b45309' : '#1d4ed8') }}>
                         {formatRp(log.amount)}
                       </td>
                       <td>{log.method ? `[${log.method}] ` : ''}{log.notes || '-'}</td>

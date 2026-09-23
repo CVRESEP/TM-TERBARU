@@ -5,9 +5,10 @@ import { useSortableTable, SortIcon } from '../utils/useSortableTable';
 import { usePagination } from '../utils/usePagination';
 import TablePagination from './TablePagination';
 import ModalDetailTransaksi from './ModalDetailTransaksi';
+import ImportModuleButton from './ImportModuleButton';
 
 export default function PenebusanView({ 
-  selectedBranch, penebusanList, doList, onAddNew, onEdit, onOpenNextStage, onDelete, onDeleteMultiple, onOpenPrint, settings, onNavigate
+  selectedBranch, penebusanList, doList, onAddNew, onEdit, onOpenNextStage, onDelete, onDeleteMultiple, onOpenPrint, settings, onNavigate, onImportModuleData, onSyncData
 }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedIds, setSelectedIds] = useState([]);
@@ -37,18 +38,43 @@ export default function PenebusanView({
           <h2 className="page-title">{settings.stage1Name || '1. Penebusan Supplier'}</h2>
           <p className="page-desc">Pencatatan penebusan kuota pupuk. <strong>Nomor DO</strong> diinput di tahap ini sebagai kunci seluruh alur transaksi.</p>
         </div>
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
-          {onNavigate && (
-            <>
-              <button className="btn-secondary" onClick={() => onNavigate('dashboard')}>
-                ← Dashboard
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'flex-end' }}>
+          {/* Main Action Button */}
+          <button 
+            className="btn-primary" 
+            style={{ padding: '10px 20px', fontSize: '15px', fontWeight: 'bold' }} 
+            onClick={() => onAddNew('penebusan')}
+          >
+            + Input Penebusan Baru
+          </button>
+          
+          {/* Secondary Buttons Row */}
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+            {onNavigate && (
+              <>
+                <button className="btn-secondary" onClick={() => onNavigate('dashboard')}>
+                  ← Dashboard
+                </button>
+                <button className="btn-primary" style={{ backgroundColor: '#b45309' }} onClick={() => onNavigate('pengeluaran_do')}>
+                  Lanjut ke Pengeluaran DO →
+                </button>
+              </>
+            )}
+            {onSyncData && (
+              <button 
+                type="button"
+                className="btn-secondary" 
+                style={{ backgroundColor: '#f0fdf4', color: '#15803d', borderColor: '#bbf7d0', fontWeight: 700 }}
+                onClick={() => onSyncData('Sinkronisasi Penebusan')}
+                title="Sinkronkan data penebusan dengan database Turso"
+              >
+                🔄 Sinkronkan Data
               </button>
-              <button className="btn-primary" style={{ backgroundColor: '#b45309' }} onClick={() => onNavigate('pengeluaran_do')}>
-                Lanjut ke Pengeluaran DO →
-              </button>
-            </>
-          )}
-          <button className="btn-primary" onClick={() => onAddNew('penebusan')}>+ Input Penebusan Baru</button>
+            )}
+            {onImportModuleData && (
+              <ImportModuleButton moduleName="penebusan" onImport={onImportModuleData} label="📥 Import Penebusan" />
+            )}
+          </div>
         </div>
       </div>
 

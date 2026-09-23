@@ -17,9 +17,9 @@ export default function TopNavbar({
   settings,
   currentUser,
   onLogout,
+  tursoSyncState,
+  onManualSync,
 }) {
-  const [isDistribusiOpen, setIsDistribusiOpen] = useState(false);
-  const dropdownRef = useRef(null);
 
   const branch1 = settings.branch1Name || 'Magetan';
   const branch2 = settings.branch2Name || 'Sragen';
@@ -34,23 +34,6 @@ export default function TopNavbar({
 
   const roleInfo = currentUser ? ROLE_LABELS[currentUser.role] : null;
 
-  const isDistribusiActive = ['penebusan', 'pengeluaran_do', 'penyaluran_kios'].includes(activeTab);
-
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsDistribusiOpen(false);
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  const handleSelectTab = (tabId) => {
-    setActiveTab(tabId);
-    setIsDistribusiOpen(false);
-  };
-
   return (
     <header className="app-header">
       {/* Top Bar */}
@@ -61,6 +44,48 @@ export default function TopNavbar({
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          {/* Realtime Turso Cloud Indicator */}
+          {tursoSyncState && (
+            <button
+              type="button"
+              onClick={onManualSync}
+              title={
+                tursoSyncState?.status === 'syncing'
+                  ? 'Sedang sinkronisasi data dengan Turso Cloud...'
+                  : tursoSyncState?.status === 'error'
+                  ? `Koneksi Turso bermasalah: ${tursoSyncState.errorMessage || 'Klik untuk coba lagi'}`
+                  : `Terhubung realtime ke Turso Cloud. Terakhir sinkron: ${tursoSyncState?.lastSyncedAt ? new Date(tursoSyncState.lastSyncedAt).toLocaleTimeString('id-ID') : 'Baru saja'}. Klik untuk sinkron manual.`
+              }
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                backgroundColor: tursoSyncState?.status === 'error' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(255, 255, 255, 0.1)',
+                border: `1px solid ${tursoSyncState?.status === 'error' ? '#ef4444' : tursoSyncState?.status === 'syncing' ? '#eab308' : '#22c55e'}`,
+                borderRadius: '20px',
+                padding: '4px 10px',
+                cursor: 'pointer',
+                fontSize: '11px',
+                color: '#ffffff',
+                fontWeight: 600,
+                outline: 'none',
+                transition: 'all 0.2s ease'
+              }}
+            >
+              <span style={{
+                width: '7px',
+                height: '7px',
+                borderRadius: '50%',
+                backgroundColor: tursoSyncState?.status === 'error' ? '#ef4444' : tursoSyncState?.status === 'syncing' ? '#eab308' : '#22c55e',
+                display: 'inline-block',
+                boxShadow: tursoSyncState?.status === 'connected' ? '0 0 6px #22c55e' : 'none'
+              }} />
+              <span>
+                {tursoSyncState?.status === 'syncing' ? 'Sinkron...' : tursoSyncState?.status === 'error' ? 'Turso Offline' : 'Turso Realtime'}
+              </span>
+              <span style={{ opacity: 0.8, fontSize: '11px' }}>⟳</span>
+            </button>
+          )}
           {/* Branch Switcher — disabled for admin */}
           <div className="branch-selector" style={{ opacity: isAdminLocked ? 0.6 : 1 }}>
             <span className="branch-label">Cabang:</span>
@@ -148,49 +173,27 @@ export default function TopNavbar({
           Dashboard
         </button>
 
-        {/* DROPDOWN ALUR DISTRIBUSI */}
-        <div 
-          className="nav-dropdown" 
-          ref={dropdownRef}
-          onMouseEnter={() => setIsDistribusiOpen(true)}
-          onMouseLeave={() => setIsDistribusiOpen(false)}
+        {/* ALUR DISTRIBUSI */}
+        <button 
+          className={`menu-item ${activeTab === 'penebusan' ? 'active' : ''}`}
+          onClick={() => setActiveTab('penebusan')}
         >
-          <button 
-            className={`menu-item ${isDistribusiActive ? 'active' : ''}`}
-            onClick={() => setIsDistribusiOpen(!isDistribusiOpen)}
-            style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
-          >
-            Alur Distribusi ▾
-          </button>
+          {settings.stage1Name || '1. Penebusan'} ({counts.penebusan})
+        </button>
 
-          {isDistribusiOpen && (
-            <div className="dropdown-menu">
-              <button 
-                className={`dropdown-item ${activeTab === 'penebusan' ? 'active' : ''}`}
-                onClick={() => handleSelectTab('penebusan')}
-              >
-                <span>{settings.stage1Name || '1. Penebusan'}</span>
-                <span className="dropdown-item-badge">{counts.penebusan}</span>
-              </button>
+        <button 
+          className={`menu-item ${activeTab === 'pengeluaran_do' ? 'active' : ''}`}
+          onClick={() => setActiveTab('pengeluaran_do')}
+        >
+          {settings.stage2Name || '2. Pengeluaran DO'} ({counts.do})
+        </button>
 
-              <button 
-                className={`dropdown-item ${activeTab === 'pengeluaran_do' ? 'active' : ''}`}
-                onClick={() => handleSelectTab('pengeluaran_do')}
-              >
-                <span>{settings.stage2Name || '2. Pengeluaran DO'}</span>
-                <span className="dropdown-item-badge">{counts.do}</span>
-              </button>
-
-              <button 
-                className={`dropdown-item ${activeTab === 'penyaluran_kios' ? 'active' : ''}`}
-                onClick={() => handleSelectTab('penyaluran_kios')}
-              >
-                <span>{settings.stage3Name || '3. Penyaluran Kios'}</span>
-                <span className="dropdown-item-badge">{counts.penyaluran}</span>
-              </button>
-            </div>
-          )}
-        </div>
+        <button 
+          className={`menu-item ${activeTab === 'penyaluran_kios' ? 'active' : ''}`}
+          onClick={() => setActiveTab('penyaluran_kios')}
+        >
+          {settings.stage3Name || '3. Penyaluran Kios'} ({counts.penyaluran})
+        </button>
 
         {/* TAB MANDIRI PEMBAYARAN KIOS */}
         <button 

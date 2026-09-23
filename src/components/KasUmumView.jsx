@@ -4,13 +4,17 @@ import DateFilterBar, { matchesDateFilter } from './DateFilterBar';
 import { useSortableTable, SortIcon } from '../utils/useSortableTable';
 import { usePagination } from '../utils/usePagination';
 import TablePagination from './TablePagination';
+import ImportModuleButton from './ImportModuleButton';
 
 export default function KasUmumView({
   selectedBranch,
   kasUmumList = [],
   onAddKasUmum,
   onDeleteKasUmum,
-  settings
+  settings,
+  onImportModuleData,
+  onTransferKas,
+  onSyncData
 }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedIds, setSelectedIds] = useState([]);
@@ -22,6 +26,41 @@ export default function KasUmumView({
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
+
+  // Transfer Modal State
+  const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
+  const [trfAmount, setTrfAmount] = useState('');
+  const [trfDate, setTrfDate] = useState(new Date().toISOString().split('T')[0]);
+  const [trfBranch, setTrfBranch] = useState(selectedBranch === 'ALL' ? (settings.branch1Name || 'Magetan') : selectedBranch);
+  const [trfNotes, setTrfNotes] = useState('');
+
+  const handleOpenTransfer = () => {
+    setTrfAmount('');
+    setTrfDate(new Date().toISOString().split('T')[0]);
+    setTrfBranch(selectedBranch === 'ALL' ? (settings.branch1Name || 'Magetan') : selectedBranch);
+    setTrfNotes('');
+    setIsTransferModalOpen(true);
+  };
+
+  const handleSubmitTransfer = (e) => {
+    e.preventDefault();
+    const parsed = parseCurrencyInput(trfAmount);
+    if (!parsed || parsed <= 0) {
+      alert('Masukkan nominal transfer kas yang valid!');
+      return;
+    }
+    if (onTransferKas) {
+      onTransferKas({
+        from: 'kas_umum',
+        to: 'kas_angkutan',
+        amount: parsed,
+        date: trfDate,
+        branch: trfBranch,
+        notes: trfNotes
+      });
+    }
+    setIsTransferModalOpen(false);
+  };
 
   // Form State
   const [branch, setBranch] = useState(selectedBranch === 'ALL' ? (settings.branch1Name || 'Magetan') : selectedBranch);
@@ -36,7 +75,7 @@ export default function KasUmumView({
 
   const getItemAmount = (item) => {
     if (!item) return 0;
-    const num = Number(item.amount);
+    const num = Number(item.amount !== undefined ? item.amount : (item.nominal !== undefined ? item.nominal : (item.total || 0)));
     return (!isNaN(num) && num > 0) ? num : 0;
   };
 
@@ -53,13 +92,19 @@ export default function KasUmumView({
   const { sorted, sortKey, sortDir, thProps } = useSortableTable(filtered, 'date', 'desc');
   const { currentPage, setCurrentPage, totalPages, paginatedData, itemsPerPage, setItemsPerPage } = usePagination(sorted, 10);
 
-  // Calculations — type already normalized to 'Pemasukan' or 'Pengeluaran' by normalizeKasUmumList
+  // Calculations — follow filtered items
   const totalMasuk = filtered
-    .filter(i => i.type === 'Pemasukan')
+    .filter(i => {
+      const t = String(i.type || i.tipe || '').toLowerCase();
+      return t === 'pemasukan' || t.includes('masuk') || t.includes('in');
+    })
     .reduce((s, i) => s + getItemAmount(i), 0);
 
   const totalKeluar = filtered
-    .filter(i => i.type !== 'Pemasukan')
+    .filter(i => {
+      const t = String(i.type || i.tipe || '').toLowerCase();
+      return t !== 'pemasukan' && !t.includes('masuk') && !t.includes('in');
+    })
     .reduce((s, i) => s + getItemAmount(i), 0);
 
   const saldoAkhir = totalMasuk - totalKeluar;
@@ -119,9 +164,45 @@ export default function KasUmumView({
           <h2 className="page-title">🏦 Kas Umum Kantor</h2>
           <p className="page-desc">Pencatatan kas masuk dan pengeluaran operasional umum kantor, gaji karyawan, listrik, ATK, & keperluan kantor lainnya.</p>
         </div>
-        <button className="btn-primary" onClick={() => handleOpenModal()}>
-          + Catat Kas Umum
-        </button>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'flex-end' }}>
+          {/* Main Action Button */}
+          <button 
+            className="btn-primary" 
+            style={{ padding: '10px 20px', fontSize: '15px', fontWeight: 'bold' }} 
+            onClick={() => handleOpenModal()}
+          >
+            + Catat Kas Umum
+          </button>
+
+          {/* Secondary Buttons Row */}
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+            {onTransferKas && (
+              <button 
+                className="btn-primary" 
+                style={{ backgroundColor: '#2563eb', display: 'flex', alignItems: 'center', gap: '6px' }}
+                onClick={handleOpenTransfer}
+                title="Transfer saldo dari Kas Umum ke Kas Angkutan"
+              >
+                <span>⇄</span>
+                <span>Transfer ke Kas Angkutan</span>
+              </button>
+            )}
+            {onSyncData && (
+              <button 
+                type="button"
+                className="btn-secondary" 
+                style={{ backgroundColor: '#f0fdf4', color: '#15803d', borderColor: '#bbf7d0', fontWeight: 700 }}
+                onClick={() => onSyncData('Sinkronisasi Kas Umum')}
+                title="Sinkronkan data kas umum dengan database Turso"
+              >
+                🔄 Sinkronkan Data
+              </button>
+            )}
+            {onImportModuleData && (
+              <ImportModuleButton moduleName="kas_umum" onImport={onImportModuleData} label="📥 Import Kas Umum" />
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Summary Cards */}
@@ -196,6 +277,7 @@ export default function KasUmumView({
                   title="Pilih Semua di Halaman Ini"
                 />
               </th>
+              <th style={{ width: '45px' }} className="text-center">NO</th>
               <th {...thProps('branch')} className="sortable-th text-center">Cabang <SortIcon colKey="branch" sortKey={sortKey} sortDir={sortDir} /></th>
               <th {...thProps('date')} className="sortable-th text-center">Tanggal <SortIcon colKey="date" sortKey={sortKey} sortDir={sortDir} /></th>
               <th {...thProps('category')} className="sortable-th">Kategori <SortIcon colKey="category" sortKey={sortKey} sortDir={sortDir} /></th>
@@ -207,7 +289,7 @@ export default function KasUmumView({
             </tr>
           </thead>
           <tbody>
-            {paginatedData.map(item => (
+            {paginatedData.map((item, idx) => (
               <tr 
                 key={item.id} 
                 style={{ backgroundColor: selectedIds.includes(item.id) ? '#fef2f2' : undefined, cursor: 'pointer' }}
@@ -222,6 +304,9 @@ export default function KasUmumView({
                       setSelectedIds(prev => prev.includes(item.id) ? prev.filter(i => i !== item.id) : [...prev, item.id]);
                     }}
                   />
+                </td>
+                <td className="text-center font-mono" style={{ color: '#64748b', fontWeight: 600 }}>
+                  {(currentPage - 1) * itemsPerPage + idx + 1}
                 </td>
                 <td className="text-center">
                   <span className={`badge ${item.branch === 'Magetan' ? 'badge-branch-magetan' : 'badge-branch-sragen'}`}>{item.branch}</span>
@@ -248,7 +333,7 @@ export default function KasUmumView({
             ))}
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={9} style={{ textAlign: 'center', padding: '20px', color: '#6b7280' }}>
+                <td colSpan={10} style={{ textAlign: 'center', padding: '20px', color: '#6b7280' }}>
                   Belum ada transaksi Kas Umum. Klik "+ Catat Kas Umum" untuk membuat catatan baru.
                 </td>
               </tr>
@@ -257,7 +342,7 @@ export default function KasUmumView({
           {filtered.length > 0 && (
             <tfoot>
               <tr style={{ fontWeight: 800, backgroundColor: '#f8fafc', borderTop: '2px solid #cbd5e1' }}>
-                <td colSpan={6} style={{ textAlign: 'right', padding: '10px 14px' }}>TOTAL SALDO KAS UMUM:</td>
+                <td colSpan={7} style={{ textAlign: 'right', padding: '10px 14px' }}>TOTAL SALDO KAS UMUM:</td>
                 <td className="text-right" style={{
                   color: filtered.reduce((s, i) => s + (i.type === 'Pemasukan' ? Number(i.amount || 0) : -Number(i.amount || 0)), 0) >= 0 ? '#15803d' : '#dc2626'
                 }}>
@@ -281,8 +366,8 @@ export default function KasUmumView({
 
       {/* MODAL FORM KAS UMUM */}
       {isModalOpen && (
-        <div className="modal-overlay">
-          <div className="modal-content" style={{ maxWidth: '500px' }}>
+        <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
+          <div className="modal-content" style={{ maxWidth: '500px' }} onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <div>{editingItem ? 'Edit Transaksi Kas Umum' : 'Tambah Catatan Kas Umum'}</div>
               <button className="btn-secondary" onClick={() => setIsModalOpen(false)}>Tutup</button>
@@ -372,6 +457,78 @@ export default function KasUmumView({
               <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end', marginTop: '10px' }}>
                 <button type="button" className="btn-secondary" onClick={() => setIsModalOpen(false)}>Batal</button>
                 <button type="submit" className="btn-primary">Simpan Transaksi Kas</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* POP UP FORM TRANSFER KAS UMUM -> KAS ANGKUTAN */}
+      {isTransferModalOpen && (
+        <div className="modal-overlay" style={{ zIndex: 9999 }} onClick={() => setIsTransferModalOpen(false)}>
+          <div className="modal-content" style={{ maxWidth: '480px', borderRadius: '16px', overflow: 'hidden' }} onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header" style={{ backgroundColor: '#1e3a8a', color: '#fff' }}>
+              <div>⇄ Transfer Kas: Kas Umum → Kas Angkutan</div>
+              <button className="btn-secondary" onClick={() => setIsTransferModalOpen(false)} style={{ color: '#fff' }}>Tutup</button>
+            </div>
+            <form onSubmit={handleSubmitTransfer}>
+              <div className="modal-body" style={{ padding: '20px' }}>
+                <div style={{ backgroundColor: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '10px', padding: '12px', marginBottom: '16px', fontSize: '13px', color: '#1e40af' }}>
+                  Saldo akan <strong>dikurangkan</strong> dari Kas Umum Kantor dan secara otomatis <strong>ditambahkan</strong> sebagai kas masuk di Kas Angkutan.
+                </div>
+
+                <div className="form-group" style={{ marginBottom: '14px' }}>
+                  <label className="form-label" style={{ fontWeight: 700, fontSize: '12px' }}>Cabang Transaksi:</label>
+                  <select 
+                    className="form-input" 
+                    value={trfBranch} 
+                    onChange={(e) => setTrfBranch(e.target.value)}
+                    disabled={isBranchLocked}
+                  >
+                    <option value="Magetan">Magetan</option>
+                    <option value="Sragen">Sragen</option>
+                  </select>
+                </div>
+
+                <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '14px' }}>
+                  <div className="form-group">
+                    <label className="form-label" style={{ fontWeight: 700, fontSize: '12px' }}>Tanggal Transfer:</label>
+                    <input 
+                      type="date" 
+                      className="form-input" 
+                      value={trfDate} 
+                      onChange={(e) => setTrfDate(e.target.value)} 
+                      required 
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label" style={{ fontWeight: 700, fontSize: '12px' }}>Nominal Transfer (Rp):</label>
+                    <input 
+                      type="text" 
+                      className="form-input" 
+                      placeholder="misal: 5.000.000" 
+                      value={trfAmount ? formatCurrencyInput(trfAmount) : ''} 
+                      onChange={(e) => setTrfAmount(parseCurrencyInput(e.target.value))} 
+                      required 
+                    />
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label" style={{ fontWeight: 700, fontSize: '12px' }}>Keterangan / Keperluan:</label>
+                  <input 
+                    type="text" 
+                    className="form-input" 
+                    placeholder="misal: Tambahan dana operasional solar armada supir..." 
+                    value={trfNotes} 
+                    onChange={(e) => setTrfNotes(e.target.value)} 
+                  />
+                </div>
+              </div>
+
+              <div className="modal-footer" style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end', padding: '14px 20px', borderTop: '1px solid #e2e8f0' }}>
+                <button type="button" className="btn-secondary" onClick={() => setIsTransferModalOpen(false)}>Batal</button>
+                <button type="submit" className="btn-primary" style={{ backgroundColor: '#2563eb' }}>Kirim Transfer Saldo ⇄</button>
               </div>
             </form>
           </div>

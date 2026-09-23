@@ -6,11 +6,12 @@ import { useSortableTable, SortIcon } from '../utils/useSortableTable';
 import { usePagination } from '../utils/usePagination';
 import TablePagination from './TablePagination';
 import ModalDetailTransaksi from './ModalDetailTransaksi';
+import ImportModuleButton from './ImportModuleButton';
 
 import { getPenyaluranPaymentStats } from '../utils/paymentStats';
 
 export default function PenyaluranKiosView({ 
-  selectedBranch, penyaluranList, kiosks, payments = [], deposits = [], onAddNew, onEdit, onDelete, onDeleteMultiple, onOpenPrint, settings, onNavigate
+  selectedBranch, penyaluranList, kiosks, payments = [], deposits = [], onAddNew, onEdit, onDelete, onDeleteMultiple, onOpenPrint, settings, onNavigate, onImportModuleData, onSyncPaymentStatus, onSyncData
 }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
@@ -67,21 +68,57 @@ export default function PenyaluranKiosView({
           <h2 className="page-title">{settings.stage3Name || '3. Penyaluran Ke Kios Pengecer'}</h2>
           <p className="page-desc">Distribusi pupuk dari Gudang Distributor ke Kios Pengecer menggunakan <strong>Nomor DO</strong> yang sama.</p>
         </div>
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
-          {onNavigate && (
-            <>
-              <button className="btn-secondary" onClick={() => onNavigate('pengeluaran_do')}>
-                ← Ke Pengeluaran DO
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'flex-end' }}>
+          {/* Main Action Button */}
+          <button 
+            className="btn-primary" 
+            style={{ padding: '10px 20px', fontSize: '15px', fontWeight: 'bold' }} 
+            onClick={() => onAddNew('penyaluran')}
+          >
+            + Input Penyaluran Kios
+          </button>
+          
+          {/* Secondary Buttons Row */}
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+            {onNavigate && (
+              <>
+                <button className="btn-secondary" onClick={() => onNavigate('pengeluaran_do')}>
+                  ← Ke Pengeluaran DO
+                </button>
+                <button className="btn-secondary" onClick={() => onNavigate('dashboard')}>
+                  Dashboard
+                </button>
+                <button className="btn-primary" style={{ backgroundColor: '#1d4ed8' }} onClick={() => onNavigate('pembayaran_kios')}>
+                  Lanjut ke Pembayaran Kios →
+                </button>
+              </>
+            )}
+            {onSyncData && (
+              <button 
+                type="button"
+                className="btn-secondary"
+                style={{ backgroundColor: '#f0fdf4', color: '#15803d', borderColor: '#bbf7d0', fontWeight: 700 }}
+                onClick={() => onSyncData('Sinkronisasi Penyaluran Kios')}
+                title="Sinkronkan seluruh data penyaluran kios dengan database Turso"
+              >
+                🔄 Sinkronkan Data
               </button>
-              <button className="btn-secondary" onClick={() => onNavigate('dashboard')}>
-                Dashboard
+            )}
+            {onSyncPaymentStatus && (
+              <button 
+                type="button"
+                className="btn-secondary"
+                style={{ backgroundColor: '#eff6ff', color: '#1d4ed8', borderColor: '#bfdbfe', fontWeight: 700 }}
+                onClick={() => onSyncPaymentStatus(false)}
+                title="Sinkronkan status lunas/tempo penyaluran dengan data pelunasan pembayaran"
+              >
+                🔄 Sinkronkan Pembayaran
               </button>
-              <button className="btn-primary" style={{ backgroundColor: '#1d4ed8' }} onClick={() => onNavigate('pembayaran_kios')}>
-                Lanjut ke Pembayaran Kios →
-              </button>
-            </>
-          )}
-          <button className="btn-primary" onClick={() => onAddNew('penyaluran')}>+ Input Penyaluran Kios</button>
+            )}
+            {onImportModuleData && (
+              <ImportModuleButton moduleName="penyaluran_kios" onImport={onImportModuleData} label="📥 Import Penyaluran" />
+            )}
+          </div>
         </div>
       </div>
 
@@ -222,6 +259,16 @@ export default function PenyaluranKiosView({
                   </td>
                   <td onClick={(e) => e.stopPropagation()}>
                     <div style={{ display: 'flex', gap: '4px', justifyContent: 'center' }}>
+                      {!isLunas && onNavigate && (
+                        <button 
+                          className="btn-primary" 
+                          style={{ fontSize: '11px', padding: '3px 7px', backgroundColor: '#15803d' }} 
+                          onClick={() => onNavigate('pembayaran_kios')}
+                          title="Buka Pembayaran Kios untuk melunasi DO ini"
+                        >
+                          Bayar
+                        </button>
+                      )}
                       <button className="btn-secondary" style={{ fontSize: '11px', padding: '3px 7px' }} onClick={() => onEdit('penyaluran', item)}>Edit</button>
                       <button className="btn-secondary" style={{ fontSize: '11px', padding: '3px 7px' }} onClick={() => onOpenPrint(item, 'penyaluran')}>Cetak SJ</button>
                       <button className="btn-danger" style={{ fontSize: '11px', padding: '3px 7px' }} onClick={() => onDelete('penyaluran', item.id)}>Hapus</button>

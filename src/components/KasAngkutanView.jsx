@@ -4,6 +4,8 @@ import DateFilterBar, { matchesDateFilter } from './DateFilterBar';
 import { useSortableTable, SortIcon } from '../utils/useSortableTable';
 import { usePagination } from '../utils/usePagination';
 import TablePagination from './TablePagination';
+import ImportModuleButton from './ImportModuleButton';
+import SearchableSelect from './SearchableSelect';
 
 const DEFAULT_ITEM_RATE = (rateVal = 0, defaultCalc = 'perTon', defaultCap = 8) => ({
   rate: rateVal,
@@ -40,7 +42,10 @@ export default function KasAngkutanView({
   onAddKasAngkutan,
   onDeleteKasAngkutan,
   settings = {},
-  onSaveSettings
+  onSaveSettings,
+  onImportModuleData,
+  onTransferKas,
+  onSyncData
 }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedIds, setSelectedIds] = useState([]);
@@ -48,6 +53,41 @@ export default function KasAngkutanView({
     mode: 'all', dailyDate: '', startDate: '', endDate: '', month: '',
     year: new Date().getFullYear().toString()
   });
+
+  // Transfer Modal State
+  const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
+  const [trfAmount, setTrfAmount] = useState('');
+  const [trfDate, setTrfDate] = useState(new Date().toISOString().split('T')[0]);
+  const [trfBranch, setTrfBranch] = useState(selectedBranch === 'ALL' ? (settings.branch1Name || 'MAGETAN').toUpperCase() : selectedBranch.toUpperCase());
+  const [trfNotes, setTrfNotes] = useState('');
+
+  const handleOpenTransfer = () => {
+    setTrfAmount('');
+    setTrfDate(new Date().toISOString().split('T')[0]);
+    setTrfBranch(selectedBranch === 'ALL' ? (settings.branch1Name || 'MAGETAN').toUpperCase() : selectedBranch.toUpperCase());
+    setTrfNotes('');
+    setIsTransferModalOpen(true);
+  };
+
+  const handleSubmitTransfer = (e) => {
+    e.preventDefault();
+    const parsed = parseCurrencyInput(trfAmount);
+    if (!parsed || parsed <= 0) {
+      alert('Masukkan nominal transfer kas yang valid!');
+      return;
+    }
+    if (onTransferKas) {
+      onTransferKas({
+        from: 'kas_angkutan',
+        to: 'kas_umum',
+        amount: parsed,
+        date: trfDate,
+        branch: trfBranch,
+        notes: trfNotes
+      });
+    }
+    setIsTransferModalOpen(false);
+  };
 
   // Transport Rates Settings Modal State
   const [isRatesModalOpen, setIsRatesModalOpen] = useState(false);
@@ -144,16 +184,23 @@ export default function KasAngkutanView({
   const { sorted, sortKey, sortDir, thProps } = useSortableTable(filtered, 'date', 'desc');
   const { currentPage, setCurrentPage, totalPages, paginatedData, itemsPerPage, setItemsPerPage } = usePagination(sorted, 10);
 
-  // Totals — Magetan uses hard-override values for accuracy
-  const MAGETAN_PEMASUKAN_OVERRIDE = 120170000;
-  const MAGETAN_PENGELUARAN_OVERRIDE = 117662645;
-
   const calcRawTotals = (items) => {
     let masuk = 0, keluar = 0;
     for (const i of items) {
       const rawType = String(i.type || i.transactionType || 'PENGELUARAN').toUpperCase();
       const isPem = rawType.includes('PEMASUKAN') || rawType.includes('MASUK') || rawType.includes('REIMBURSE');
-      const val = Number(i.nominal !== undefined ? i.nominal : (i.amount !== undefined ? i.amount : (i.totalNominal || 0)));
+      let val = Number(i.nominal !== undefined ? i.nominal : (i.amount !== undefined ? i.amount : (i.totalNominal || 0)));
+      if ((isNaN(val) || val === 0) && !isPem) {
+        const admin = Number(i.admin || i.adminFee || 0);
+        const uangMakan = Number(i.uangMakan || i.mealFee || 0);
+        const palang = Number(i.palang || i.palangFee || 0);
+        const solar = Number(i.solar || i.solarFee || 0);
+        const upahSopir = Number(i.upahSopir || i.driverWage || 0);
+        const lembur = Number(i.lembur || i.overtimeFee || 0);
+        const helper = Number(i.helper || i.helperFee || 0);
+        const lainLain = Number(i.lainLain || i.otherFee || 0);
+        val = admin + uangMakan + palang + solar + upahSopir + lembur + helper + lainLain;
+      }
       const safeVal = isNaN(val) ? 0 : val;
       if (isPem) masuk += safeVal;
       else keluar += safeVal;
@@ -161,29 +208,7 @@ export default function KasAngkutanView({
     return { masuk, keluar };
   };
 
-  const isMagetanOnly = String(selectedBranch || '').toUpperCase() === 'MAGETAN';
-  const isAll = selectedBranch === 'ALL';
-
-  let totalPemasukan = 0;
-  let totalPengeluaran = 0;
-
-  if (isMagetanOnly) {
-    totalPemasukan = MAGETAN_PEMASUKAN_OVERRIDE;
-    totalPengeluaran = MAGETAN_PENGELUARAN_OVERRIDE;
-  } else if (isAll) {
-    // Magetan: use override; others: use raw calculation
-    const magetanFiltered = filtered.filter(i => String(i.branch || i.kabupaten || '').toUpperCase() === 'MAGETAN');
-    const nonMagetanFiltered = filtered.filter(i => String(i.branch || i.kabupaten || '').toUpperCase() !== 'MAGETAN');
-    const hasMagetan = magetanFiltered.length > 0;
-    const otherTotals = calcRawTotals(nonMagetanFiltered);
-    totalPemasukan = (hasMagetan ? MAGETAN_PEMASUKAN_OVERRIDE : 0) + otherTotals.masuk;
-    totalPengeluaran = (hasMagetan ? MAGETAN_PENGELUARAN_OVERRIDE : 0) + otherTotals.keluar;
-  } else {
-    const rawTotals = calcRawTotals(filtered);
-    totalPemasukan = rawTotals.masuk;
-    totalPengeluaran = rawTotals.keluar;
-  }
-
+  const { masuk: totalPemasukan, keluar: totalPengeluaran } = calcRawTotals(filtered);
   const saldoKas = totalPemasukan - totalPengeluaran;
 
   // Auto-fill form when a Penyaluran transaction is selected
@@ -414,7 +439,17 @@ export default function KasAngkutanView({
   };
 
   const isBranchLocked = selectedBranch !== 'ALL';
-  const availableDoList = doList.filter(d => !d.branch || d.branch.toUpperCase() === kabupaten.toUpperCase() || d.branch === 'ALL');
+  
+  const existingKasAngkutanDOs = new Set(kasAngkutanList.map(k => k.doNo).filter(Boolean));
+  const distributedDOs = new Set(penyaluranList.map(s => s.doNo).filter(Boolean));
+  
+  const availableDoList = doList.filter(d => {
+    const matchBranch = !d.branch || d.branch.toUpperCase() === kabupaten.toUpperCase() || d.branch === 'ALL';
+    const isDistributed = distributedDOs.has(d.doNo);
+    const isRecorded = existingKasAngkutanDOs.has(d.doNo);
+    const isCurrentEditing = editingItem && editingItem.doNo === d.doNo;
+    return matchBranch && isDistributed && (!isRecorded || isCurrentEditing);
+  });
   const availablePenyaluranList = penyaluranList.filter(s => !s.branch || s.branch.toUpperCase() === kabupaten.toUpperCase() || s.branch === 'ALL');
   const availableDrivers = drivers.filter(d => !d.branch || d.branch.toUpperCase() === kabupaten.toUpperCase() || d.branch === 'ALL');
 
@@ -425,13 +460,47 @@ export default function KasAngkutanView({
           <h2 className="page-title">Kas Angkutan</h2>
           <p className="page-desc">Otomatisasi pencatatan beban angkutan per penyaluran (Admin, Solar, Upah Sopir, Uang Makan, Palang, Lembur, Helper).</p>
         </div>
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <button className="btn-secondary" style={{ backgroundColor: '#fff', border: '1px solid #166534', color: '#166534', fontWeight: 700 }} onClick={() => setIsRatesModalOpen(true)}>
-            Pengaturan Tarif Biaya
-          </button>
-          <button className="btn-primary" onClick={() => handleOpenModal()}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'flex-end' }}>
+          {/* Main Action Button */}
+          <button 
+            className="btn-primary" 
+            style={{ padding: '10px 20px', fontSize: '15px', fontWeight: 'bold' }} 
+            onClick={() => handleOpenModal()}
+          >
             + Tambah Data Kas Angkutan
           </button>
+          
+          {/* Secondary Buttons Row */}
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+            {onTransferKas && (
+              <button 
+                className="btn-primary" 
+                style={{ backgroundColor: '#2563eb', display: 'flex', alignItems: 'center', gap: '6px' }}
+                onClick={handleOpenTransfer}
+                title="Transfer saldo dari Kas Angkutan ke Kas Umum"
+              >
+                <span>⇄</span>
+                <span>Transfer ke Kas Umum</span>
+              </button>
+            )}
+            {onSyncData && (
+              <button 
+                type="button"
+                className="btn-secondary" 
+                style={{ backgroundColor: '#f0fdf4', color: '#15803d', borderColor: '#bbf7d0', fontWeight: 700 }}
+                onClick={() => onSyncData('Sinkronisasi Kas Angkutan')}
+                title="Sinkronkan data kas angkutan dengan database Turso"
+              >
+                🔄 Sinkronkan Data
+              </button>
+            )}
+            <button className="btn-secondary" style={{ backgroundColor: '#fff', border: '1px solid #166534', color: '#166534', fontWeight: 700 }} onClick={() => setIsRatesModalOpen(true)}>
+              Pengaturan Tarif Biaya
+            </button>
+            {onImportModuleData && (
+              <ImportModuleButton moduleName="kas_angkutan" onImport={onImportModuleData} label="📥 Import Kas Angkutan" />
+            )}
+          </div>
         </div>
       </div>
 
@@ -507,6 +576,7 @@ export default function KasAngkutanView({
                   title="Pilih Semua di Halaman Ini"
                 />
               </th>
+              <th style={{ width: '45px' }} className="text-center">NO</th>
               <th {...thProps('kabupaten')} className="sortable-th text-center">Cabang <SortIcon colKey="kabupaten" sortKey={sortKey} sortDir={sortDir} /></th>
               <th {...thProps('date')} className="sortable-th text-center">Tanggal <SortIcon colKey="date" sortKey={sortKey} sortDir={sortDir} /></th>
               <th {...thProps('type')} className="sortable-th text-center">Tipe <SortIcon colKey="type" sortKey={sortKey} sortDir={sortDir} /></th>
@@ -515,12 +585,12 @@ export default function KasAngkutanView({
               <th {...thProps('kiosName')} className="sortable-th">Nama Kios <SortIcon colKey="kiosName" sortKey={sortKey} sortDir={sortDir} /></th>
               <th {...thProps('uraian')} className="sortable-th">Uraian <SortIcon colKey="uraian" sortKey={sortKey} sortDir={sortDir} /></th>
               <th {...thProps('nominal')} className="sortable-th text-right">Nominal <SortIcon colKey="nominal" sortKey={sortKey} sortDir={sortDir} /></th>
-              <th {...thProps('driverName')} className="sortable-th">Nama Sopir <SortIcon colKey="driverName" sortKey={sortKey} sortDir={sortDir} /></th>
+              <th {...thProps('driverName')} className="sortable-th">Nama Sopir <SortIcon colKey="driverName" sortKey={sortDir ? sortKey : undefined} /></th>
               <th className="text-center">Aksi</th>
             </tr>
           </thead>
           <tbody>
-            {paginatedData.map(item => {
+            {paginatedData.map((item, idx) => {
               const isPemasukan = (item.type || item.transactionType || 'PENGELUARAN') === 'PEMASUKAN';
               const rowBg = selectedIds.includes(item.id) 
                 ? '#fef2f2' 
@@ -549,6 +619,9 @@ export default function KasAngkutanView({
                         setSelectedIds(prev => prev.includes(item.id) ? prev.filter(i => i !== item.id) : [...prev, item.id]);
                       }}
                     />
+                  </td>
+                  <td className="text-center font-mono" style={{ color: '#64748b', fontWeight: 600 }}>
+                    {(currentPage - 1) * itemsPerPage + idx + 1}
                   </td>
                   <td className="text-center">
                     <span className={`badge ${(item.kabupaten || item.branch || '').toUpperCase() === 'MAGETAN' ? 'badge-branch-magetan' : 'badge-branch-sragen'}`}>
@@ -584,7 +657,7 @@ export default function KasAngkutanView({
             })}
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={11} style={{ textAlign: 'center', padding: '20px', color: '#6b7280' }}>
+                <td colSpan={12} style={{ textAlign: 'center', padding: '20px', color: '#6b7280' }}>
                   Belum ada transaksi Kas Angkutan. Klik "+ Tambah Data Kas Angkutan" untuk membuat catatan baru.
                 </td>
               </tr>
@@ -593,7 +666,7 @@ export default function KasAngkutanView({
           {filtered.length > 0 && (
             <tfoot>
               <tr style={{ fontWeight: 800, backgroundColor: '#f8fafc', borderTop: '2px solid #cbd5e1' }}>
-                <td colSpan={8} style={{ textAlign: 'right', padding: '10px 14px' }}>
+                <td colSpan={9} style={{ textAlign: 'right', padding: '10px 14px' }}>
                   <span>TOTAL PENGELUARAN: <strong style={{ color: '#dc2626', marginRight: '16px' }}>{formatRp(totalPengeluaran)}</strong></span>
                   <span>TOTAL PEMASUKAN: <strong style={{ color: '#15803d', marginRight: '16px' }}>{formatRp(totalPemasukan)}</strong></span>
                   <span>SALDO KAS ANGKUTAN:</span>
@@ -619,8 +692,8 @@ export default function KasAngkutanView({
 
       {/* MODAL FORM TAMBAH DATA KAS ANGKUTAN (EXACT SCREENSHOT LAYOUT) */}
       {isModalOpen && (
-        <div className="modal-overlay">
-          <div className="modal-content" style={{ maxWidth: '650px', padding: '0', borderRadius: '8px', overflow: 'hidden' }}>
+        <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
+          <div className="modal-content" style={{ maxWidth: '650px', padding: '0', borderRadius: '8px', overflow: 'hidden' }} onClick={(e) => e.stopPropagation()}>
             <div style={{
               display: 'flex', justifyContent: 'space-between', alignItems: 'center',
               padding: '14px 20px', borderBottom: '1px solid #e5e7eb', backgroundColor: '#ffffff'
@@ -654,18 +727,16 @@ export default function KasAngkutanView({
                 </div>
                 <div>
                   <label style={{ fontSize: '11px', fontWeight: 800, color: '#374151', textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>NO DO</label>
-                  <input 
-                    type="text" 
-                    className="search-input" 
-                    placeholder="Nomor DO..." 
-                    style={{ width: '100%', fontWeight: 700 }} 
-                    value={doNo} 
-                    onChange={(e) => setDoNo(e.target.value)} 
-                    list="do-options"
+                  <SearchableSelect
+                    value={doNo}
+                    onChange={(e) => setDoNo(e.target.value)}
+                    placeholder="-- Pilih No. DO --"
+                    options={availableDoList.map(d => ({
+                      value: d.doNo,
+                      label: d.doNo,
+                      sublabel: `${d.fertilizerName || 'Pupuk'} | ${Number(d.qtyTon || d.qty || 0).toFixed(1)} Ton`
+                    }))}
                   />
-                  <datalist id="do-options">
-                    {availableDoList.map(d => <option key={d.id} value={d.doNo} />)}
-                  </datalist>
                 </div>
               </div>
 
@@ -675,18 +746,16 @@ export default function KasAngkutanView({
                   <label style={{ fontSize: '11px', fontWeight: 800, color: '#374151', textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>
                     NO PENYALURAN (OTOMATIS)
                   </label>
-                  <input 
-                    type="text" 
-                    className="search-input" 
-                    placeholder="Pilih atau ketik No. Penyaluran..." 
-                    style={{ width: '100%', fontWeight: 700, borderColor: '#22c55e' }} 
-                    value={penyaluranNo} 
-                    onChange={(e) => handleSelectPenyaluran(e.target.value)} 
-                    list="salur-options"
+                  <SearchableSelect
+                    value={penyaluranNo}
+                    onChange={(e) => handleSelectPenyaluran(e.target.value)}
+                    placeholder="-- Pilih No. Penyaluran --"
+                    options={(doNo ? availablePenyaluranList.filter(s => s.doNo === doNo) : availablePenyaluranList).map(s => ({
+                      value: s.penyaluranNo || s.doNo || s.id,
+                      label: s.penyaluranNo || s.doNo || s.id,
+                      sublabel: `${s.kiosName} - ${s.fertilizerName} (${s.qtyTon}T)`
+                    }))}
                   />
-                  <datalist id="salur-options">
-                    {availablePenyaluranList.map(s => <option key={s.id} value={s.penyaluranNo || s.doNo || s.id}>{s.kiosName} - {s.fertilizerName} ({s.qtyTon}T)</option>)}
-                  </datalist>
                 </div>
                 <div>
                   <label style={{ fontSize: '11px', fontWeight: 800, color: '#374151', textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>TANGGAL</label>
@@ -836,8 +905,8 @@ export default function KasAngkutanView({
 
       {/* MODAL PENGATURAN TARIF BIAYA ANGKUTAN */}
       {isRatesModalOpen && (
-        <div className="modal-overlay">
-          <div className="modal-content" style={{ maxWidth: '540px' }}>
+        <div className="modal-overlay" onClick={() => setIsRatesModalOpen(false)}>
+          <div className="modal-content" style={{ maxWidth: '540px' }} onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <div style={{ fontWeight: 800 }}>Pengaturan Standar Tarif Biaya Angkutan Per Cabang</div>
               <button className="btn-secondary" onClick={() => setIsRatesModalOpen(false)}>Tutup</button>
@@ -1065,8 +1134,8 @@ export default function KasAngkutanView({
 
       {/* MODAL RINCIAN TRANSAKSI PENYALURAN KIOS */}
       {detailPenyaluranModal && (
-        <div className="modal-overlay" style={{ zIndex: 1100 }}>
-          <div className="modal-content" style={{ maxWidth: '600px', padding: '0', borderRadius: '8px', overflow: 'hidden' }}>
+        <div className="modal-overlay" style={{ zIndex: 1100 }} onClick={() => setDetailPenyaluranModal(null)}>
+          <div className="modal-content" style={{ maxWidth: '600px', padding: '0', borderRadius: '8px', overflow: 'hidden' }} onClick={(e) => e.stopPropagation()}>
             <div style={{
               display: 'flex', justifyContent: 'space-between', alignItems: 'center',
               padding: '14px 20px', borderBottom: '1px solid #e5e7eb', backgroundColor: '#0284c7', color: '#ffffff'
@@ -1219,6 +1288,78 @@ export default function KasAngkutanView({
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* POP UP FORM TRANSFER KAS ANGKUTAN -> KAS UMUM */}
+      {isTransferModalOpen && (
+        <div className="modal-overlay" style={{ zIndex: 9999 }} onClick={() => setIsTransferModalOpen(false)}>
+          <div className="modal-content" style={{ maxWidth: '480px', borderRadius: '16px', overflow: 'hidden' }} onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header" style={{ backgroundColor: '#1e3a8a', color: '#fff' }}>
+              <div>⇄ Transfer Kas: Kas Angkutan → Kas Umum</div>
+              <button className="btn-secondary" onClick={() => setIsTransferModalOpen(false)} style={{ color: '#fff' }}>Tutup</button>
+            </div>
+            <form onSubmit={handleSubmitTransfer}>
+              <div className="modal-body" style={{ padding: '20px' }}>
+                <div style={{ backgroundColor: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '10px', padding: '12px', marginBottom: '16px', fontSize: '13px', color: '#1e40af' }}>
+                  Saldo akan <strong>dikurangkan</strong> dari Kas Angkutan dan secara otomatis <strong>ditambahkan</strong> sebagai kas masuk di Kas Umum Kantor.
+                </div>
+
+                <div className="form-group" style={{ marginBottom: '14px' }}>
+                  <label className="form-label" style={{ fontWeight: 700, fontSize: '12px' }}>Cabang Transaksi:</label>
+                  <select 
+                    className="form-input" 
+                    value={trfBranch} 
+                    onChange={(e) => setTrfBranch(e.target.value)}
+                    disabled={isBranchLocked}
+                  >
+                    <option value="MAGETAN">Magetan</option>
+                    <option value="SRAGEN">Sragen</option>
+                  </select>
+                </div>
+
+                <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '14px' }}>
+                  <div className="form-group">
+                    <label className="form-label" style={{ fontWeight: 700, fontSize: '12px' }}>Tanggal Transfer:</label>
+                    <input 
+                      type="date" 
+                      className="form-input" 
+                      value={trfDate} 
+                      onChange={(e) => setTrfDate(e.target.value)} 
+                      required 
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label" style={{ fontWeight: 700, fontSize: '12px' }}>Nominal Transfer (Rp):</label>
+                    <input 
+                      type="text" 
+                      className="form-input" 
+                      placeholder="misal: 5.000.000" 
+                      value={trfAmount ? formatCurrencyInput(trfAmount) : ''} 
+                      onChange={(e) => setTrfAmount(parseCurrencyInput(e.target.value))} 
+                      required 
+                    />
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label" style={{ fontWeight: 700, fontSize: '12px' }}>Keterangan / Keperluan:</label>
+                  <input 
+                    type="text" 
+                    className="form-input" 
+                    placeholder="misal: Setor sisa kas angkutan ke kas umum kantor..." 
+                    value={trfNotes} 
+                    onChange={(e) => setTrfNotes(e.target.value)} 
+                  />
+                </div>
+              </div>
+
+              <div className="modal-footer" style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end', padding: '14px 20px', borderTop: '1px solid #e2e8f0' }}>
+                <button type="button" className="btn-secondary" onClick={() => setIsTransferModalOpen(false)}>Batal</button>
+                <button type="submit" className="btn-primary" style={{ backgroundColor: '#2563eb' }}>Kirim Transfer Saldo ⇄</button>
+              </div>
+            </form>
           </div>
         </div>
       )}

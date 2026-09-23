@@ -42,7 +42,7 @@ export default function ModalTransaction({
   const [penyaluranNo, setPenyaluranNo] = useState(editData?.penyaluranNo || editData?.nomorPenyaluran || '');
   const [kiosId, setKiosId] = useState(editData?.kiosId || '');
   const [paymentStatus, setPaymentStatus] = useState(editData?.paymentStatus || 'Lunas');
-  const [dpAmount, setDpAmount] = useState(editData?.dpAmount || 0);
+  const [dpAmount, setDpAmount] = useState(editData?.dpAmount !== undefined ? editData?.dpAmount : (editData?.diBayar || 0));
   const [selectedDriverId, setSelectedDriverId] = useState('');
 
   // Master data: Kios & Supplier
@@ -140,12 +140,6 @@ export default function ModalTransaction({
     }
   }, [formType, selectableDoList, doRefId, editData]);
 
-  useEffect(() => {
-    if (formType === 'penyaluran' && !kiosId && availableKiosks.length > 0 && !editData) {
-      setKiosId(availableKiosks[0].id);
-    }
-  }, [formType, availableKiosks, kiosId, editData]);
-
   // Driver selection handler for Penyaluran
   useEffect(() => {
     if (formType === 'penyaluran') {
@@ -190,10 +184,6 @@ export default function ModalTransaction({
       if (initialDoRefId) setDoRefId(initialDoRefId);
       else if (availableDoList.length > 0 && formType === 'penyaluran' && !doRefId) {
         setDoRefId(availableDoList[0].id);
-      }
-
-      if (availableKiosks.length > 0 && formType === 'penyaluran' && !kiosId) {
-        setKiosId(availableKiosks[0].id);
       }
     }
   }, [formType, branch, editData, initialPenebusanId, initialDoRefId]);
@@ -240,7 +230,7 @@ export default function ModalTransaction({
     e.preventDefault();
     const selectedFert = fertilizers.find(f => f.id === fertilizerId) || fertilizers[0];
     const selectedSup = suppliers.find(s => s.id === supplierId || s.name.toLowerCase() === String(supplierId).toLowerCase()) || (supplierId ? { id: supplierId, name: supplierId } : suppliers[0]);
-    const selectedKios = kiosks.find(k => k.id === kiosId) || availableKiosks[0];
+    const selectedKios = kiosks.find(k => k.id === kiosId);
 
     if (formType === 'penebusan') {
       onSave('penebusan', {
@@ -305,6 +295,15 @@ export default function ModalTransaction({
         return;
       }
 
+      if (!kiosId || !selectedKios) {
+        setAlertConfig({
+          title: 'Peringatan Data',
+          variant: 'warning',
+          message: 'Silakan ketik atau pilih Kios Tujuan terlebih dahulu!'
+        });
+        return;
+      }
+
       const salurDariDO = penyaluranList
         .filter(s => (s.doRefId === selectedDO.id || (selectedDO.doNo && s.doNo === selectedDO.doNo)) && s.id !== editData?.id)
         .reduce((s, i) => s + Number(i.qtyTon || 0), 0);
@@ -341,6 +340,8 @@ export default function ModalTransaction({
         pricePerTon: Number(pricePerTon),
         totalAmount: totalAmt,
         dpAmount: paidDp,
+        diBayar: paidDp,
+        kurangBayar: Math.max(0, totalAmt - paidDp),
         paymentStatus, driverName, vehiclePlate,
         deliveryStatus: editData?.deliveryStatus || 'Tersalurkan', notes
       }, Boolean(editData));
@@ -378,8 +379,8 @@ export default function ModalTransaction({
   const sisaUtangCalculated = Math.max(0, totalTagihanCalculated - Number(dpAmount || 0));
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content" style={{ maxWidth: '560px' }}>
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" style={{ maxWidth: '560px' }} onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <div>{titles[formType]}</div>
           <button className="btn-secondary" onClick={onClose}>Tutup</button>

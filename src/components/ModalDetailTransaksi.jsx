@@ -19,8 +19,8 @@ export default function ModalDetailTransaksi({ isOpen, onClose, data, type }) {
   };
 
   return (
-    <div className="modal-overlay" style={{ zIndex: 1100 }}>
-      <div className="modal-content" style={{ maxWidth: '600px', padding: '0', borderRadius: '8px', overflow: 'hidden' }}>
+    <div className="modal-overlay" style={{ zIndex: 1100 }} onClick={onClose}>
+      <div className="modal-content" style={{ maxWidth: '600px', padding: '0', borderRadius: '8px', overflow: 'hidden' }} onClick={(e) => e.stopPropagation()}>
         {/* MODAL HEADER */}
         <div style={{
           display: 'flex', justifyContent: 'space-between', alignItems: 'center',

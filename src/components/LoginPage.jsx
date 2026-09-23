@@ -138,62 +138,7 @@ export default function LoginPage({ onLogin, usersList = DEFAULT_USERS }) {
             </button>
           </form>
 
-          {/* Divider */}
-          <div style={{ borderTop: '1px solid #e5e7eb', margin: '22px 0 16px 0' }} />
 
-          {/* Akun tersedia */}
-          <p style={{ fontSize: '12px', fontWeight: 700, color: '#6b7280', marginBottom: '10px' }}>
-            Akun yang tersedia (Role & Akses):
-          </p>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            {usersList.map((u) => {
-              const r = ROLE_LABELS[u.role] || { label: u.role, color: '#374151', bg: '#f3f4f6' };
-              return (
-                <div
-                  key={u.id}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '6px 10px',
-                    border: '1px solid #e5e7eb',
-                    borderRadius: '4px',
-                    fontSize: '12px',
-                    cursor: 'pointer',
-                    backgroundColor: '#fafafa',
-                  }}
-                  onClick={() => { setUsername(u.username); setPassword(u.password); }}
-                  title="Klik untuk mengisi form login otomatis"
-                >
-                  <div>
-                    <span style={{ fontWeight: 700 }}>{u.name}</span>
-                    <span style={{ color: '#9ca3af', marginLeft: '6px' }}>(@{u.username})</span>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <span style={{
-                      backgroundColor: r.bg, color: r.color,
-                      padding: '1px 6px', borderRadius: '3px',
-                      fontWeight: 700, fontSize: '11px',
-                    }}>
-                      {r.label}
-                    </span>
-                    {u.branch !== 'ALL' && (
-                      <span style={{
-                        backgroundColor: '#f3f4f6', color: '#374151',
-                        padding: '1px 6px', borderRadius: '3px',
-                        fontWeight: 600, fontSize: '11px',
-                      }}>
-                        {u.branch}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-          <p style={{ fontSize: '11px', color: '#9ca3af', marginTop: '8px' }}>
-            * Klik salah satu akun di atas untuk mengisi form login secara otomatis.
-          </p>
         </div>
       </div>
     </div>

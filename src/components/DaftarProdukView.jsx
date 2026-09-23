@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import ModalPriceHistory from './ModalPriceHistory';
+import ImportModuleButton from './ImportModuleButton';
 import { formatCurrencyInput, parseCurrencyInput } from '../utils/currency';
 
 export default function DaftarProdukView({ 
@@ -8,7 +9,9 @@ export default function DaftarProdukView({
   fertilizers = [], 
   onAddFertilizer,
   onEditFertilizer,
-  onDeleteFertilizer 
+  onDeleteFertilizer,
+  onImportModuleData,
+  onSyncData
 }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -151,9 +154,34 @@ export default function DaftarProdukView({
           <h2 className="page-title">Master Daftar Produk & Harga Pupuk</h2>
           <p className="page-desc">Kelola patokan <strong>Harga Beli (Penebusan)</strong> dari supplier dan <strong>Harga Jual (Penyaluran)</strong> per cabang.</p>
         </div>
-        <button className="btn-primary" onClick={handleOpenAdd}>
-          + Tambah Produk Baru
-        </button>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'flex-end' }}>
+          {/* Main Action Button */}
+          <button 
+            className="btn-primary" 
+            style={{ padding: '10px 20px', fontSize: '15px', fontWeight: 'bold' }} 
+            onClick={handleOpenAdd}
+          >
+            + Tambah Produk Baru
+          </button>
+          
+          {/* Secondary Buttons Row */}
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+            {onSyncData && (
+              <button 
+                type="button"
+                className="btn-secondary" 
+                style={{ backgroundColor: '#f0fdf4', color: '#15803d', borderColor: '#bbf7d0', fontWeight: 700 }}
+                onClick={() => onSyncData('Sinkronisasi Produk Pupuk')}
+                title="Sinkronkan data master pupuk dengan database Turso"
+              >
+                🔄 Sinkronkan Data
+              </button>
+            )}
+            {onImportModuleData && (
+              <ImportModuleButton moduleName="fertilizers" onImport={onImportModuleData} label="📥 Import Produk" />
+            )}
+          </div>
+        </div>
       </div>
 
       <div className="table-container">
@@ -289,8 +317,8 @@ export default function DaftarProdukView({
 
       {/* POPUP MODAL TAMBAH / EDIT PRODUK */}
       {isModalOpen && (
-        <div className="modal-overlay">
-          <div className="modal-content" style={{ maxWidth: '540px' }}>
+        <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
+          <div className="modal-content" style={{ maxWidth: '540px' }} onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <div>{editingItem ? 'Edit Harga & Data Produk Pupuk' : 'Tambah Produk Pupuk Baru'}</div>
               <button className="btn-secondary" onClick={() => setIsModalOpen(false)}>Tutup</button>

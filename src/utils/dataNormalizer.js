@@ -13,6 +13,17 @@ export function parseDateStandard(dateVal) {
     }
   }
 
+  // Handle Excel Serial Date (e.g. 45959 or 45959.29)
+  const num = Number(dateVal);
+  if (!isNaN(num) && num > 20000 && num < 80000 && !String(dateVal).includes('-') && !String(dateVal).includes('/')) {
+    try {
+      const date = new Date(Math.round((num - 25569) * 86400 * 1000));
+      if (!isNaN(date.getTime())) {
+        return date.toISOString().slice(0, 10);
+      }
+    } catch {}
+  }
+
   const str = String(dateVal).trim();
   
   if (/^\d{2}-\d{2}-\d{4}$/.test(str)) {
@@ -40,8 +51,30 @@ export function parseDateStandard(dateVal) {
 }
 
 function cleanStr(val, fallback = '') {
-  if (!val) return fallback;
-  return String(val).replace(/^\s+/, '').replace(/\s+$/, '');
+  if (val === null || val === undefined) return fallback;
+  const s = String(val).trim();
+  return s.length > 0 ? s : fallback;
+}
+
+/**
+ * Mencari nilai field dari object CSV dengan berbagai variasi nama header.
+ * Mendukung: spasi, underscore, camelCase, UPPERCASE, lowercase, dll.
+ * Contoh: getField(row, ['NO DO','noDo','doNo','no_do']) -> '1234'
+ */
+function getField(obj, aliases, fallback = undefined) {
+  if (!obj || typeof obj !== 'object') return fallback;
+  // Build normalized key map once
+  const normalize = (k) => String(k).toLowerCase().replace(/[\s_\-\.]/g, '');
+  const objKeys = Object.keys(obj);
+  for (const alias of aliases) {
+    const aliasNorm = normalize(alias);
+    // Direct match first (fastest)
+    if (obj[alias] !== undefined && obj[alias] !== null && obj[alias] !== '') return obj[alias];
+    // Normalized match
+    const found = objKeys.find(k => normalize(k) === aliasNorm);
+    if (found !== undefined && obj[found] !== undefined && obj[found] !== null && obj[found] !== '') return obj[found];
+  }
+  return fallback;
 }
 
 export function normalizeProductName(rawName, branch = '') {
@@ -72,35 +105,72 @@ export function normalizePenebusanList(rawList = [], rawDoList = [], rawPenyalur
   const doTakenMap = {};
   if (Array.isArray(rawDoList)) {
     rawDoList.forEach(doItem => {
-      const noDo = cleanStr(doItem.id || doItem.noDo || doItem.penebusanId);
+      const noDo = cleanStr(
+        getField(doItem, ['id','noDo','doNo','no_do','NO DO','No Do','NODO','no do','penebusanId'])
+      );
       if (noDo) {
-        doTakenMap[noDo] = (doTakenMap[noDo] || 0) + Number(doItem.qtyTon || doItem.qty || 0);
+        doTakenMap[noDo] = (doTakenMap[noDo] || 0) + Number(
+          getField(doItem, ['qtyTon','qty','QTY','Qty','kuantitas','KUANTITAS','jumlah'], 0)
+        );
       }
     });
   }
 
   return rawList.map((item, idx) => {
-    const rawId = cleanStr(item.id || item.noDo || item.no_do || `PEN-${idx + 1}`);
-    const id = rawId.replace(/^\s+/, '');
-    const qty = Number(item.qtyTon || item.qty || item.kuantitas || 0);
-    const totalCost = Number(item.totalAmount || item.totalPenebusan || item.totalCost || item.total || 0);
-    const pricePerTon = qty > 0 ? Math.round(totalCost / qty) : Number(item.pricePerTon || 0);
+    // Resolve NO DO dari berbagai kemungkinan nama header CSV
+    const rawNoDo = getField(item, [
+      'id','noDo','doNo','no_do','NO DO','No Do','NODO','no do',
+      'nomor_do','NOMOR DO','Nomor DO','NoDO','No.DO','NO.DO'
+    ]);
+    const rawId = cleanStr(rawNoDo || `PEN-${idx + 1}`);
+    const id = rawId;
+    const doNo = rawId;
+    const spjbNo = cleanStr(
+      getField(item, ['spjbNo','noSpjb','spjb','SPJB','No SPJB','NO SPJB']) || doNo
+    );
+    const qty = Number(
+      getField(item, ['qtyTon','qty','QTY','Qty','kuantitas','KUANTITAS','jumlah','JUMLAH'], 0)
+    );
+    const totalCost = Number(
+      getField(item, ['totalAmount','totalPenebusan','totalCost','total','TOTAL','Total',
+                      'total_biaya','TOTAL BIAYA','Total Biaya'], 0)
+    );
+    const pricePerTon = qty > 0 ? Math.round(totalCost / qty) : Number(
+      getField(item, ['pricePerTon','hargaPerTon','harga_per_ton','HARGA/TON'], 0)
+    );
 
     const takenQty = doTakenMap[id] !== undefined 
       ? doTakenMap[id] 
-      : Number(item.takenQty || item.sudahDiambil || item.diambil || 0);
-
+      : Number(getField(item, ['takenQty','sudahDiambil','diambil'], 0));
     const remainingQty = Math.max(0, qty - takenQty);
 
-    const supplierName = cleanStr(item.supplier || item.supplierName, 'PT PETROKIMIA GRESIK');
-    const fertilizerName = cleanStr(item.namaProduk || item.fertilizerName || item.pupuk, 'UREA');
-    const branch = item.kabupaten === 'SRAGEN' ? 'Sragen' : (item.kabupaten === 'MAGETAN' ? 'Magetan' : cleanStr(item.branch, 'Magetan'));
+    const supplierName = cleanStr(
+      getField(item, ['supplier','supplierName','namaSupplier','nama_supplier',
+                      'SUPPLIER','Supplier','Nama Supplier','NAMA SUPPLIER']),
+      'PT PETROKIMIA GRESIK'
+    );
+    const fertilizerName = cleanStr(
+      getField(item, ['namaProduk','fertilizerName','pupuk','jenisPupuk',
+                      'JENIS PUPUK','Jenis Pupuk','nama_produk','NAMA PRODUK',
+                      'Nama Produk','PUPUK','produk']),
+      'UREA'
+    );
+    const rawBranch = cleanStr(
+      getField(item, ['kabupaten','branch','cabang','KABUPATEN','Kabupaten',
+                      'BRANCH','Branch','wilayah','WILAYAH']),
+      'Magetan'
+    ).toUpperCase();
+    const branch = rawBranch.includes('SRAGEN') ? 'Sragen' : 'Magetan';
+
+    const dateRaw = getField(item, [
+      'tanggal','date','tgl','TANGGAL','Tanggal','DATE','Date','tgl_penebusan'
+    ]);
 
     return {
       id,
-      doNo: id,
-      spjbNo: id,
-      date: parseDateStandard(item.tanggal || item.date),
+      doNo,
+      spjbNo,
+      date: parseDateStandard(dateRaw),
       supplierId: supplierName,
       supplierName,
       fertilizerId: fertilizerName,
@@ -113,7 +183,8 @@ export function normalizePenebusanList(rawList = [], rawDoList = [], rawPenyalur
       totalCost,
       totalAmount: totalCost,
       branch,
-      notes: cleanStr(item.catatan || item.keterangan || '')
+      status: cleanStr(getField(item, ['status','STATUS','Status']), 'Complete'),
+      notes: cleanStr(getField(item, ['catatan','keterangan','notes','CATATAN','KETERANGAN']) || '')
     };
   });
 }
@@ -121,42 +192,90 @@ export function normalizePenebusanList(rawList = [], rawDoList = [], rawPenyalur
 export function normalizeDoList(rawList = [], rawPenebusan = []) {
   if (!Array.isArray(rawList)) return [];
 
+  // Build lookup map dari penebusan: key = noDo / id
   const penMap = {};
   if (Array.isArray(rawPenebusan)) {
     rawPenebusan.forEach(p => {
-      const pId = cleanStr(p.id || p.noDo);
+      const pId = cleanStr(
+        getField(p, ['id','noDo','doNo','no_do','NO DO','No Do'])
+      );
       if (pId) penMap[pId] = p;
     });
   }
 
   return rawList.map((item, idx) => {
-    const id = cleanStr(item.id || item.noDo || `DO-${idx + 1}`);
-    const penebusanId = cleanStr(item.noDo || item.penebusanId || id);
+    // ① Ambil NO DO dari berbagai kemungkinan nama header CSV
+    const rawNoDo = getField(item, [
+      'noDo','doNo','no_do','NO DO','No Do','NODO','no do',
+      'nomor_do','NOMOR DO','Nomor DO','NoDO','No.DO','NO.DO','id'
+    ]);
+    const penebusanId = cleanStr(rawNoDo || `DO-${idx + 1}`);
+
+    // ID record DO sendiri — pakai penebusanId supaya match satu-ke-satu dengan penebusan
+    // Jika item sudah punya id sendiri (dari Turso), pakai itu; kalau tidak, pakai penebusanId
+    const id = cleanStr(item.id) || penebusanId;
+
+    // ② Ambil data dari penebusan yang terhubung
     const linkedPen = penMap[penebusanId] || {};
 
-    const qty = Number(item.qtyTon || item.qty || 0);
-    // Keep the ORIGINAL product name from penebusan — do NOT normalize to master aliases here.
-    const fertilizerName = cleanStr(item.namaProduk || item.fertilizerName || linkedPen.namaProduk || linkedPen.fertilizerName, '');
-    const driverName = cleanStr(item.namaSopir || item.driverName || item.sopir, 'Sopir Distributor');
-    const truckNumber = cleanStr(item.nopol || item.truckNumber, '-');
-    const targetWarehouse = cleanStr(item.gudang || item.targetWarehouse, 'Gudang Utama');
+    // ③ Qty
+    const qty = Number(
+      getField(item, ['qtyTon','qty','QTY','Qty','kuantitas','KUANTITAS','jumlah','JUMLAH'], 0)
+    );
 
-    const kabupaten = item.kabupaten || linkedPen.kabupaten;
-    const branch = kabupaten === 'SRAGEN' ? 'Sragen' : 'Magetan';
+    // ④ Jenis pupuk — utamakan dari item, fallback dari penebusan terhubung
+    const fertilizerName = cleanStr(
+      getField(item, ['namaProduk','fertilizerName','pupuk','jenisPupuk',
+                      'JENIS PUPUK','Jenis Pupuk','NAMA PRODUK','Nama Produk','produk']) ||
+      getField(linkedPen, ['namaProduk','fertilizerName','pupuk','jenisPupuk']),
+      'UREA'
+    );
+
+    // ⑤ Data supir & kendaraan
+    const driverName = cleanStr(
+      getField(item, ['namaSopir','driverName','sopir','nama_sopir',
+                      'NAMA SOPIR','Nama Sopir','DRIVER','Driver','supir','SUPIR']),
+      'Sopir Distributor'
+    );
+    const truckNumber = cleanStr(
+      getField(item, ['vehiclePlate','truckNumber','nopol','NOPOL','Nopol',
+                      'plat_kendaraan','PLAT','Plat','no_kendaraan']),
+      '-'
+    );
+    const targetWarehouse = cleanStr(
+      getField(item, ['gudang','targetWarehouse','GUDANG','Gudang','warehouse']),
+      'Gudang Utama'
+    );
+
+    // ⑥ Branch — utamakan dari item, fallback dari penebusan
+    const rawKab = cleanStr(
+      getField(item, ['kabupaten','branch','cabang','KABUPATEN','BRANCH']) ||
+      getField(linkedPen, ['kabupaten','branch','cabang']),
+      'Magetan'
+    ).toUpperCase();
+    const branch = rawKab.includes('SRAGEN') ? 'Sragen' : 'Magetan';
+
+    // ⑦ Tanggal — utamakan dari item, fallback dari penebusan
+    const dateRaw = getField(item, [
+      'tanggal','date','tgl','TANGGAL','Tanggal','DATE','Date'
+    ]) || getField(linkedPen, ['tanggal','date','tgl']);
 
     return {
       id,
       doNo: penebusanId,
       penebusanId,
-      date: parseDateStandard(item.tanggal || item.date || linkedPen.tanggal),
+      date: parseDateStandard(dateRaw),
       branch,
+      fertilizerId: fertilizerName,
       fertilizerName,
       qty,
       qtyTon: qty,
       driverName,
       truckNumber,
+      vehiclePlate: truckNumber,
       targetWarehouse,
-      notes: cleanStr(item.catatan || item.keterangan || '')
+      status: cleanStr(getField(item, ['status','STATUS','Status']), 'Selesai'),
+      notes: cleanStr(getField(item, ['catatan','keterangan','notes','CATATAN']) || '')
     };
   });
 }
@@ -167,7 +286,9 @@ export function normalizePenyaluranList(rawList = [], rawPenebusan = [], rawDoLi
   const penMap = {};
   if (Array.isArray(rawPenebusan)) {
     rawPenebusan.forEach(p => {
-      const pId = cleanStr(p.id || p.noDo);
+      const pId = cleanStr(
+        getField(p, ['id','noDo','doNo','no_do','NO DO','No Do'])
+      );
       if (pId) penMap[pId] = p;
     });
   }
@@ -175,62 +296,114 @@ export function normalizePenyaluranList(rawList = [], rawPenebusan = [], rawDoLi
   const doSeqMap = {};
 
   return rawList.map((item, idx) => {
-    const id = cleanStr(item.id || item.nomorPenyaluran || item.penyaluranNo || `SLR-${idx + 1}`);
-    const doRefId = cleanStr(item.noDo || item.doRefId || item.doNo);
+    // Ambil NO DO dari berbagai kemungkinan nama header
+    const rawNoDo = getField(item, [
+      'noDo','doNo','doRefId','no_do','NO DO','No Do','NODO','no do',
+      'nomor_do','NOMOR DO','Nomor DO'
+    ]);
+    const doRefId = cleanStr(rawNoDo || '');
     const linkedPen = penMap[doRefId] || {};
-    
-    let penyaluranNo = cleanStr(item.penyaluranNo || item.nomorPenyaluran);
+
+    // Nomor penyaluran / surat jalan
+    const rawPenyaluranNo = getField(item, [
+      'penyaluranNo','nomorPenyaluran','sjNo','noSJ','no_sj',
+      'NO SJ','No SJ','NO PENYALURAN','No Penyaluran','nomor_sj'
+    ]);
+    let penyaluranNo = cleanStr(rawPenyaluranNo || '');
     if (!penyaluranNo || !penyaluranNo.includes('-')) {
       if (doRefId) {
         doSeqMap[doRefId] = (doSeqMap[doRefId] || 0) + 1;
         const seqStr = String(doSeqMap[doRefId]).padStart(2, '0');
         penyaluranNo = `${doRefId}-${seqStr}`;
-      } else {
-        penyaluranNo = id;
       }
     }
 
-    const qty = Number(item.qtyTon || item.qty || 0);
-    const totalAmount = Number(item.total || item.totalAmount || 0);
-    const rawDiBayar = item.totalBayarTempo !== undefined 
-      ? Number(item.totalBayarTempo) 
-      : (item.totalBayar !== undefined 
-        ? Number(item.totalBayar) 
-        : (item.diBayar !== undefined 
-          ? Number(item.diBayar) 
-          : (item.paidAmount !== undefined ? Number(item.paidAmount) : undefined)));
-    const rawKurangBayar = item.kurangBayar !== undefined ? Number(item.kurangBayar) : (item.remainingAmount !== undefined ? Number(item.remainingAmount) : undefined);
+    const id = cleanStr(
+      getField(item, ['id']) ||
+      rawPenyaluranNo ||
+      penyaluranNo ||
+      `SLR-${idx + 1}`
+    );
+    if (!penyaluranNo) penyaluranNo = id;
+
+    const qty = Number(
+      getField(item, ['qtyTon','qty','QTY','Qty','kuantitas','jumlah','JUMLAH'], 0)
+    );
+    const totalAmount = Number(
+      getField(item, ['totalAmount','total','TOTAL','Total','total_tagihan',
+                      'TOTAL TAGIHAN','Total Tagihan','tagihan'], 0)
+    );
+    const rawDiBayar = getField(item, [
+      'totalBayarTempo','totalBayar','diBayar','paidAmount','DI BAYAR',
+      'Di Bayar','DIBAYAR','dibayar','bayar'
+    ]);
+    const rawDiBayarNum = rawDiBayar !== undefined ? Number(rawDiBayar) : undefined;
+
+    const rawKurangBayar = getField(item, [
+      'kurangBayar','remainingAmount','KURANG BAYAR','Kurang Bayar',
+      'sisa_bayar','sisaBayar','SISA BAYAR'
+    ]);
+    const rawKurangBayarNum = rawKurangBayar !== undefined ? Number(rawKurangBayar) : undefined;
 
     let paidAmount = 0;
     let remainingAmount = 0;
 
-    if (rawKurangBayar !== undefined) {
-      remainingAmount = rawKurangBayar;
+    if (rawKurangBayarNum !== undefined) {
+      remainingAmount = rawKurangBayarNum;
       paidAmount = Math.max(0, totalAmount - remainingAmount);
-    } else if (rawDiBayar !== undefined) {
-      paidAmount = rawDiBayar;
+    } else if (rawDiBayarNum !== undefined) {
+      paidAmount = rawDiBayarNum;
       remainingAmount = Math.max(0, totalAmount - paidAmount);
     } else {
       paidAmount = 0;
       remainingAmount = totalAmount;
     }
 
-    const pricePerTon = qty > 0 ? Math.round(totalAmount / qty) : Number(item.pricePerTon || 0);
+    const pricePerTon = qty > 0 ? Math.round(totalAmount / qty) : Number(
+      getField(item, ['pricePerTon','hargaPerTon','harga_per_ton','HARGA/TON'], 0)
+    );
 
-    const rawKet = cleanStr(item.keterangan || item.paymentStatus || '').toUpperCase();
+    const rawKet = cleanStr(
+      getField(item, ['keterangan','paymentStatus','KETERANGAN','status_bayar','statusBayar','LUNAS']) || ''
+    ).toUpperCase();
     let paymentStatus = 'Tempo';
-    if (rawKet.includes('BELUM LUNAS') || rawKet.includes('TEMPO') || remainingAmount > 0) {
+    if (rawKet.includes('LUNAS') && !rawKet.includes('BELUM') && remainingAmount <= 0) {
+      paymentStatus = 'Lunas';
+    } else if (rawKet.includes('BELUM LUNAS') || rawKet.includes('TEMPO') || remainingAmount > 0) {
       paymentStatus = 'Tempo';
     } else if (rawKet.includes('LUNAS') || remainingAmount <= 0) {
       paymentStatus = 'Lunas';
     }
 
-    const kiosName = cleanStr(item.namaKios || item.kiosName, 'Kios Tani');
-    // Keep the ORIGINAL product name from database — do NOT normalize to master aliases here.
-    // Alias normalization (Petroganik/PG BARU -> PGANIK MAGETAN etc.) only happens in Stok & Mutasi.
-    const fertilizerName = cleanStr(item.namaProduk || item.fertilizerName || '', '');
-    const branch = item.kabupaten === 'SRAGEN' ? 'Sragen' : 'Magetan';
-    const driverName = cleanStr(item.namaSopir || item.driverName, '-');
+    const kiosName = cleanStr(
+      getField(item, ['namaKios','kiosName','nama_kios','NAMA KIOS','Nama Kios','KIOS','Kios',
+                      'kios','toko','TOKO']),
+      'Kios Tani'
+    );
+    const fertilizerName = cleanStr(
+      getField(item, ['namaProduk','fertilizerName','pupuk','jenisPupuk',
+                      'JENIS PUPUK','Jenis Pupuk','NAMA PRODUK','Nama Produk']) ||
+      getField(linkedPen, ['namaProduk','fertilizerName','pupuk','jenisPupuk']),
+      'UREA'
+    );
+    const rawBranch = cleanStr(
+      getField(item, ['kabupaten','branch','cabang','KABUPATEN','BRANCH']) || 
+      getField(linkedPen, ['kabupaten','branch']),
+      'Magetan'
+    ).toUpperCase();
+    const branch = rawBranch.includes('SRAGEN') ? 'Sragen' : 'Magetan';
+    const driverName = cleanStr(
+      getField(item, ['namaSopir','driverName','sopir','NAMA SOPIR','Nama Sopir','supir','SUPIR']),
+      '-'
+    );
+    const vehiclePlate = cleanStr(
+      getField(item, ['vehiclePlate','nopol','NOPOL','Nopol','plat','PLAT','no_kendaraan']),
+      ''
+    );
+
+    const dateRaw = getField(item, [
+      'tanggal','date','tgl','TANGGAL','Tanggal','DATE','Date','tgl_penyaluran'
+    ]) || getField(linkedPen, ['tanggal','date','tgl']);
 
     return {
       id,
@@ -239,21 +412,25 @@ export function normalizePenyaluranList(rawList = [], rawPenebusan = [], rawDoLi
       penyaluranNo,
       doRefId,
       doNo: doRefId,
-      date: parseDateStandard(item.tanggal || item.date),
+      date: parseDateStandard(dateRaw),
       branch,
       kiosId: kiosName,
       kiosName,
+      fertilizerId: fertilizerName,
       fertilizerName,
       qty,
       qtyTon: qty,
       pricePerTon,
       totalAmount,
+      dpAmount: paidAmount,
       paidAmount,
       remainingAmount,
       paymentStatus,
       driverName,
-      dueDate: item.dueDate ? parseDateStandard(item.dueDate) : '',
-      notes: cleanStr(item.catatan || '')
+      vehiclePlate,
+      deliveryStatus: cleanStr(getField(item, ['deliveryStatus','status_kirim']), 'delivered'),
+      dueDate: getField(item, ['dueDate','jatuhTempo']) ? parseDateStandard(getField(item, ['dueDate','jatuhTempo'])) : '',
+      notes: cleanStr(getField(item, ['catatan','keterangan','notes','CATATAN']) || '')
     };
   });
 }
@@ -262,18 +439,31 @@ export function normalizeKiosks(rawList = []) {
   if (!Array.isArray(rawList)) return [];
 
   return rawList.map((item, idx) => {
-    const name = cleanStr(item.name || item.namaKios || item.nama, `Kios ${idx + 1}`);
-    const owner = cleanStr(item.penanggungJawab || item.owner || item.pemilik, '-');
-    const branch = item.kabupaten === 'SRAGEN' ? 'Sragen' : 'Magetan';
+    const name = cleanStr(
+      getField(item, ['namaKios', 'name', 'nama_kios', 'NAMA KIOS', 'Nama Kios', 'kios', 'KIOS', 'nama']),
+      `Kios ${idx + 1}`
+    );
+    const owner = cleanStr(
+      getField(item, ['penanggungJawab', 'owner', 'pemilik', 'PEMILIK', 'namaPemilik']),
+      '-'
+    );
+    const rawKab = cleanStr(getField(item, ['kabupaten', 'branch', 'cabang', 'KABUPATEN']) || '').toUpperCase();
+    const branch = rawKab.includes('SRAGEN') ? 'Sragen' : 'Magetan';
     
-    const addrParts = [item.desa, item.kecamatan, item.kabupaten].filter(Boolean);
-    const address = addrParts.length > 0 ? addrParts.join(', ') : cleanStr(item.address, '-');
+    const desa = getField(item, ['desa', 'DESA']);
+    const kec = getField(item, ['kecamatan', 'KECAMATAN']);
+    const kab = getField(item, ['kabupaten', 'KABUPATEN']);
+    const addrParts = [desa, kec, kab].filter(Boolean);
+    const address = addrParts.length > 0 
+      ? addrParts.join(', ') 
+      : cleanStr(getField(item, ['address', 'alamat', 'ALAMAT']), '-');
 
     return {
-      id: cleanStr(item.id || `KIO-${idx + 1}`),
+      id: cleanStr(getField(item, ['id', 'ID', 'kodeKios', 'code']) || `KIO-${idx + 1}`),
+      code: cleanStr(getField(item, ['code', 'kodeKios', 'KODE KIOS', 'id']) || `KIO-${idx + 1}`),
       name,
       owner,
-      phone: cleanStr(item.phone || item.noHp, '-'),
+      phone: cleanStr(getField(item, ['phone', 'noHp', 'hp', 'telepon', 'NO HP', 'telp']), '-'),
       address,
       branch
     };
@@ -284,16 +474,20 @@ export function normalizeFertilizers(rawList = []) {
   if (!Array.isArray(rawList)) return [];
 
   return rawList.map((item, idx) => {
-    const name = cleanStr(item.productName || item.namaProduk || item.name, `Pupuk ${idx + 1}`);
-    const branch = item.kabupaten === 'SRAGEN' ? 'Sragen' : 'Magetan';
-    const supplier = cleanStr(item.supplier, 'PT PETROKIMIA GRESIK');
+    const name = cleanStr(
+      getField(item, ['productName', 'namaProduk', 'name', 'NAMA PRODUK', 'pupuk', 'jenisPupuk']),
+      `Pupuk ${idx + 1}`
+    );
+    const rawKab = cleanStr(getField(item, ['kabupaten', 'branch', 'cabang', 'KABUPATEN']) || '').toUpperCase();
+    const branch = rawKab.includes('SRAGEN') ? 'Sragen' : 'Magetan';
+    const supplier = cleanStr(getField(item, ['supplier', 'SUPPLIER', 'distributor']), 'PT PETROKIMIA GRESIK');
 
     return {
-      id: cleanStr(item.id || `FERT-${idx + 1}`),
+      id: cleanStr(getField(item, ['id', 'ID', 'kodeProduk']) || `FERT-${idx + 1}`),
       name,
-      priceBuy: Number(item.hargaBeli || 0),
-      priceSell: Number(item.hargaJual || 0),
-      stock: Number(item.stok || 0),
+      priceBuy: Number(getField(item, ['hargaBeli', 'priceBuy', 'HARGA BELI', 'beli']) || 0),
+      priceSell: Number(getField(item, ['hargaJual', 'priceSell', 'HARGA JUAL', 'jual']) || 0),
+      stock: Number(getField(item, ['stok', 'stock', 'STOK', 'qty']) || 0),
       supplier,
       branch
     };
@@ -304,20 +498,26 @@ export function normalizePayments(rawList = []) {
   if (!Array.isArray(rawList)) return [];
 
   return rawList.map((item, idx) => {
-    const kiosName = cleanStr(item.namaKios || item.kiosName, 'Kios Tani');
-    const branch = item.kabupaten === 'SRAGEN' ? 'Sragen' : 'Magetan';
+    const kiosName = cleanStr(
+      getField(item, ['namaKios', 'kiosName', 'nama_kios', 'NAMA KIOS', 'kios', 'KIOS']),
+      'Kios Tani'
+    );
+    const rawKab = cleanStr(getField(item, ['kabupaten', 'branch', 'cabang', 'KABUPATEN']) || '').toUpperCase();
+    const branch = rawKab.includes('SRAGEN') ? 'Sragen' : 'Magetan';
+    const noDo = cleanStr(getField(item, ['noDo', 'doNo', 'NO DO', 'No DO', 'nodo']) || '');
+    const penyaluranId = cleanStr(getField(item, ['nomorPenyaluran', 'penyaluranId', 'sjNo', 'NO PENYALURAN']) || '');
 
     return {
-      id: cleanStr(item.id || `PAY-${idx + 1}`),
-      penyaluranId: cleanStr(item.nomorPenyaluran || item.penyaluranId || ''),
-      doRefId: cleanStr(item.noDo || ''),
-      doNo: cleanStr(item.noDo || ''),
+      id: cleanStr(getField(item, ['id', 'ID']) || `PAY-${idx + 1}`),
+      penyaluranId,
+      doRefId: noDo,
+      doNo: noDo,
       kiosName,
-      date: parseDateStandard(item.tanggal || item.date),
-      amount: Number(item.totalBayar || item.amount || 0),
-      paymentMethod: cleanStr(item.metodePembayaran || item.paymentMethod, 'Transfer Bank'),
+      date: parseDateStandard(getField(item, ['tanggal', 'date', 'tgl', 'TANGGAL', 'Tanggal'])),
+      amount: Number(getField(item, ['totalBayar', 'amount', 'nominal', 'jumlah', 'TOTAL BAYAR', 'bayar']) || 0),
+      paymentMethod: cleanStr(getField(item, ['metodePembayaran', 'paymentMethod', 'metode', 'METODE']), 'Transfer Bank'),
       branch,
-      notes: cleanStr(item.catatan || '')
+      notes: cleanStr(getField(item, ['catatan', 'keterangan', 'notes', 'CATATAN']) || '')
     };
   });
 }
@@ -325,32 +525,34 @@ export function normalizePayments(rawList = []) {
 export function normalizeDrivers(rawList = []) {
   if (!Array.isArray(rawList)) return [];
   return rawList.map((item, idx) => ({
-    id: cleanStr(item.id || `DRV-${idx + 1}`),
-    name: cleanStr(item.name || item.namaSopir || item.nama, `Driver ${idx + 1}`),
-    phone: cleanStr(item.phone || item.telepon, '-'),
-    truckNumber: cleanStr(item.truckNumber || item.nopol, '-')
+    id: cleanStr(getField(item, ['id', 'ID']) || `DRV-${idx + 1}`),
+    name: cleanStr(getField(item, ['name', 'namaSopir', 'nama', 'sopir', 'supir', 'NAMA SOPIR']), `Driver ${idx + 1}`),
+    phone: cleanStr(getField(item, ['phone', 'telepon', 'noHp', 'hp', 'NO HP']), '-'),
+    truckNumber: cleanStr(getField(item, ['truckNumber', 'nopol', 'plat', 'NOPOL', 'platNomor']), '-'),
+    branch: cleanStr(getField(item, ['branch', 'cabang', 'kabupaten']) || 'Magetan')
   }));
 }
 
 export function normalizeSuppliers(rawList = []) {
   if (!Array.isArray(rawList)) return [];
   return rawList.map((item, idx) => ({
-    id: cleanStr(item.id || `SUP-${idx + 1}`),
-    name: cleanStr(item.name || item.supplier || item.nama, `Supplier ${idx + 1}`),
-    phone: cleanStr(item.phone, '-'),
-    address: cleanStr(item.address, '-')
+    id: cleanStr(getField(item, ['id', 'ID']) || `SUP-${idx + 1}`),
+    name: cleanStr(getField(item, ['name', 'supplier', 'nama', 'namaSupplier', 'SUPPLIER']), `Supplier ${idx + 1}`),
+    phone: cleanStr(getField(item, ['phone', 'telepon', 'noHp', 'hp']), '-'),
+    address: cleanStr(getField(item, ['address', 'alamat', 'ALAMAT']), '-')
   }));
 }
 
 export function normalizeKasAngkutanList(rawList = []) {
   if (!Array.isArray(rawList)) return [];
   return rawList.map((item, idx) => {
-    const branch = item.kabupaten === 'SRAGEN' ? 'Sragen' : (item.kabupaten === 'MAGETAN' ? 'Magetan' : cleanStr(item.branch, 'Magetan'));
-    const adminFee = Number(item.adminFee || item.admin || 0);
-    const mealFee = Number(item.mealFee || item.uangMakan || item.makan || 0);
-    const palangFee = Number(item.palangFee || item.palang || 0);
-    const solarFee = Number(item.solarFee || item.solar || 0);
-    const driverWage = Number(item.driverWage || item.upahSopir || item.upah || 0);
+    const rawKab = cleanStr(getField(item, ['kabupaten', 'branch', 'cabang', 'KABUPATEN']) || '').toUpperCase();
+    const branch = rawKab.includes('SRAGEN') ? 'Sragen' : 'Magetan';
+    const adminFee = Number(getField(item, ['adminFee', 'admin', 'ADMIN']) || 0);
+    const mealFee = Number(getField(item, ['mealFee', 'uangMakan', 'makan', 'UANG MAKAN']) || 0);
+    const palangFee = Number(getField(item, ['palangFee', 'palang', 'PALANG']) || 0);
+    const solarFee = Number(getField(item, ['solarFee', 'solar', 'SOLAR', 'bbm']) || 0);
+    const driverWage = Number(getField(item, ['driverWage', 'upahSopir', 'upah', 'UPAH SOPIR']) || 0);
     const overtimeFee = Number(item.overtimeFee || item.lembur || 0);
     const helperFee = Number(item.helperFee || item.helper || 0);
     const otherFee = Number(item.otherFee || item.lainLain || item.lain_lain || 0);

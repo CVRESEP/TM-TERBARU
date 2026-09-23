@@ -3,7 +3,7 @@ import { formatDateDisplay } from '../utils/currency';
 
 export default function DashboardView({ 
   selectedBranch, penebusanList, doList, penyaluranList,
-  fertilizers, onNavigate, onAddNew, onOpenPrint, settings
+  fertilizers, onNavigate, onAddNew, onOpenPrint, settings, onSyncData
 }) {
   const filterByBranch = (item) => selectedBranch === 'ALL' || item.branch === selectedBranch;
 
@@ -33,6 +33,17 @@ export default function DashboardView({
           </h2>
           <p className="page-desc">Ringkasan alur 3 tahap (satuan TON): Penebusan → Pengeluaran DO → Penyaluran Kios</p>
         </div>
+        {onSyncData && (
+          <button 
+            type="button"
+            className="btn-secondary" 
+            style={{ backgroundColor: '#f0fdf4', color: '#15803d', borderColor: '#bbf7d0', fontWeight: 700 }}
+            onClick={() => onSyncData('Sinkronisasi Data Dashboard')}
+            title="Sinkronkan seluruh data aplikasi dengan database Turso"
+          >
+            🔄 Sinkronkan Data
+          </button>
+        )}
       </div>
 
       {/* ══════════════════════════════════════
